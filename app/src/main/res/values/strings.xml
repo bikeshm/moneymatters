@@ -3,4 +3,17 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string-array name="menuItems">
+        <item>One</item>
+        <item>Two</item>
+        <item>Three</item>
+        <item>Four</item>
+        <item>Five</item>
+
+    </string-array>
+
+    <string name="open_navigation_drawer"> Open Navigation Drawer </string>
+    <string name="closing_navigation_drawer"> Closing Navigation Drawer </string>
+
 </resources>
