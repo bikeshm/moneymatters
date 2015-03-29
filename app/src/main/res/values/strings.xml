@@ -13,7 +13,7 @@
 
     </string-array>
 
-    <string name="open_navigation_drawer"> Open Navigation Drawer </string>
-    <string name="closing_navigation_drawer"> Closing Navigation Drawer </string>
+    <string name="openDrawer"> Open Navigation Drawer </string>
+    <string name="closeDrawer"> Closing Navigation Drawer </string>
 
 </resources>
