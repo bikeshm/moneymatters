@@ -31,9 +31,9 @@ public class Home extends ActionBarActivity {
     //First We Declare Titles And Icons For Our Navigation Drawer List View
     //This Icons And Titles Are holded in an Array as you can see
 
-    String TITLES[] = {"Home","Events","Mail","Shop","Travel"};
+    String TITLES[] = {"Borrow","Personal Expence","Group" };
 
-    int ICONS[] = {R.drawable.img,R.drawable.img,R.drawable.img,R.drawable.img,R.drawable.img};
+    int ICONS[] = {R.drawable.img,R.drawable.img,R.drawable.img };
 
     //Similarly we Create a String Resource for the name and email in the header view
     //And we also create a int resource for profile picture in the header view
@@ -60,9 +60,10 @@ public class Home extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-    /* Assinging the toolbar object ot the view
-    and setting the the Action bar to our toolbar
-     */
+        /* Assinging the toolbar object ot the view
+        and setting the the Action bar to our toolbar
+         */
+
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
@@ -70,19 +71,14 @@ public class Home extends ActionBarActivity {
 
 
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
-
         mRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
-
         mAdapter = new DrawerDataAdapter(TITLES,ICONS,NAME,EMAIL,PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
         // And passing the titles,icons,header view name, header view email,
         // and header view profile picture
-
         mRecyclerView.setAdapter(mAdapter);                              // Setting the adapter to RecyclerView
 
         mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager
-
         mRecyclerView.setLayoutManager(mLayoutManager);                 // Setting the layout Manager
-
 
         Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);        // Drawer object Assigned to the view
         mDrawerToggle = new ActionBarDrawerToggle(this,Drawer,toolbar,R.string.openDrawer,R.string.closeDrawer){
