@@ -1,5 +1,6 @@
 package com.bikesh.scorpio.giventake;
 
+import android.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -34,9 +35,9 @@ public class Home extends ActionBarActivity {
     //First We Declare Titles And Icons For Our Navigation Drawer List View
     //This Icons And Titles Are holded in an Array as you can see
 
-    String TITLES[] = {"Borrow","Personal Expence","Group" };
+    String TITLES[] = {"Dashboard","Borrow","Personal Expence","Group" };
 
-    int ICONS[] = {R.drawable.img,R.drawable.img,R.drawable.img };
+    int ICONS[] = {R.drawable.img,R.drawable.img,R.drawable.img,R.drawable.img };
 
     //Similarly we Create a String Resource for the name and email in the header view
     //And we also create a int resource for profile picture in the header view
@@ -127,10 +128,32 @@ public class Home extends ActionBarActivity {
                     Drawer.closeDrawers();
                     Toast.makeText(Home.this,"The Item Clicked is: "+rv.getChildPosition(child),Toast.LENGTH_SHORT).show();
 
+                    switch(rv.getChildPosition(child)){
+                        case 0:
+                            //for login function execution
+                            return false;
+                        case 1:
+
+                            //FragmentDashboard f4 = new FragmentDashboard();
+                            FragmentTransaction ft = getFragmentManager().beginTransaction();
+                            ft.replace(R.id.mainFrame, new FragmentDashboard()); // f2_container is your FrameLayout container
+                            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                            ft.addToBackStack(null);
+                            ft.commit();
+
+                            break;
+
+
+
+
+                    }
+
+                    /*
                     //for login function execution
                     if(rv.getChildPosition(child)==0){
                         return false;
                     }
+                    */
                     return true;
 
                 }
