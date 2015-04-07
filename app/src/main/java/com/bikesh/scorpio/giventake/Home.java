@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -126,6 +127,10 @@ public class Home extends ActionBarActivity {
                     Drawer.closeDrawers();
                     Toast.makeText(Home.this,"The Item Clicked is: "+rv.getChildPosition(child),Toast.LENGTH_SHORT).show();
 
+                    //for login function execution
+                    if(rv.getChildPosition(child)==0){
+                        return false;
+                    }
                     return true;
 
                 }
@@ -138,6 +143,8 @@ public class Home extends ActionBarActivity {
 
             }
         });
+
+
 
     }
 
@@ -163,6 +170,13 @@ public class Home extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    public void loginfunc(View v){
+
+        Toast.makeText(Home.this,"Inside login ",Toast.LENGTH_SHORT).show();
+    }
+
 }
 
 

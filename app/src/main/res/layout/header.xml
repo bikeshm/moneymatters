@@ -50,4 +50,15 @@
         android:layout_marginTop="38dp"
         android:id="@+id/circleView"
         />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Button"
+        android:id="@+id/loginbtn"
+        android:layout_alignBottom="@+id/circleView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="loginfunc"
+        />
 </RelativeLayout>
