@@ -141,10 +141,13 @@ public class ActivityHome extends ActionBarActivity {
                         case 2:
 
                             getFragmentManager().beginTransaction()
-                                    .replace(R.id.mainFrame, new FragmentDashboard())
+                                    .replace(R.id.mainFrame, new FragmentLendsAndBorrow())
                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                     .addToBackStack(null)
                                     .commit();
+
+                            Toast.makeText(ActivityHome.this,"FragmentLendsAndBorrow: "+rv.getChildPosition(child),Toast.LENGTH_SHORT).show();
+
                             break;
 
 
