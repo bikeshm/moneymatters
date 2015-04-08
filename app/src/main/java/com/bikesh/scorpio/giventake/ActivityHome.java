@@ -132,24 +132,21 @@ public class ActivityHome extends ActionBarActivity {
                             //for login function execution
                             return false;
                         case 1:
-
-                            //FragmentDashboard f4 = new FragmentDashboard();
-                            /*FragmentTransaction ft = getFragmentManager().beginTransaction();
-                            ft.replace(R.id.mainFrame, new FragmentDashboard()); // f2_container is your FrameLayout container
-                            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                            ft.addToBackStack(null);
-                            ft.commit();
-                            */
+                            getFragmentManager().beginTransaction()
+                                    .replace(R.id.mainFrame, new FragmentDashboard())
+                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        case 2:
 
                             getFragmentManager().beginTransaction()
                                     .replace(R.id.mainFrame, new FragmentDashboard())
                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                     .addToBackStack(null)
                                     .commit();
-
-
-
                             break;
+
 
 
 
