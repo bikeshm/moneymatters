@@ -9,8 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -141,7 +139,7 @@ public class ActivityHome extends ActionBarActivity {
                         case 2:
 
                             getFragmentManager().beginTransaction()
-                                    .replace(R.id.mainFrame, new FragmentLendsAndBorrow())
+                                    .replace(R.id.mainFrame, new FragmentLendAndBorrow())
                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                     .addToBackStack(null)
                                     .commit();
