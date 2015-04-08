@@ -14,6 +14,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by Scorpio on 4/8/2015.
@@ -35,23 +36,23 @@ public class FragmentLendAndBorrow extends Fragment {
 
         ListView listView = (ListView) v.findViewById(R.id.listViewFromDB);
 
-        String[] values = new String[] { "Android List View",
-                 "Adapter implementation",
-                 "Simple List View In Android",
-                 "Create List View Android",
-                 "Android Example",
-                 "List View Source Code",
-                 "List View Array Adapter",
-                 "Android Example List View",
+        String[] values = new String[] { "Manoj",
+                 "Vyshakh",
+                 "Bikesh",
+                 "Anjane",
+                 "MSR",
+                 "Riju",
+                 "ANsar",
+                 "Suneesh",
 
-                "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View",
+                "Anees",
+                "Gokul",
+                "Lakshmi",
+                "Savi",
+                "Sanju",
+                "Prasadh",
+                "Luttan",
+                "Sapna",
                  };
 
 
@@ -122,8 +123,7 @@ class MySimpleArrayAdapter extends ArrayAdapter<String> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.item_lend_and_borrow, parent, false);
         TextView textView = (TextView) rowView.findViewById(R.id.item_name);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.item_icon);
@@ -135,6 +135,14 @@ class MySimpleArrayAdapter extends ArrayAdapter<String> {
         //} else {
             imageView.setImageResource(R.drawable.marker);
         //}
+
+        Random r = new Random();
+        //rand.nextInt((max - min) + 1) + min;
+        int amt = r.nextInt((500 - 80) + 1) + 80;
+        TextView textPrice = (TextView) rowView.findViewById(R.id.item_studentnum);
+        textPrice.setText(""+amt);
+
+
 
         return rowView;
     }
