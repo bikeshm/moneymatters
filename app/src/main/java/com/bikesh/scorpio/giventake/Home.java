@@ -21,7 +21,7 @@ public class Home extends ActionBarActivity {
     //First We Declare Titles And Icons For Our Navigation Drawer List View
     //This Icons And Titles Are holded in an Array as you can see
 
-    String TITLES[] = {"Dashboard","Borrow","Personal Expence","Group" };
+    String TITLES[] = {"Dashboard","lends & Borrow","Personal Expense","Group" };
 
     int ICONS[] = {R.drawable.img,R.drawable.img,R.drawable.img,R.drawable.img };
 
@@ -57,6 +57,9 @@ public class Home extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
+
+
+        /*
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setTitle("sc");
@@ -64,7 +67,7 @@ public class Home extends ActionBarActivity {
            // toolbar.setSubtitle("Sub Title");
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        }*/
 
 
 
