@@ -16,7 +16,7 @@ import android.view.View;
 import android.widget.Toast;
 
 
-public class Home extends ActionBarActivity {
+public class ActivityHome extends ActionBarActivity {
 
     //First We Declare Titles And Icons For Our Navigation Drawer List View
     //This Icons And Titles Are holded in an Array as you can see
@@ -107,7 +107,7 @@ public class Home extends ActionBarActivity {
         mDrawerToggle.syncState();               // Finally we set the drawer toggle sync State
 
 
-        final GestureDetector mGestureDetector = new GestureDetector(Home.this, new GestureDetector.SimpleOnGestureListener() {
+        final GestureDetector mGestureDetector = new GestureDetector(ActivityHome.this, new GestureDetector.SimpleOnGestureListener() {
 
             @Override public boolean onSingleTapUp(MotionEvent e) {
                 return true;
@@ -125,7 +125,7 @@ public class Home extends ActionBarActivity {
 
                 if(child!=null && mGestureDetector.onTouchEvent(e)){
                     Drawer.closeDrawers();
-                    Toast.makeText(Home.this,"The Item Clicked is: "+rv.getChildPosition(child),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityHome.this,"The Item Clicked is: "+rv.getChildPosition(child),Toast.LENGTH_SHORT).show();
 
                     switch(rv.getChildPosition(child)){
                         case 0:
@@ -213,7 +213,7 @@ public class Home extends ActionBarActivity {
 
     public void loginfunc(View v){
 
-        Toast.makeText(Home.this,"Inside login ",Toast.LENGTH_SHORT).show();
+        Toast.makeText(ActivityHome.this,"Inside login ",Toast.LENGTH_SHORT).show();
     }
 
 }
