@@ -59,6 +59,5 @@
         android:layout_alignBottom="@+id/circleView"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:onClick="loginfunc"
         />
 </RelativeLayout>

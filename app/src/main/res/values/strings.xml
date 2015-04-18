@@ -16,5 +16,6 @@
     <string name="openDrawer"> Open Navigation Drawer </string>
     <string name="closeDrawer"> Closing Navigation Drawer </string>
     <string name="title_activity_activity_lends_and_borrow">ActivityLendsAndBorrow</string>
+    <string name="title_activity_activity_home">ActivityHome</string>
 
 </resources>

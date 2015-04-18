@@ -3,9 +3,11 @@ package com.bikesh.scorpio.giventake;
 import android.support.v7.widget.RecyclerView;
 
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +60,14 @@ public class DrawerDataAdapter extends RecyclerView.Adapter<DrawerDataAdapter.Vi
                 email = (TextView) itemView.findViewById(R.id.email);       // Creating Text View object from header.xml for email
                 profile = (ImageView) itemView.findViewById(R.id.circleView);// Creating Image view object from header.xml for profile pic
                 Holderid = 0;                                                // Setting holder id = 0 as the object being populated are of type header view
+
+
+                ((Button) itemView.findViewById(R.id.loginbtn)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d("Log", "******************Login*********************");
+                    }
+                });
             }
         }
 

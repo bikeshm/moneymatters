@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 /**
@@ -59,8 +60,8 @@ public class GiveNTakeApplication extends Application {
 
         activity=currentActivity;
         fragmentManager=fragment;
-        //toolbar = (Toolbar) v.findViewById(R.id.tool_bar);
-        //setSupportActionBar(toolbar);
+
+
 
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
@@ -174,6 +175,9 @@ public class GiveNTakeApplication extends Application {
                 .commit();
 
     }
+
+
+
 
 
 }
