@@ -33,13 +33,7 @@ public class ActivityHome extends ActionBarActivity {
         View home= LayoutInflater.from(getApplicationContext()).inflate(R.layout.activity_home, null);
         frame.addView(home);
 
-        //accessing button in fome activity xml
-        ((Button) home.findViewById(R.id.clickme)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"clicked form home", Toast.LENGTH_LONG).show();
-            }
-        });
+
 
     }
 

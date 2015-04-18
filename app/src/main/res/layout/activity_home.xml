@@ -2,13 +2,165 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center_horizontal">
 
 
-    <Button
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="click me"
-        android:id="@+id/clickme"/>
+        android:orientation="vertical"
+        android:paddingTop="30dp">
+
+        <TextView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Overview"
+            android:paddingBottom="10dp"
+            android:textColor="#000000"
+            android:gravity="center_horizontal"/>
+
+
+        <TextView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lend and Borrow "
+            android:layout_marginBottom="10dp"
+            android:textColor="#000000"
+            android:background="@drawable/clickable_text"
+            android:clickable="true" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:clickable="false">
+
+            <TextView android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Amount to get "
+                android:textColor="#000000"/>
+
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="500.00"
+                android:textColor="#000000"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Amount to Give "
+                android:textColor="#000000"/>
+
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1500.00"
+                android:textColor="#000000"/>
+
+        </LinearLayout>
+
+
+
+
+        <TextView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Personal Expense "
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
+            android:textColor="#000000"
+            android:background="@drawable/clickable_text"
+            android:clickable="true"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Total spend "
+                android:textColor="#000000"/>
+
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2500.00"
+                android:textColor="#000000"/>
+
+        </LinearLayout>
+
+
+
+
+        <TextView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Group "
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
+            android:textColor="#000000"
+            android:background="@drawable/clickable_text"
+            android:clickable="true"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Total spend "
+                android:textColor="#000000"/>
+
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2500.00"
+                android:textColor="#000000"/>
+
+        </LinearLayout>
+
+
+
+
+
+        <TextView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bank"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
+            android:textColor="#000000"
+            android:background="@drawable/clickable_text"
+            android:clickable="true"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Comming soon "
+                android:textColor="#000000"/>
+
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00.00"
+                android:textColor="#000000"/>
+
+        </LinearLayout>
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+
+
+
 
 </LinearLayout>

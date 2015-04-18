@@ -5,10 +5,10 @@
     android:id="@+id/DrawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#44ff362c"
+
 
     android:elevation="7dp">
-
+    <!-- android:background="#44ff362c" -->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,12 +21,21 @@
             layout="@layout/toolbar">
         </include>
 
-        <FrameLayout
-            android:layout_gravity="right|top"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/mainFrame">
-        </FrameLayout>
+            android:layout_height="match_parent">
+
+
+            <FrameLayout
+                android:layout_gravity="right|top"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/mainFrame"
+                android:background="#00000000"
+                >
+            </FrameLayout>
+
+        </ScrollView>
 
 
 
