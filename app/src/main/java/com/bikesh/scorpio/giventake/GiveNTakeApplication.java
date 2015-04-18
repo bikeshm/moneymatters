@@ -123,20 +123,23 @@ public class GiveNTakeApplication extends Application {
                             //for login function execution
                             return false;
                         case 1:
-                            fragmentManager.beginTransaction()
+
+                            /*fragmentManager.beginTransaction()
                                     .replace(R.id.mainFrame, new FragmentDashboard())
                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                     .addToBackStack(null)
                                     .commit();
+                            */
+                            Toast.makeText(activity,"Dashboard: "+rv.getChildPosition(child),Toast.LENGTH_SHORT).show();
                             break;
                         case 2:
 
-                            fragmentManager.beginTransaction()
+                            /*fragmentManager.beginTransaction()
                                     .replace(R.id.mainFrame, new FragmentLendAndBorrow())
                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                     .addToBackStack(null)
                                     .commit();
-
+                            */
                             Toast.makeText(activity,"FragmentLendsAndBorrow: "+rv.getChildPosition(child),Toast.LENGTH_SHORT).show();
 
                             break;
@@ -168,12 +171,12 @@ public class GiveNTakeApplication extends Application {
 
 
         //default load dashboard
-        fragmentManager.beginTransaction()
+        /*fragmentManager.beginTransaction()
                 .replace(R.id.mainFrame, new FragmentDashboard())
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commit();
-
+        */
     }
 
 
