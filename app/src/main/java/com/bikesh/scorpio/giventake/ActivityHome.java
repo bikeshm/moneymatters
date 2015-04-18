@@ -14,23 +14,26 @@ public class ActivityHome extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //loading templet xml
         setContentView(R.layout.main_template);
 
 
-
+        //setting up toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
+        //setting up navigation drawer
         GiveNTakeApplication AC = (GiveNTakeApplication)getApplicationContext();
         View view = getWindow().getDecorView().findViewById(android.R.id.content);
         AC.setupDrawer(view, ActivityHome.this, getFragmentManager(), toolbar );
 
-
+        //loading home activity templet in to template frame
         FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
         frame.removeAllViews();
-        View home= LayoutInflater.from(getApplicationContext()).inflate(R.layout.activity_splash, null);
+        View home= LayoutInflater.from(getApplicationContext()).inflate(R.layout.activity_home, null);
         frame.addView(home);
 
+        //accessing button in fome activity xml
         ((Button) home.findViewById(R.id.clickme)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
