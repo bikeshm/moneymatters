@@ -111,11 +111,11 @@ public class FragmentLendAndBorrow extends Fragment {
 
 
 
-class MySimpleArrayAdapter extends ArrayAdapter<String> {
+class MySimpleArrayAdapterx extends ArrayAdapter<String> {
     private final Context context;
     private final String[] values;
 
-    public MySimpleArrayAdapter(Context context, String[] values) {
+    public MySimpleArrayAdapterx(Context context, String[] values) {
         super(context, R.layout.item_lend_and_borrow, values);
         this.context = context;
         this.values = values;

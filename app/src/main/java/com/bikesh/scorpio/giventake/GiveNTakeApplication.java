@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -118,6 +119,7 @@ public class GiveNTakeApplication extends Application {
                     Drawer.closeDrawers();
                     Toast.makeText(activity, "The Item Clicked is: " + rv.getChildPosition(child), Toast.LENGTH_SHORT).show();
 
+                    Intent i;
                     switch(rv.getChildPosition(child)){
                         case 0:
                             //for login function execution
@@ -130,7 +132,14 @@ public class GiveNTakeApplication extends Application {
                                     .addToBackStack(null)
                                     .commit();
                             */
+
+
                             Toast.makeText(activity,"Dashboard: "+rv.getChildPosition(child),Toast.LENGTH_SHORT).show();
+
+                            i = new Intent(getApplicationContext(), ActivityHome.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(i);
+
                             break;
                         case 2:
 
@@ -141,6 +150,11 @@ public class GiveNTakeApplication extends Application {
                                     .commit();
                             */
                             Toast.makeText(activity,"FragmentLendsAndBorrow: "+rv.getChildPosition(child),Toast.LENGTH_SHORT).show();
+
+
+                            i = new Intent(getApplicationContext(), ActivityLendAndBorrow.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(i);
 
                             break;
 

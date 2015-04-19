@@ -25,6 +25,10 @@
             android:name=".ActivityHome"
             android:label="@string/title_activity_activity_home" >
         </activity>
+        <activity
+            android:name=".ActivityLendAndBorrow"
+            android:label="@string/title_activity_activity_lend_and_borrow" >
+        </activity>
     </application>
 
 </manifest>
