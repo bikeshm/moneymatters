@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 /**
  * Created by Scorpio on 4/8/2015.
  */
-public class FragmentDashboard extends Fragment {
+class FragmentDashboard extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

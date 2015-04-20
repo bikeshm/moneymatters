@@ -21,21 +21,19 @@
             layout="@layout/toolbar">
         </include>
 
-        <ScrollView
+
+
+
+        <FrameLayout
+            android:layout_gravity="right|top"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:id="@+id/mainFrame"
+            android:background="#00000000"
+            >
+        </FrameLayout>
 
 
-            <FrameLayout
-                android:layout_gravity="right|top"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/mainFrame"
-                android:background="#00000000"
-                >
-            </FrameLayout>
-
-        </ScrollView>
 
 
 
