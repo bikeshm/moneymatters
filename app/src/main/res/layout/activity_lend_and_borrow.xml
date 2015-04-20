@@ -13,12 +13,48 @@
     >
 -->
 
+
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/fab_image_button"
+            android:layout_width="@dimen/floating_button_diameter"
+            android:layout_height="@dimen/floating_button_diameter"
+            android:background="@drawable/floating_button"
+            android:src="@drawable/gear"
+            android:tint="@android:color/white"
+            android:layout_below="@+id/tool_bar"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="-20dp"
+            android:layout_alignParentEnd="true"
+
+            android:elevation="10dp" />
+
+
+        <ImageButton
+            android:id="@+id/fab_image_button2"
+            android:layout_width="@dimen/floating_button_diameter"
+            android:layout_height="@dimen/floating_button_diameter"
+            android:background="@drawable/floating_button"
+            android:src="@drawable/marker"
+            android:tint="@android:color/white"
+            android:layout_below="@+id/tool_bar"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="-20dp"
+            android:layout_marginRight="50dp"
+            android:layout_alignParentEnd="true"
+
+            android:elevation="10dp" />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
