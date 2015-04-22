@@ -80,10 +80,6 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         frame.addView(lendAndBorrowView);
     }
 
-
-
-
-
 }
 
 
