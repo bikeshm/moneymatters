@@ -29,6 +29,10 @@
             android:name=".ActivityLendAndBorrow"
             android:label="@string/title_activity_activity_lend_and_borrow" >
         </activity>
+        <activity
+            android:name=".ActivityLendAndBorrowPersonal"
+            android:label="@string/title_activity_activity_lend_and_borrow_personal" >
+        </activity>
     </application>
 
 </manifest>

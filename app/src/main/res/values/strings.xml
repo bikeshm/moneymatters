@@ -18,5 +18,7 @@
     <string name="title_activity_activity_lends_and_borrow">ActivityLendsAndBorrow</string>
     <string name="title_activity_activity_home">ActivityHome</string>
     <string name="title_activity_activity_lend_and_borrow">ActivityLendAndBorrow</string>
+    <string name="title_activity_activity_lend_and_borrow_personal">ActivityLendAndBorrowPersonal
+    </string>
 
 </resources>

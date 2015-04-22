@@ -27,7 +27,7 @@ public class ActivityHome extends ActionBarActivity {
         //setting up navigation drawer
         GiveNTakeApplication AC = (GiveNTakeApplication)getApplicationContext();
         View view = getWindow().getDecorView().findViewById(android.R.id.content);
-        AC.setupDrawer(view, ActivityHome.this, getFragmentManager(), toolbar );
+        AC.setupDrawer(view, ActivityHome.this, toolbar );
 
         //loading home activity templet in to template frame
         FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);

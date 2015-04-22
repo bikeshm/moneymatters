@@ -1,6 +1,7 @@
 package com.bikesh.scorpio.giventake;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -39,7 +41,7 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         //setting up navigation drawer
         GiveNTakeApplication AC = (GiveNTakeApplication)getApplicationContext();
         View view = getWindow().getDecorView().findViewById(android.R.id.content);
-        AC.setupDrawer(view, ActivityLendAndBorrow.this, getFragmentManager(), toolbar );
+        AC.setupDrawer(view, ActivityLendAndBorrow.this,  toolbar );
 
         //loading home activity templet in to template frame
         FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
@@ -75,11 +77,19 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(ActivityLendAndBorrow.this, values);
         listView.setAdapter(adapter);
 
+        listView.setOnItemClickListener(new listItemClicked());
 
 
         frame.addView(lendAndBorrowView);
     }
 
+    private class listItemClicked implements android.widget.AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent i = new Intent(ActivityLendAndBorrow.this, ActivityLendAndBorrowPersonal.class);
+            startActivity(i);
+        }
+    }
 }
 
 

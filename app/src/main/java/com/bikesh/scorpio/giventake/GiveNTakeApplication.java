@@ -54,13 +54,11 @@ public class GiveNTakeApplication extends Application {
 
     Activity activity;
 
-    FragmentManager fragmentManager;
 
-    public void setupDrawer(View v, Activity currentActivity, FragmentManager fragment,Toolbar toolbar){
+    public void setupDrawer(View v, Activity currentActivity, Toolbar toolbar){
 
 
         activity=currentActivity;
-        fragmentManager=fragment;
 
 
 
@@ -126,14 +124,6 @@ public class GiveNTakeApplication extends Application {
                             return false;
                         case 1:
 
-                            /*fragmentManager.beginTransaction()
-                                    .replace(R.id.mainFrame, new FragmentDashboard())
-                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                    .addToBackStack(null)
-                                    .commit();
-                            */
-
-
                             Toast.makeText(activity,"Dashboard: "+rv.getChildPosition(child),Toast.LENGTH_SHORT).show();
 
                             i = new Intent(getApplicationContext(), ActivityHome.class);
@@ -143,12 +133,6 @@ public class GiveNTakeApplication extends Application {
                             break;
                         case 2:
 
-                            /*fragmentManager.beginTransaction()
-                                    .replace(R.id.mainFrame, new FragmentLendAndBorrow())
-                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                    .addToBackStack(null)
-                                    .commit();
-                            */
                             Toast.makeText(activity,"FragmentLendsAndBorrow: "+rv.getChildPosition(child),Toast.LENGTH_SHORT).show();
 
 
@@ -184,13 +168,6 @@ public class GiveNTakeApplication extends Application {
         });
 
 
-        //default load dashboard
-        /*fragmentManager.beginTransaction()
-                .replace(R.id.mainFrame, new FragmentDashboard())
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack(null)
-                .commit();
-        */
     }
 
 
