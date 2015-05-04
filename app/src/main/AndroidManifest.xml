@@ -17,10 +17,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ActivityLendsAndBorrow"
-            android:label="@string/title_activity_activity_lends_and_borrow" >
-        </activity>
+
+
         <activity
             android:name=".ActivityHome"
             android:label="@string/title_activity_activity_home" >
