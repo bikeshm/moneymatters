@@ -33,27 +33,14 @@ public class ActivityLendAndBorrowPersonal extends ActionBarActivity {
         //loading home activity templet in to template frame
         FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
         frame.removeAllViews();
-        //View lendAndBorrowPersonalView= LayoutInflater.from(getApplicationContext()).inflate(R.layout.activity_lend_and_borrow_personal, null);
-
-
-
-        //frame.addView(lendAndBorrowPersonalView);
-
-
-
-            Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
-            LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
+        LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View lendAndBorrowPersonalView=  inflater.inflate(R.layout.activity_lend_and_borrow_personal, null);
-        //inflater.inflate(R.layout.activity_lend_and_borrow_personal, container, false);
+
+
 
 
         frame.addView(lendAndBorrowPersonalView);
-
-       // I've also tried
-
-        //inflater = LayoutInflater.from(darkTheme);
-
-
     }
 
 

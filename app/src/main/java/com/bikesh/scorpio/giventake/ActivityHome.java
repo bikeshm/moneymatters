@@ -1,9 +1,11 @@
 package com.bikesh.scorpio.giventake;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -30,9 +32,19 @@ public class ActivityHome extends ActionBarActivity {
         AC.setupDrawer(view, ActivityHome.this, toolbar );
 
         //loading home activity templet in to template frame
+       // FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
+        //frame.removeAllViews();
+        //View homeView= LayoutInflater.from(getApplicationContext()).inflate(R.layout.activity_home, null);
+
+
         FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
         frame.removeAllViews();
-        View homeView= LayoutInflater.from(getApplicationContext()).inflate(R.layout.activity_home, null);
+        Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
+        LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View homeView=  inflater.inflate(R.layout.activity_home, null);
+
+
+
         frame.addView(homeView);
 
         ((TextView) homeView.findViewById(R.id.lendAndBorrow)).setOnClickListener(new linkekclicked(1));

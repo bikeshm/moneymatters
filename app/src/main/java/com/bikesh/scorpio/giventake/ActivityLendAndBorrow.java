@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,9 +45,15 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         AC.setupDrawer(view, ActivityLendAndBorrow.this,  toolbar );
 
         //loading home activity templet in to template frame
+        //FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
+        //frame.removeAllViews();
+        //View lendAndBorrowView= LayoutInflater.from(getApplicationContext()).inflate(R.layout.activity_lend_and_borrow, null);
+
         FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
         frame.removeAllViews();
-        View lendAndBorrowView= LayoutInflater.from(getApplicationContext()).inflate(R.layout.activity_lend_and_borrow, null);
+        Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
+        LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View lendAndBorrowView=  inflater.inflate(R.layout.activity_lend_and_borrow, null);
 
 
 
