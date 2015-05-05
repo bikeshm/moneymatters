@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,14 +23,12 @@ import android.widget.TextView;
 import java.util.Random;
 
 
-public class ActivityLendAndBorrow extends ActionBarActivity {
+public class ActivityPersonalExpense extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_lend_and_borrow);
-
         super.onCreate(savedInstanceState);
+
         //loading templet xml
         setContentView(R.layout.main_template);
 
@@ -40,65 +40,73 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         //setting up navigation drawer
         GiveNTakeApplication AC = (GiveNTakeApplication)getApplicationContext();
         View view = getWindow().getDecorView().findViewById(android.R.id.content);
-        AC.setupDrawer(view, ActivityLendAndBorrow.this,  toolbar );
+        AC.setupDrawer(view, ActivityPersonalExpense.this, toolbar );
 
-        //loading lendAndBorrow activity templet in to template frame
+        //loading home activity templet in to template frame
         FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
         frame.removeAllViews();
         Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
         LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View lendAndBorrowView=  inflater.inflate(R.layout.activity_lend_and_borrow, null);
+        View ActivityPersonalExpenseView=  inflater.inflate(R.layout.activity_personal_expense, null);
 
 
 
+        frame.addView(ActivityPersonalExpenseView);
 
-        ListView listView = (ListView) lendAndBorrowView.findViewById(R.id.listViewFromDB);
+
+        ListView listView = (ListView) ActivityPersonalExpenseView.findViewById(R.id.listViewFromDB);
 
         String[] values = new String[] {
-                "Manoj",
-                "Vyshakh",
-                "Bikesh",
-                "Anjane",
-                "MSR",
-                "Riju",
-                "ANsar",
-                "Suneesh",
-
-                "Anees",
-                "Gokul",
-                "Lakshmi",
-                "Savi",
-                "Sanju",
-                "Prasadh",
-                "Luttan",
-                "Sapna",
+                "grocery shopping",
+                "Outside food",
+                "Mobile recharge",
+                "Travelling ",
+                "Petrol",
+                "Other Expenses",
         };
 
 
-        MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(ActivityLendAndBorrow.this, values);
+       MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(ActivityPersonalExpense.this, values);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new listItemClicked());
 
 
-        frame.addView(lendAndBorrowView);
 
-
-        ((ImageButton)lendAndBorrowView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
-        ((ImageButton)lendAndBorrowView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewGroup());
-
-
+        ((ImageButton)ActivityPersonalExpenseView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+        ((ImageButton)ActivityPersonalExpenseView.findViewById(R.id.addExpenseGroup)).setOnClickListener(new openAddnewGroup());
 
     }
 
     private class listItemClicked implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent i = new Intent(ActivityLendAndBorrow.this, ActivityLendAndBorrowPersonal.class);
+            Intent i = new Intent(ActivityPersonalExpense.this, ActivityPersonalExpenseIndividual.class);
             startActivity(i);
         }
     }
 
+
+    private class openAddnewEntrry implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+            Intent i = new Intent(ActivityPersonalExpense.this, ActivityAddEntry.class);
+            i.putExtra("fromActivity", "ActivityPersonalExpense");
+            startActivity(i);
+
+        }
+    }
+    private class openAddnewGroup implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+            Intent i = new Intent(ActivityPersonalExpense.this, ActivityAddGroup.class);
+            i.putExtra("fromActivity", "ActivityPersonalExpense");
+            startActivity(i);
+
+        }
+    }
 
     class MySimpleArrayAdapter extends ArrayAdapter<String> {
         private final Context context;
@@ -145,25 +153,47 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
     }
 
 
-    private class openAddnewEntrry implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
 
-            Intent i = new Intent(ActivityLendAndBorrow.this, ActivityAddEntry.class);
-            i.putExtra("fromActivity", "ActivityLendAndBorrow");
-            startActivity(i);
 
-        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_activity_personal_expense, menu);
+        return true;
     }
-    private class openAddnewGroup implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
 
-            Intent i = new Intent(ActivityLendAndBorrow.this, ActivityAddGroup.class);
-            i.putExtra("fromActivity", "ActivityLendAndBorrow");
-            startActivity(i);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
         }
+
+        return super.onOptionsItemSelected(item);
     }
+
+
+
 
 }

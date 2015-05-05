@@ -22,5 +22,9 @@
     </string>
     <string name="title_activity_activity_add_entry">ActivityAddEntry</string>
     <string name="title_activity_activity_add_user">ActivityAddUser</string>
+    <string name="title_activity_activity_personal_expense">ActivityPersonalExpense</string>
+    <string name="title_activity_activity_personal_expense_individual">
+        ActivityPersonalExpenseIndividual
+    </string>
 
 </resources>
