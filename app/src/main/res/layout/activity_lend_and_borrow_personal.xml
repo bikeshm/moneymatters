@@ -274,7 +274,7 @@
 
 
     <ImageButton
-        android:id="@+id/fab_image_button2"
+        android:id="@+id/addEntry"
         android:layout_width="@dimen/floating_button_diameter"
         android:layout_height="@dimen/floating_button_diameter"
         android:background="@drawable/floating_button"

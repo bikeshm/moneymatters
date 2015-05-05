@@ -32,11 +32,6 @@ public class ActivityHome extends ActionBarActivity {
         AC.setupDrawer(view, ActivityHome.this, toolbar );
 
         //loading home activity templet in to template frame
-       // FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
-        //frame.removeAllViews();
-        //View homeView= LayoutInflater.from(getApplicationContext()).inflate(R.layout.activity_home, null);
-
-
         FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
         frame.removeAllViews();
         Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);

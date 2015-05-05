@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -44,11 +45,7 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         View view = getWindow().getDecorView().findViewById(android.R.id.content);
         AC.setupDrawer(view, ActivityLendAndBorrow.this,  toolbar );
 
-        //loading home activity templet in to template frame
-        //FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
-        //frame.removeAllViews();
-        //View lendAndBorrowView= LayoutInflater.from(getApplicationContext()).inflate(R.layout.activity_lend_and_borrow, null);
-
+        //loading lendAndBorrow activity templet in to template frame
         FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
         frame.removeAllViews();
         Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
@@ -88,6 +85,12 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
 
 
         frame.addView(lendAndBorrowView);
+
+
+        ((ImageButton)lendAndBorrowView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+
+
+
     }
 
     private class listItemClicked implements android.widget.AdapterView.OnItemClickListener {
@@ -146,6 +149,18 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         }
 
 
+    }
+
+
+    private class openAddnewEntrry implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+            Intent i = new Intent(ActivityLendAndBorrow.this, ActivityAddEntry.class);
+            i.putExtra("fromActivity", "ActivityLendAndBorrow");
+            startActivity(i);
+
+        }
     }
 
 }

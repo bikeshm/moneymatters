@@ -1,6 +1,7 @@
 package com.bikesh.scorpio.giventake;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 
 public class ActivityLendAndBorrowPersonal extends ActionBarActivity {
@@ -37,11 +40,14 @@ public class ActivityLendAndBorrowPersonal extends ActionBarActivity {
         LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View lendAndBorrowPersonalView=  inflater.inflate(R.layout.activity_lend_and_borrow_personal, null);
 
-
-
-
         frame.addView(lendAndBorrowPersonalView);
+
+        ((ImageButton)lendAndBorrowPersonalView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+
+
     }
+
+
 
 
     @Override
@@ -65,4 +71,18 @@ public class ActivityLendAndBorrowPersonal extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    private class openAddnewEntrry implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+            Intent i = new Intent(ActivityLendAndBorrowPersonal.this, ActivityAddEntry.class);
+            i.putExtra("fromActivity", "ActivityLendAndBorrowPersonal");
+            startActivity(i);
+
+        }
+    }
+
+
 }
