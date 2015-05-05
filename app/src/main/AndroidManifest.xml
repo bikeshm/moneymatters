@@ -17,8 +17,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name=".ActivityHome"
             android:label="@string/title_activity_activity_home" >
@@ -30,6 +28,10 @@
         <activity
             android:name=".ActivityLendAndBorrowPersonal"
             android:label="@string/title_activity_activity_lend_and_borrow_personal" >
+        </activity>
+        <activity
+            android:name=".ActivityAddEntry"
+            android:label="@string/title_activity_activity_add_entry" >
         </activity>
     </application>
 

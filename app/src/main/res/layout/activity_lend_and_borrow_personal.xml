@@ -17,7 +17,8 @@
 
         <TextView android:text="May - 2015"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:clickable="true" />
 
     </LinearLayout>
 
@@ -43,12 +44,29 @@
             <TextView
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
+                android:text="Carry forword [i need to give him]  "/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=": 3200.00"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
                 android:text="Total amount to Give  "/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=": 500.00"/>
+                android:text=": 3700.00"/>
 
         </LinearLayout>
 
@@ -122,12 +140,13 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:background="#AAAAAA"
+                android:clickable="true"
                  >
 
                 <TextView
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="20/05/2015"
+                    android:text="01/05/2015"
                     android:padding="5dp"/>
 
                 <TextView
@@ -135,17 +154,17 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
 
-                    android:text="Bus ticket online booking"/>
+                    android:text="Previous month carryforword"/>
 
                 <TextView
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="Me"
+                    android:text="Him"
                     android:padding="5dp"/>
                 <TextView
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="1500.00"
+                    android:text="3200.00"
                     android:padding="5dp"
                     />
             </TableRow>
@@ -181,7 +200,68 @@
                     />
             </TableRow>
 
+            <TableRow
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:background="#AAAAAA"
+                >
 
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="20/05/2015"
+                    android:padding="5dp"/>
+
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+
+                    android:text="Bus ticket online booking"/>
+
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Him"
+                    android:padding="5dp"/>
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="1500.00"
+                    android:padding="5dp"
+                    />
+            </TableRow>
+
+            <TableRow
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:background="#BBBBBB">
+
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="20/05/2015"
+                    android:padding="5dp"/>
+
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+
+                    android:text="Bus ticket online booking"/>
+
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Him"
+                    android:padding="5dp"/>
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="1500.00"
+                    android:padding="5dp"
+                    />
+            </TableRow>
 
 
 
