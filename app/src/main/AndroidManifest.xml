@@ -33,6 +33,10 @@
             android:name=".ActivityAddEntry"
             android:label="@string/title_activity_activity_add_entry" >
         </activity>
+        <activity
+            android:name=".ActivityAddUser"
+            android:label="@string/title_activity_activity_add_user" >
+        </activity>
     </application>
 
 </manifest>

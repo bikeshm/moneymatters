@@ -88,6 +88,7 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
 
 
         ((ImageButton)lendAndBorrowView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+        ((ImageButton)lendAndBorrowView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewUser());
 
 
 
@@ -157,6 +158,16 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         public void onClick(View v) {
 
             Intent i = new Intent(ActivityLendAndBorrow.this, ActivityAddEntry.class);
+            i.putExtra("fromActivity", "ActivityLendAndBorrow");
+            startActivity(i);
+
+        }
+    }
+    private class openAddnewUser implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+            Intent i = new Intent(ActivityLendAndBorrow.this, ActivityAddUser.class);
             i.putExtra("fromActivity", "ActivityLendAndBorrow");
             startActivity(i);
 

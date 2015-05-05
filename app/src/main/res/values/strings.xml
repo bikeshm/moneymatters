@@ -21,5 +21,6 @@
     <string name="title_activity_activity_lend_and_borrow_personal">ActivityLendAndBorrowPersonal
     </string>
     <string name="title_activity_activity_add_entry">ActivityAddEntry</string>
+    <string name="title_activity_activity_add_user">ActivityAddUser</string>
 
 </resources>
