@@ -9,7 +9,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ActivityAddEntry extends ActionBarActivity {
@@ -37,9 +42,9 @@ public class ActivityAddEntry extends ActionBarActivity {
         frame.removeAllViews();
         Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
         LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View homeView=  inflater.inflate(R.layout.activity_add_entry, null);
+        View addEntryView=  inflater.inflate(R.layout.activity_add_entry, null);
 
-        frame.addView(homeView);
+        frame.addView(addEntryView);
 
 
         Bundle extras = getIntent().getExtras();
@@ -50,6 +55,37 @@ public class ActivityAddEntry extends ActionBarActivity {
             fromActivity= extras.getString("fromActivity");
         }
 
+        // Spinner element
+        Spinner spinner = (Spinner) addEntryView.findViewById(R.id.fromUser);
+
+
+        // Spinner Drop down elements
+        List<String> categories = new ArrayList<String>();
+        categories.add("Raju");
+        categories.add("Kiran");
+        categories.add("Prasath");
+        categories.add("Siva");
+        categories.add("Sid");
+        categories.add("rech");
+
+        // Creating adapter for spinner
+        //ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
+
+        // Drop down layout style - list view with radio button
+       // dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        //spinner.setAdapter(dataAdapter);
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, categories);
+        spinner.setAdapter(dataAdapter);
+
+
+
+
+        Spinner actionSpinner = (Spinner)findViewById(R.id.actionSpinner);
+        ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.addEntryAction));
+        actionSpinner.setAdapter(actionSpinnerArrayAdapter);
 
     }
 }

@@ -4,13 +4,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
-    <string-array name="menuItems">
-        <item>One</item>
-        <item>Two</item>
-        <item>Three</item>
-        <item>Four</item>
-        <item>Five</item>
-
+    <string-array name="addEntryAction">
+        <item>Giving</item>
+        <item>Getting</item>
     </string-array>
 
     <string name="openDrawer"> Open Navigation Drawer </string>
