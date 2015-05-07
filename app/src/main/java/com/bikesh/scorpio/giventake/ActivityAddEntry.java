@@ -61,6 +61,7 @@ public class ActivityAddEntry extends ActionBarActivity {
 
         // Spinner Drop down elements
         List<String> categories = new ArrayList<String>();
+        categories.add("Select a User");
         categories.add("Raju");
         categories.add("Kiran");
         categories.add("Prasath");
@@ -68,22 +69,12 @@ public class ActivityAddEntry extends ActionBarActivity {
         categories.add("Sid");
         categories.add("rech");
 
-        // Creating adapter for spinner
-        //ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
-
-        // Drop down layout style - list view with radio button
-       // dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // attaching data adapter to spinner
-        //spinner.setAdapter(dataAdapter);
-
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, categories);
         spinner.setAdapter(dataAdapter);
 
 
-
-
         Spinner actionSpinner = (Spinner)findViewById(R.id.actionSpinner);
+        // getting options from xml string array
         ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.addEntryAction));
         actionSpinner.setAdapter(actionSpinnerArrayAdapter);
 

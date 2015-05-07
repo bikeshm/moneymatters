@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 public class ActivityAddGroup extends ActionBarActivity {
@@ -37,9 +39,9 @@ public class ActivityAddGroup extends ActionBarActivity {
         frame.removeAllViews();
         Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
         LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View homeView=  inflater.inflate(R.layout.activity_add_group, null);
+        View addGroupView=  inflater.inflate(R.layout.activity_add_group, null);
 
-        frame.addView(homeView);
+        frame.addView(addGroupView);
 
 
         Bundle extras = getIntent().getExtras();
@@ -49,6 +51,25 @@ public class ActivityAddGroup extends ActionBarActivity {
         } else {
             fromActivity= extras.getString("fromActivity");
         }
+
+
+        if(fromActivity.equals("ActivityLendAndBorrow")){
+
+        }
+
+        switch (fromActivity) {
+            case "ActivityLendAndBorrow":
+                //((TextView) addGroupView.findViewById(R.id.op)).setText("Add user");
+                break;
+            case "ActivityPersonalExpense":
+                ((LinearLayout) addGroupView.findViewById(R.id.emailLayer) ).setVisibility(View.GONE);
+                ((LinearLayout) addGroupView.findViewById(R.id.phoneLayer) ).setVisibility(View.GONE);
+                break;
+
+            default:
+                throw new IllegalArgumentException("Invalid  ");
+        }
+
 
     }
 
