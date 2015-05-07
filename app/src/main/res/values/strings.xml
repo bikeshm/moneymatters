@@ -22,5 +22,8 @@
     <string name="title_activity_activity_personal_expense_individual">
         ActivityPersonalExpenseIndividual
     </string>
+    <string name="title_activity_activity_joint_expense">ActivityJointExpense</string>
+    <string name="title_activity_activity_joint_expense_individual">ActivityJointExpenseIndividual
+    </string>
 
 </resources>

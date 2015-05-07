@@ -12,10 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 
-public class ActivityLendAndBorrowPersonal extends ActionBarActivity {
+public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +30,7 @@ public class ActivityLendAndBorrowPersonal extends ActionBarActivity {
         //setting up navigation drawer
         GiveNTakeApplication AC = (GiveNTakeApplication)getApplicationContext();
         View view = getWindow().getDecorView().findViewById(android.R.id.content);
-        AC.setupDrawer(view, ActivityLendAndBorrowPersonal.this, toolbar);
+        AC.setupDrawer(view, ActivityLendAndBorrowIndividual.this, toolbar);
 
         //loading home activity templet in to template frame
         FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
@@ -77,7 +76,7 @@ public class ActivityLendAndBorrowPersonal extends ActionBarActivity {
         @Override
         public void onClick(View v) {
 
-            Intent i = new Intent(ActivityLendAndBorrowPersonal.this, ActivityAddEntry.class);
+            Intent i = new Intent(ActivityLendAndBorrowIndividual.this, ActivityAddEntry.class);
             i.putExtra("fromActivity", "ActivityLendAndBorrowPersonal");
             startActivity(i);
 

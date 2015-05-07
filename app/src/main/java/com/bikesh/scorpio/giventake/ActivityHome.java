@@ -42,15 +42,16 @@ public class ActivityHome extends ActionBarActivity {
 
         frame.addView(homeView);
 
-        ((TextView) homeView.findViewById(R.id.lendAndBorrow)).setOnClickListener(new linkekclicked(1));
-        ((TextView) homeView.findViewById(R.id.personalExpense)).setOnClickListener(new linkekclicked(2));
+        ((TextView) homeView.findViewById(R.id.lendAndBorrow)).setOnClickListener(new linkClicked(1));
+        ((TextView) homeView.findViewById(R.id.personalExpense)).setOnClickListener(new linkClicked(2));
+        ((TextView) homeView.findViewById(R.id.jointExpense)).setOnClickListener(new linkClicked(3));
 
     }
 
-    private class linkekclicked implements View.OnClickListener {
+    private class linkClicked implements View.OnClickListener {
         int item;
-        Intent i;
-        public linkekclicked(int i) {
+
+        public linkClicked(int i) {
             item = i;
         }
 
@@ -58,12 +59,13 @@ public class ActivityHome extends ActionBarActivity {
         public void onClick(View v) {
             switch (item){
                 case 1:
-                    i = new Intent(ActivityHome.this, ActivityLendAndBorrow.class);
-                    startActivity(i);
+                    startActivity(new Intent(ActivityHome.this, ActivityLendAndBorrow.class));
                     break;
                 case 2:
-                    i = new Intent(ActivityHome.this, ActivityPersonalExpense.class);
-                    startActivity(i);
+                    startActivity(new Intent(ActivityHome.this, ActivityPersonalExpense.class));
+                    break;
+                case 3:
+                    startActivity(new Intent(ActivityHome.this, ActivityJointExpense.class));
                     break;
 
             }

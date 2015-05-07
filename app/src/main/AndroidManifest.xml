@@ -26,7 +26,7 @@
             android:label="@string/title_activity_activity_lend_and_borrow" >
         </activity>
         <activity
-            android:name=".ActivityLendAndBorrowPersonal"
+            android:name=".ActivityLendAndBorrowIndividual"
             android:label="@string/title_activity_activity_lend_and_borrow_personal" >
         </activity>
         <activity
@@ -44,6 +44,14 @@
         <activity
             android:name=".ActivityPersonalExpenseIndividual"
             android:label="@string/title_activity_activity_personal_expense_individual" >
+        </activity>
+        <activity
+            android:name=".ActivityJointExpense"
+            android:label="@string/title_activity_activity_joint_expense" >
+        </activity>
+        <activity
+            android:name=".ActivityJointExpenseIndividual"
+            android:label="@string/title_activity_activity_joint_expense_individual" >
         </activity>
     </application>
 
