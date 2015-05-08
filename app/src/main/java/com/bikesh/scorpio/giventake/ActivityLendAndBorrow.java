@@ -2,6 +2,7 @@ package com.bikesh.scorpio.giventake;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -16,12 +17,18 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import java.util.Random;
 
 
 public class ActivityLendAndBorrow extends ActionBarActivity {
+
+    DBHelper myDb;
+    View lendAndBorrowView;
+
+    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,20 +47,21 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         //setting up navigation drawer
         GiveNTakeApplication AC = (GiveNTakeApplication)getApplicationContext();
         View view = getWindow().getDecorView().findViewById(android.R.id.content);
-        AC.setupDrawer(view, ActivityLendAndBorrow.this,  toolbar );
+        AC.setupDrawer(view, ActivityLendAndBorrow.this, toolbar);
 
         //loading lendAndBorrow activity templet in to template frame
         FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
         frame.removeAllViews();
         Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
         LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View lendAndBorrowView=  inflater.inflate(R.layout.activity_lend_and_borrow, null);
+        lendAndBorrowView=  inflater.inflate(R.layout.activity_lend_and_borrow, null);
 
 
 
 
-        ListView listView = (ListView) lendAndBorrowView.findViewById(R.id.listViewFromDB);
+        listView = (ListView) lendAndBorrowView.findViewById(R.id.listViewFromDB);
 
+        /*
         String[] values = new String[] {
                 "Manoj",
                 "Vyshakh",
@@ -73,16 +81,18 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
                 "Luttan",
                 "Sapna",
         };
+        */
 
-
-        MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(ActivityLendAndBorrow.this, values);
-        listView.setAdapter(adapter);
+        //MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(ActivityLendAndBorrow.this, values);
+        //listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new listItemClicked());
 
 
         frame.addView(lendAndBorrowView);
 
+        myDb = new DBHelper(this);
+        populateListViewFromDB();
 
         ((ImageButton)lendAndBorrowView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
         ((ImageButton)lendAndBorrowView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewGroup());
@@ -164,6 +174,46 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
             startActivity(i);
 
         }
+    }
+
+
+
+    private void populateListViewFromDB() {
+        Cursor cursor = myDb.getAllUsers();
+
+        /*
+        while(cursor.isAfterLast() == false){
+            Log.i("DB", cursor.getString(cursor.getColumnIndex("name")) );
+            cursor.moveToNext();
+        }
+        */
+
+        // Allow activity to manage lifetime of the cursor.
+        // DEPRECATED! Runs on the UI thread, OK for small/short queries.
+        //startManagingCursor(cursor); // manually closing cursor
+
+
+        // Setup mapping from cursor to view fields:
+        String[] fromFieldNames = new String[] {DBHelper.USER_COLUMN_NAME,  DBHelper.USER_COLUMN_PHONE};
+        int[] toViewIDs = new int[]            {R.id.item_name,      R.id.item_amt};
+
+        // Create adapter to may columns of the DB onto elemesnt in the UI.
+        SimpleCursorAdapter myCursorAdapter =
+                new SimpleCursorAdapter(
+                        this,		// Context
+                        R.layout.listview_item_template,	// Row layout template
+                        cursor,					// cursor (set of DB records to map)
+                        fromFieldNames,			// DB Column names
+                        toViewIDs, 				// View IDs to put information in
+                        0
+                );
+
+        // Set the adapter for the list view
+        //ListView myList = (ListView) findViewById(R.id.listViewFromDB);
+        listView.setAdapter(myCursorAdapter);
+
+        //cursor.close();
+        //myDb.close();
     }
 
 }

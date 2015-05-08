@@ -9,14 +9,24 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ActivityAddGroup extends ActionBarActivity {
 
     String fromActivity=null;
+
+    View addGroupView;
+
+    private DBHelper mydb ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +49,12 @@ public class ActivityAddGroup extends ActionBarActivity {
         frame.removeAllViews();
         Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
         LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View addGroupView=  inflater.inflate(R.layout.activity_add_group, null);
+        addGroupView=  inflater.inflate(R.layout.activity_add_group, null);
 
         frame.addView(addGroupView);
+
+
+        mydb = new DBHelper(this);
 
 
         Bundle extras = getIntent().getExtras();
@@ -71,6 +84,36 @@ public class ActivityAddGroup extends ActionBarActivity {
         }
 
 
+
+        ((Button) addGroupView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
+
+
+
+
+    }
+
+
+    private class saveData implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+            Map<String, String> data = new HashMap<String, String>();
+
+            if(fromActivity.equals("ActivityLendAndBorrow")) {
+
+                data.put("name",  ((EditText) addGroupView.findViewById(R.id.name) ).getText().toString() );
+                data.put("email",  ((EditText) addGroupView.findViewById(R.id.email) ).getText().toString() );
+                data.put("phone", ((EditText) addGroupView.findViewById(R.id.phone) ).getText().toString() );
+                data.put("description", ((EditText) addGroupView.findViewById(R.id.description) ).getText().toString() );
+
+                if (mydb.insertUser(data)==1) {
+                    Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        }
     }
 
     @Override
@@ -94,4 +137,6 @@ public class ActivityAddGroup extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }
