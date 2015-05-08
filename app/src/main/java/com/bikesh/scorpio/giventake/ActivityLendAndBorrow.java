@@ -122,6 +122,7 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
     }
 
 
+    /*
     class MySimpleArrayAdapter extends ArrayAdapter<String> {
         private final Context context;
         private final String[] values;
@@ -165,6 +166,7 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
 
 
     }
+    */
 
 
     private class openAddnewEntrry implements View.OnClickListener {
@@ -194,9 +196,10 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         Cursor cursor = myDb.getAllUsers();
 
         // Setup mapping from cursor to view fields:
-        String[] fromFieldNames = new String[] {DBHelper.USER_COLUMN_NAME,  DBHelper.USER_COLUMN_PHONE};
-        int[] toViewIDs = new int[]            {R.id.item_name,             R.id.item_amt};
+        String[] fromFieldNames = new String[] {}; // {DBHelper.USER_COLUMN_NAME,  DBHelper.USER_COLUMN_PHONE};
+        int[] toViewIDs = new int[]  {}; //          {R.id.item_name,             R.id.item_amt};
 
+        /*
         // Create adapter to may columns of the DB onto elemesnt in the UI.
         SimpleCursorAdapter myCursorAdapter =
                 new SimpleCursorAdapter(
@@ -210,8 +213,83 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
 
         // Set the adapter for the list view
         listView.setAdapter(myCursorAdapter);
+        */
+
+        listView.setAdapter(new Custom_Adapter(this,		// Context
+                R.layout.listview_item_template,	// Row layout template
+                cursor,					// cursor (set of DB records to map)
+                fromFieldNames,			// DB Column names
+                toViewIDs 				// View IDs to put information in
+                ));
 
     }
+
+
+
+
+
+
+
+    public class Custom_Adapter extends SimpleCursorAdapter {
+
+        private Context mContext;
+        private Context appContext;
+        private int layout;
+        private Cursor cr;
+        private final LayoutInflater inflater;
+
+        public Custom_Adapter(Context context,int layout, Cursor c,String[] from,int[] to) {
+            super(context,layout,c,from,to,0);
+            this.layout=layout;
+            this.mContext = context;
+            this.inflater=LayoutInflater.from(context);
+            this.cr=c;
+        }
+
+        @Override
+        public View newView (Context context, Cursor cursor, ViewGroup parent) {
+            return inflater.inflate(layout, null);
+        }
+
+        @Override
+        public void bindView(View view, Context context, Cursor cursor) {
+            super.bindView(view, context, cursor);
+            TextView titleS=(TextView)view.findViewById(R.id.item_name);
+           // TextView artistS=(TextView)view.findViewById(R.id.Artist);
+
+            //int Title_index=cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME);
+            //int Artist_index=cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST);
+
+            titleS.setText(cursor.getString(cursor.getColumnIndex("name")));
+            //artistS.setText(cursor.getString(Artist_index));
+
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     @Override
