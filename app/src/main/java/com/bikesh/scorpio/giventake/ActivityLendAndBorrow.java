@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Random;
 
@@ -101,11 +102,22 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        populateListViewFromDB();
+    }
+
     private class listItemClicked implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            //id == table id
             Intent i = new Intent(ActivityLendAndBorrow.this, ActivityLendAndBorrowIndividual.class);
+            i.putExtra("fromActivity", "ActivityLendAndBorrow");
+            i.putExtra("userId", ""+id);
             startActivity(i);
+            //Toast.makeText(ActivityLendAndBorrow.this, "Id "+ id , Toast.LENGTH_LONG).show();
         }
     }
 
@@ -181,21 +193,9 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
     private void populateListViewFromDB() {
         Cursor cursor = myDb.getAllUsers();
 
-        /*
-        while(cursor.isAfterLast() == false){
-            Log.i("DB", cursor.getString(cursor.getColumnIndex("name")) );
-            cursor.moveToNext();
-        }
-        */
-
-        // Allow activity to manage lifetime of the cursor.
-        // DEPRECATED! Runs on the UI thread, OK for small/short queries.
-        //startManagingCursor(cursor); // manually closing cursor
-
-
         // Setup mapping from cursor to view fields:
         String[] fromFieldNames = new String[] {DBHelper.USER_COLUMN_NAME,  DBHelper.USER_COLUMN_PHONE};
-        int[] toViewIDs = new int[]            {R.id.item_name,      R.id.item_amt};
+        int[] toViewIDs = new int[]            {R.id.item_name,             R.id.item_amt};
 
         // Create adapter to may columns of the DB onto elemesnt in the UI.
         SimpleCursorAdapter myCursorAdapter =
@@ -209,11 +209,17 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
                 );
 
         // Set the adapter for the list view
-        //ListView myList = (ListView) findViewById(R.id.listViewFromDB);
         listView.setAdapter(myCursorAdapter);
 
-        //cursor.close();
-        //myDb.close();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myDb != null) {
+            myDb.close();
+        }
     }
 
 }

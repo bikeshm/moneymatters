@@ -15,6 +15,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.EditText;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -38,7 +39,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // TODO Auto-generated method stub
         db.execSQL(
-                "create table usertable  (_id integer primary key autoincrement, name text, email text, phone text, description text, photo BLOB )"
+                "create table usertable  (_id numeric primary key autoincrement, name text, email text, phone text, description text, photo BLOB )"
         );
     }
 
@@ -67,10 +68,27 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert("usertable", null, contentValues);
         return 1;
     }
-    public Cursor getUser(int id) {
+    public Map getUser(long id) {
+        Map<String, String> data = new HashMap<String, String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from usertable where id="+id+"", null );
-        return res;
+        Cursor res =  db.rawQuery( "select * from usertable where _id="+id+"", null );
+
+        if(res!=null) {
+            res.moveToFirst();
+        }
+
+        while(res.isAfterLast() == false){
+
+            //Log.i("DB", res.getString(res.getColumnIndex("name")) );
+            data.put("_id",  res.getString(res.getColumnIndex("_id")) );
+            data.put("name",  res.getString(res.getColumnIndex("name")) );
+            data.put("email",  res.getString(res.getColumnIndex("email")) );
+            data.put("phone", res.getString(res.getColumnIndex("phone")) );
+            data.put("description", res.getString(res.getColumnIndex("description")));
+            res.moveToNext();
+        }
+        res.close();
+        return data;
     }
 
     public Cursor getUserByEmail(String email) {

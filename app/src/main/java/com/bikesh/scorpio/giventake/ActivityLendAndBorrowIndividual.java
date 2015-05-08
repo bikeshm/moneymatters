@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,9 +13,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.TextView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
+
+    View lendAndBorrowPersonalView;
+    DBHelper myDb;
+    String fromActivity=null;
+    long userId=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,16 +47,44 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
         frame.removeAllViews();
         Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
         LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View lendAndBorrowPersonalView=  inflater.inflate(R.layout.activity_lend_and_borrow_personal, null);
+        lendAndBorrowPersonalView =  inflater.inflate(R.layout.activity_lend_and_borrow_personal, null);
 
         frame.addView(lendAndBorrowPersonalView);
 
-        ((ImageButton)lendAndBorrowPersonalView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+        myDb = new DBHelper(this);
+
+        Bundle extras = getIntent().getExtras();
+
+        if(extras == null) {
+            fromActivity= null;
+        } else {
+            fromActivity= extras.getString("fromActivity");
+            userId = Long.parseLong(extras.getString("userId"));
+        }
+
+        Map<String, String> userData  = new HashMap<String, String>();
+        userData  = myDb.getUser(userId);
+
+        Log.i("DB", userData.get("name"));
+
+        TextView t = (TextView) lendAndBorrowPersonalView.findViewById(R.id.username);
+        t.setText(userData.get("name"));
+
+        //((TextView)lendAndBorrowPersonalView.findViewById(R.id.username)).setText(userData.get("name"));
+
+                ((ImageButton) lendAndBorrowPersonalView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
 
 
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myDb != null) {
+            myDb.close();
+        }
+    }
 
 
     @Override
