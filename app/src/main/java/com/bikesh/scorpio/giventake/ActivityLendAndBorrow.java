@@ -199,21 +199,7 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         String[] fromFieldNames = new String[] {}; // {DBHelper.USER_COLUMN_NAME,  DBHelper.USER_COLUMN_PHONE};
         int[] toViewIDs = new int[]  {}; //          {R.id.item_name,             R.id.item_amt};
 
-        /*
-        // Create adapter to may columns of the DB onto elemesnt in the UI.
-        SimpleCursorAdapter myCursorAdapter =
-                new SimpleCursorAdapter(
-                        this,		// Context
-                        R.layout.listview_item_template,	// Row layout template
-                        cursor,					// cursor (set of DB records to map)
-                        fromFieldNames,			// DB Column names
-                        toViewIDs, 				// View IDs to put information in
-                        0
-                );
 
-        // Set the adapter for the list view
-        listView.setAdapter(myCursorAdapter);
-        */
 
         listView.setAdapter(new Custom_Adapter(this,		// Context
                 R.layout.listview_item_template,	// Row layout template
@@ -254,14 +240,9 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             super.bindView(view, context, cursor);
-            TextView titleS=(TextView)view.findViewById(R.id.item_name);
-           // TextView artistS=(TextView)view.findViewById(R.id.Artist);
 
-            //int Title_index=cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME);
-            //int Artist_index=cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST);
-
-            titleS.setText(cursor.getString(cursor.getColumnIndex("name")));
-            //artistS.setText(cursor.getString(Artist_index));
+            ((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")));
+            ((TextView)view.findViewById(R.id.item_amt)).setText("100.00");
 
         }
 
