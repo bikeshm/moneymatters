@@ -1,6 +1,7 @@
 package com.bikesh.scorpio.giventake;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -9,9 +10,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +24,10 @@ import java.util.List;
 public class ActivityAddEntry extends ActionBarActivity {
 
     String fromActivity=null;
+
+    DBHelper myDb;
+
+    View addEntryView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +50,11 @@ public class ActivityAddEntry extends ActionBarActivity {
         frame.removeAllViews();
         Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
         LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View addEntryView=  inflater.inflate(R.layout.activity_add_entry, null);
+        addEntryView=  inflater.inflate(R.layout.activity_add_entry, null);
 
         frame.addView(addEntryView);
+
+        myDb = new DBHelper(this);
 
 
         Bundle extras = getIntent().getExtras();
@@ -55,8 +65,19 @@ public class ActivityAddEntry extends ActionBarActivity {
             fromActivity= extras.getString("fromActivity");
         }
 
+
+
+
+        // getting options from xml string array
+        ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.addEntryAction));
+        ((Spinner)findViewById(R.id.actionSpinner)).setAdapter(actionSpinnerArrayAdapter);
+        ((Spinner)findViewById(R.id.actionSpinner)).setOnItemSelectedListener(new selectedAction());
+
+
         // Spinner element
-        Spinner spinner = (Spinner) addEntryView.findViewById(R.id.fromUser);
+        //Spinner spinner = (Spinner) addEntryView.findViewById(R.id.fromUser);
+
+        Cursor cursor = myDb.getAllUsers();
 
 
         // Spinner Drop down elements
@@ -70,13 +91,27 @@ public class ActivityAddEntry extends ActionBarActivity {
         categories.add("rech");
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, categories);
-        spinner.setAdapter(dataAdapter);
+        ((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(dataAdapter);
 
 
-        Spinner actionSpinner = (Spinner)findViewById(R.id.actionSpinner);
-        // getting options from xml string array
-        ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.addEntryAction));
-        actionSpinner.setAdapter(actionSpinnerArrayAdapter);
 
+
+    }
+
+    private class selectedAction implements android.widget.AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if(id==0){
+                ((TextView) addEntryView.findViewById (R.id.selectUserLabel)).setText("Give to ");
+            }
+            else{
+                ((TextView) addEntryView.findViewById (R.id.selectUserLabel)).setText("Borrow from ");
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
     }
 }

@@ -67,7 +67,7 @@
             <TextView
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="Carry forword [i need to give him]  "/>
+                android:text="I need to give him (prev balance)  "/>
 
             <TextView
                 android:layout_width="wrap_content"

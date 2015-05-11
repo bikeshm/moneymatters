@@ -5,8 +5,8 @@
     <string name="action_settings">Settings</string>
 
     <string-array name="addEntryAction">
-        <item>Giving</item>
-        <item>Getting</item>
+        <item>Giving to</item>
+        <item>Borrow from</item>
     </string-array>
 
     <string name="openDrawer"> Open Navigation Drawer </string>

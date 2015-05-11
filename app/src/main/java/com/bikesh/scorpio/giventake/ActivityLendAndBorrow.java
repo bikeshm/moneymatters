@@ -57,40 +57,11 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         lendAndBorrowView=  inflater.inflate(R.layout.activity_lend_and_borrow, null);
 
-
-
+        frame.addView(lendAndBorrowView);
 
         listView = (ListView) lendAndBorrowView.findViewById(R.id.listViewFromDB);
 
-        /*
-        String[] values = new String[] {
-                "Manoj",
-                "Vyshakh",
-                "Bikesh",
-                "Anjane",
-                "MSR",
-                "Riju",
-                "ANsar",
-                "Suneesh",
-
-                "Anees",
-                "Gokul",
-                "Lakshmi",
-                "Savi",
-                "Sanju",
-                "Prasadh",
-                "Luttan",
-                "Sapna",
-        };
-        */
-
-        //MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(ActivityLendAndBorrow.this, values);
-        //listView.setAdapter(adapter);
-
         listView.setOnItemClickListener(new listItemClicked());
-
-
-        frame.addView(lendAndBorrowView);
 
         myDb = new DBHelper(this);
         populateListViewFromDB();
@@ -116,57 +87,14 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
             Intent i = new Intent(ActivityLendAndBorrow.this, ActivityLendAndBorrowIndividual.class);
             i.putExtra("fromActivity", "ActivityLendAndBorrow");
             i.putExtra("userId", ""+id);
+            i.putExtra("userName", ""+ ((TextView) view.findViewById(R.id.item_name)).getText().toString() );
             startActivity(i);
             //Toast.makeText(ActivityLendAndBorrow.this, "Id "+ id , Toast.LENGTH_LONG).show();
         }
     }
 
 
-    /*
-    class MySimpleArrayAdapter extends ArrayAdapter<String> {
-        private final Context context;
-        private final String[] values;
 
-        public MySimpleArrayAdapter(Context context, String[] values) {
-            super(context, R.layout.item_lend_and_borrow, values);
-            this.context = context;
-            this.values = values;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            // inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            //View rowView = inflater.inflate(R.layout.item_lend_and_borrow, parent, false);
-
-            LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.item_lend_and_borrow, null);
-
-            TextView textView = (TextView) rowView.findViewById(R.id.item_name);
-            ImageView imageView = (ImageView) rowView.findViewById(R.id.item_icon);
-            textView.setText(values[position]);
-            // change the icon for Windows and iPhone
-            String s = values[position];
-            //if (s.startsWith("iPhone")) {
-            //    imageView.setImageResource(R.drawable.gear);
-            //} else {
-            imageView.setImageResource(R.drawable.marker);
-            //}
-
-            Random r = new Random();
-            //rand.nextInt((max - min) + 1) + min;
-            int amt = r.nextInt((500 - 80) + 1) + 80;
-            TextView textPrice = (TextView) rowView.findViewById(R.id.item_studentnum);
-            textPrice.setText(""+amt);
-
-            Log.d("Log", "=============" + position);
-
-            return rowView;
-        }
-
-
-    }
-    */
 
 
     private class openAddnewEntrry implements View.OnClickListener {
@@ -193,28 +121,15 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
 
 
     private void populateListViewFromDB() {
+
         Cursor cursor = myDb.getAllUsers();
-
-        // Setup mapping from cursor to view fields:
-        String[] fromFieldNames = new String[] {}; // {DBHelper.USER_COLUMN_NAME,  DBHelper.USER_COLUMN_PHONE};
-        int[] toViewIDs = new int[]  {}; //          {R.id.item_name,             R.id.item_amt};
-
-
 
         listView.setAdapter(new Custom_Adapter(this,		// Context
                 R.layout.listview_item_template,	// Row layout template
-                cursor,					// cursor (set of DB records to map)
-                fromFieldNames,			// DB Column names
-                toViewIDs 				// View IDs to put information in
+                cursor					// cursor (set of DB records to map)
                 ));
 
     }
-
-
-
-
-
-
 
     public class Custom_Adapter extends SimpleCursorAdapter {
 
@@ -224,8 +139,8 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         private Cursor cr;
         private final LayoutInflater inflater;
 
-        public Custom_Adapter(Context context,int layout, Cursor c,String[] from,int[] to) {
-            super(context,layout,c,from,to,0);
+        public Custom_Adapter(Context context,int layout, Cursor c ) {
+            super(context,layout,c,new String[]{},new int[]{},0);
             this.layout=layout;
             this.mContext = context;
             this.inflater=LayoutInflater.from(context);

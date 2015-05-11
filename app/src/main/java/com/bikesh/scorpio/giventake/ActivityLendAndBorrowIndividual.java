@@ -25,6 +25,7 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
     DBHelper myDb;
     String fromActivity=null;
     long userId=0;
+    String userName="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,24 +56,19 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
 
         Bundle extras = getIntent().getExtras();
 
+
+
         if(extras == null) {
             fromActivity= null;
         } else {
             fromActivity= extras.getString("fromActivity");
             userId = Long.parseLong(extras.getString("userId"));
+            userName = extras.getString("userName");
         }
 
-        Map<String, String> userData  = new HashMap<String, String>();
-        userData  = myDb.getUser(userId);
+        ((TextView) lendAndBorrowPersonalView.findViewById(R.id.username)).setText(userName);
 
-        Log.i("DB", userData.get("name"));
-
-        TextView t = (TextView) lendAndBorrowPersonalView.findViewById(R.id.username);
-        t.setText(userData.get("name"));
-
-        //((TextView)lendAndBorrowPersonalView.findViewById(R.id.username)).setText(userData.get("name"));
-
-                ((ImageButton) lendAndBorrowPersonalView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+        ((ImageButton) lendAndBorrowPersonalView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
 
 
     }
@@ -116,6 +112,7 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
 
             Intent i = new Intent(ActivityLendAndBorrowIndividual.this, ActivityAddEntry.class);
             i.putExtra("fromActivity", "ActivityLendAndBorrowPersonal");
+            i.putExtra("userId", ""+userId);
             startActivity(i);
 
         }
