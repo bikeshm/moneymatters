@@ -10,10 +10,14 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -91,9 +95,11 @@ public class ActivityAddEntry extends ActionBarActivity {
         categories.add("rech");
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, categories);
-        ((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(dataAdapter);
+        //((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(dataAdapter);
 
+        //((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(new populateUserListAdapter());
 
+        ((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(new populateUserListAdapter(this, R.layout.custom_spinner_item_template, cursor));
 
 
     }
@@ -114,4 +120,44 @@ public class ActivityAddEntry extends ActionBarActivity {
 
         }
     }
+
+
+
+    public class populateUserListAdapter extends SimpleCursorAdapter {
+
+        private Context mContext;
+        private Context appContext;
+        private int layout;
+        private Cursor cr;
+        private final LayoutInflater inflater;
+
+        public populateUserListAdapter(Context context,int layout, Cursor c ) {
+            super(context,layout,c,new String[]{},new int[]{},0);
+            this.layout=layout;
+            this.mContext = context;
+            this.inflater=LayoutInflater.from(context);
+            this.cr=c;
+        }
+
+        @Override
+        public View newView (Context context, Cursor cursor, ViewGroup parent) {
+            return inflater.inflate(layout, null);
+        }
+
+        @Override
+        public void bindView(View view, Context context, Cursor cursor) {
+            super.bindView(view, context, cursor);
+
+            ((TextView)view.findViewById(R.id.text_main_seen)).setText(cursor.getString(cursor.getColumnIndex("name")));
+            //((TextView)view.findViewById(R.id.item_amt)).setText("100.00");
+
+        }
+
+    }
+
+
+
+
+
+
 }
