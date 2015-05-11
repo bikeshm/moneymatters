@@ -113,6 +113,7 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
             Intent i = new Intent(ActivityLendAndBorrowIndividual.this, ActivityAddEntry.class);
             i.putExtra("fromActivity", "ActivityLendAndBorrowPersonal");
             i.putExtra("userId", ""+userId);
+            i.putExtra("userName",  userName );
             startActivity(i);
 
         }

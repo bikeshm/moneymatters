@@ -2,6 +2,7 @@ package com.bikesh.scorpio.giventake;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ public class ActivityAddEntry extends ActionBarActivity {
 
     String fromActivity=null;
     long userId=0;
+    String userName="";
     DBHelper myDb;
 
     boolean actionFlag=false; //if false giving or borrowing
@@ -80,6 +82,7 @@ public class ActivityAddEntry extends ActionBarActivity {
         } else {
             fromActivity= extras.getString("fromActivity");
             userId = Long.parseLong(extras.getString("userId"));
+            userName = extras.getString("userName");
         }
 
 
@@ -237,6 +240,17 @@ public class ActivityAddEntry extends ActionBarActivity {
 
                 if (myDb.insertEntry(data)==1) {
                     Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+
+
+
+
+                    Intent i = new Intent(ActivityAddEntry.this, ActivityLendAndBorrowIndividual.class);
+                    i.putExtra("fromActivity", "ActivityLendAndBorrow");
+                    i.putExtra("userId", ""+userId);
+                    i.putExtra("userName",  userName );
+                    startActivity(i);
+
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
                 }
