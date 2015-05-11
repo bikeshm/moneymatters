@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,7 +29,7 @@ import java.util.List;
 public class ActivityAddEntry extends ActionBarActivity {
 
     String fromActivity=null;
-
+    long userId=0;
     DBHelper myDb;
 
     View addEntryView;
@@ -67,6 +68,7 @@ public class ActivityAddEntry extends ActionBarActivity {
             fromActivity= null;
         } else {
             fromActivity= extras.getString("fromActivity");
+            userId = Long.parseLong(extras.getString("userId"));
         }
 
 
@@ -85,21 +87,40 @@ public class ActivityAddEntry extends ActionBarActivity {
 
 
         // Spinner Drop down elements
-        List<String> categories = new ArrayList<String>();
-        categories.add("Select a User");
-        categories.add("Raju");
-        categories.add("Kiran");
-        categories.add("Prasath");
-        categories.add("Siva");
-        categories.add("Sid");
-        categories.add("rech");
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, categories);
+//        List<String> categories = new ArrayList<String>();
+//        categories.add("Select a User");
+//        categories.add("Raju");
+//        categories.add("Kiran");
+//        categories.add("Prasath");
+//        categories.add("Siva");
+//        categories.add("Sid");
+//        categories.add("rech");
+//
+//        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, categories);
         //((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(dataAdapter);
 
         //((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(new populateUserListAdapter());
 
-        ((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(new populateUserListAdapter(this, R.layout.custom_spinner_item_template, cursor));
+        populateUserListAdapter adapter = new populateUserListAdapter(this, R.layout.custom_spinner_item_template, cursor);
+        ((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(adapter);
+
+
+        int cpos = 0;
+
+        for(int i = 0; i < adapter.getCount(); i++){
+            cursor.moveToPosition(i);
+            Double temp = Double.parseDouble( cursor.getString(cursor.getColumnIndex("_id")) );
+            if ( temp == userId ){
+                Log.d("TAG", "Found match");
+                cpos = i;
+                break;
+            }
+        }
+        ((Spinner) addEntryView.findViewById(R.id.fromUser)).setSelection(cpos);
+
+
+
+
 
 
     }
@@ -148,7 +169,8 @@ public class ActivityAddEntry extends ActionBarActivity {
         public void bindView(View view, Context context, Cursor cursor) {
             super.bindView(view, context, cursor);
 
-            ((TextView)view.findViewById(R.id.text_main_seen)).setText(cursor.getString(cursor.getColumnIndex("name")));
+            ((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")));
+            ((TextView)view.findViewById(R.id.item_phone)).setText(cursor.getString(cursor.getColumnIndex("phone")));
             //((TextView)view.findViewById(R.id.item_amt)).setText("100.00");
 
         }
