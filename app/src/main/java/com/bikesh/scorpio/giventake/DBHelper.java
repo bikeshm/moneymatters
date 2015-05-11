@@ -50,11 +50,11 @@ public class DBHelper extends SQLiteOpenHelper {
         // getting error is set _id numeric  (error: AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY:)
 
         db.execSQL(
-                "create table lendandborrowtable  (_id INTEGER primary key autoincrement, created_date DATETIME, description text, from_user INTEGER, to_user INTEGER, amt FLOAT )"
+                "create table lendandborrowtable  (_id INTEGER primary key autoincrement, created_date DATE, description text, from_user INTEGER, to_user INTEGER, amt FLOAT )"
         );
 
         db.execSQL(
-                "create table personaltable  (_id INTEGER primary key autoincrement, category_id INTEGER, created_date DATETIME, description text, amt FLOAT )"
+                "create table personaltable  (_id INTEGER primary key autoincrement, category_id INTEGER, created_date DATE, description text, amt FLOAT )"
         );
         db.execSQL(
                 "create table category  (_id INTEGER primary key autoincrement, name text, description text, photo BLOB )"
@@ -62,10 +62,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         db.execSQL(
-                "create table jointtable  (_id INTEGER primary key autoincrement, joint_group_id INTEGER, created_date DATETIME, description text, owner_id INTEGER, user_id INTEGER, amt FLOAT )"
+                "create table jointtable  (_id INTEGER primary key autoincrement, joint_group_id INTEGER, created_date DATE, description text, owner_id INTEGER, user_id INTEGER, amt FLOAT )"
         );
         db.execSQL(
-                "create table joint_group  (_id INTEGER primary key autoincrement, name text, owner INTEGER, description text, photo BLOB )"
+                "create table joint_group  (_id INTEGER primary key autoincrement, name text, is_online INTEGER DEFAULT 0, owner INTEGER, description text, photo BLOB )"
         );
 
     }
@@ -189,5 +189,25 @@ public class DBHelper extends SQLiteOpenHelper {
                 "id = ? ",
                 new String[] { Integer.toString(id) });
     }
+
+
+    //------------------------------------------------------------------------------------------------------------
+
+
+    public int insertEntry  (Map<String, String> data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+
+        contentValues.put("created_date", data.get("created_date").trim());
+        contentValues.put("description", data.get("description").trim());
+        contentValues.put("from_user", data.get("from_user").trim());
+        contentValues.put("to_user", data.get("to_user"));
+        contentValues.put("amt", data.get("amt"));
+
+        db.insert("lendandborrowtable", null, contentValues);
+        return 1;
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package com.bikesh.scorpio.giventake;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
@@ -14,6 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
@@ -22,8 +26,13 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class ActivityAddEntry extends ActionBarActivity {
@@ -31,6 +40,8 @@ public class ActivityAddEntry extends ActionBarActivity {
     String fromActivity=null;
     long userId=0;
     DBHelper myDb;
+
+    boolean actionFlag=false; //if false giving or borrowing
 
     View addEntryView;
 
@@ -74,44 +85,25 @@ public class ActivityAddEntry extends ActionBarActivity {
 
 
 
+
+
         // getting options from xml string array
         ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.addEntryAction));
         ((Spinner)findViewById(R.id.actionSpinner)).setAdapter(actionSpinnerArrayAdapter);
         ((Spinner)findViewById(R.id.actionSpinner)).setOnItemSelectedListener(new selectedAction());
 
 
-        // Spinner element
-        //Spinner spinner = (Spinner) addEntryView.findViewById(R.id.fromUser);
-
         Cursor cursor = myDb.getAllUsers();
-
-
-        // Spinner Drop down elements
-//        List<String> categories = new ArrayList<String>();
-//        categories.add("Select a User");
-//        categories.add("Raju");
-//        categories.add("Kiran");
-//        categories.add("Prasath");
-//        categories.add("Siva");
-//        categories.add("Sid");
-//        categories.add("rech");
-//
-//        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, categories);
-        //((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(dataAdapter);
-
-        //((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(new populateUserListAdapter());
 
         populateUserListAdapter adapter = new populateUserListAdapter(this, R.layout.custom_spinner_item_template, cursor);
         ((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(adapter);
 
-
+        //setting defalut user name in spinner
         int cpos = 0;
-
         for(int i = 0; i < adapter.getCount(); i++){
             cursor.moveToPosition(i);
             Double temp = Double.parseDouble( cursor.getString(cursor.getColumnIndex("_id")) );
             if ( temp == userId ){
-                Log.d("TAG", "Found match");
                 cpos = i;
                 break;
             }
@@ -120,10 +112,28 @@ public class ActivityAddEntry extends ActionBarActivity {
 
 
 
+        SimpleDateFormat dmy = new SimpleDateFormat("dd-MM-yyyy");
+        String dmyDate = dmy.format(new Date());
+
+        ((EditText) addEntryView.findViewById(R.id.datePicker)).setText(dmyDate);
+        ((EditText) addEntryView.findViewById(R.id.datePicker)).setOnClickListener(new datePicker());
+
+        SimpleDateFormat tmpdmy = new SimpleDateFormat("yyyy-MM-dd");
+        String tmpdmyDate = tmpdmy.format(new Date());
+
+        ((EditText) addEntryView.findViewById(R.id.created_date)).setText(tmpdmyDate);
+
+
+        ((Button)addEntryView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
 
 
 
     }
+
+
+
+
+
 
     private class selectedAction implements android.widget.AdapterView.OnItemSelectedListener {
         @Override
@@ -137,13 +147,12 @@ public class ActivityAddEntry extends ActionBarActivity {
         }
 
         @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-
-        }
+        public void onNothingSelected(AdapterView<?> parent) { }
     }
 
 
 
+    // need to make this class as global,
     public class populateUserListAdapter extends SimpleCursorAdapter {
 
         private Context mContext;
@@ -171,15 +180,70 @@ public class ActivityAddEntry extends ActionBarActivity {
 
             ((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")));
             ((TextView)view.findViewById(R.id.item_phone)).setText(cursor.getString(cursor.getColumnIndex("phone")));
-            //((TextView)view.findViewById(R.id.item_amt)).setText("100.00");
 
         }
 
     }
 
 
+    private class datePicker implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
 
 
+            //To show current date in the datepicker
+            Calendar mcurrentDate=Calendar.getInstance();
+            int mYear = mcurrentDate.get(Calendar.YEAR);
+            int mMonth = mcurrentDate.get(Calendar.MONTH);
+            int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog mDatePicker=new DatePickerDialog(ActivityAddEntry.this, new DatePickerDialog.OnDateSetListener() {
+                public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                    int actualMonth = selectedmonth+1;
+                    ((EditText) addEntryView.findViewById(R.id.datePicker)).setText(selectedday + "-" + actualMonth + "-" + selectedyear);
+
+                    ((EditText) addEntryView.findViewById(R.id.created_date)).setText(selectedyear + "-" + actualMonth + "-" + selectedday );
+                }
+            },mYear, mMonth, mDay);
+            mDatePicker.setTitle("Select date");
+            mDatePicker.show();
+
+        }
+    }
+
+
+
+    private class saveData implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+            Map<String, String> data = new HashMap<String, String>();
+
+            if(fromActivity.equals("ActivityLendAndBorrowPersonal")) {
+
+                data.put("created_date",  ((EditText) addEntryView.findViewById(R.id.created_date) ).getText().toString() );
+                data.put("description",  ((EditText) addEntryView.findViewById(R.id.description) ).getText().toString() );
+
+                if(actionFlag==false) {
+                    data.put("from_user", "1" );
+                    data.put("to_user", ((Spinner) addEntryView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
+                }
+                else{
+                    data.put("from_user",  ((Spinner) addEntryView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
+                    data.put("to_user", "1" );
+                }
+
+                data.put("amt", ((EditText) addEntryView.findViewById(R.id.amount) ).getText().toString() );
+
+                if (myDb.insertEntry(data)==1) {
+                    Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        }
+    }
 
 
 }

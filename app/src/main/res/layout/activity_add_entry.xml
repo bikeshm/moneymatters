@@ -17,8 +17,16 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/date"
-            android:hint="Date"/>
+            android:id="@+id/datePicker"
+            android:hint="Date"
+            android:clickable="true"
+            android:editable="false" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/created_date"
+            android:visibility="gone"/>
 
     </LinearLayout>
 
@@ -122,11 +130,13 @@
         android:layout_alignParentStart="true">
 
         <Button
+            android:id="@+id/saveBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Save"/>
 
         <Button
+            android:id="@+id/cancelBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cancel"/>
