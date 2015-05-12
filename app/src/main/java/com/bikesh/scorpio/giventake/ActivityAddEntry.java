@@ -119,7 +119,13 @@ public class ActivityAddEntry extends ActionBarActivity {
         String dmyDate = dmy.format(new Date());
 
         ((EditText) addEntryView.findViewById(R.id.datePicker)).setText(dmyDate);
-        ((EditText) addEntryView.findViewById(R.id.datePicker)).setOnClickListener(new datePicker());
+
+        //((EditText) addEntryView.findViewById(R.id.datePicker)).setOnClickListener(new datePicker());
+
+        EditText datePicker = ((EditText) addEntryView.findViewById(R.id.datePicker));
+        EditText created_date = ((EditText) addEntryView.findViewById(R.id.created_date));
+        datePicker.setOnClickListener(new CustomDatePicker(ActivityAddEntry.this, datePicker, created_date,false));
+
 
         SimpleDateFormat tmpdmy = new SimpleDateFormat("yyyy-MM-dd");
         String tmpdmyDate = tmpdmy.format(new Date());
@@ -191,6 +197,7 @@ public class ActivityAddEntry extends ActionBarActivity {
     }
 
 
+    /*
     private class datePicker implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -204,10 +211,20 @@ public class ActivityAddEntry extends ActionBarActivity {
 
             DatePickerDialog mDatePicker=new DatePickerDialog(ActivityAddEntry.this, new DatePickerDialog.OnDateSetListener() {
                 public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
-                    int actualMonth = selectedmonth+1;
-                    ((EditText) addEntryView.findViewById(R.id.datePicker)).setText(selectedday + "-" + actualMonth + "-" + selectedyear);
+                    selectedmonth++;
+                    String actualMonth=""+selectedmonth;
+                    if(selectedmonth<10){
+                        actualMonth="0"+actualMonth;
+                    }
 
-                    ((EditText) addEntryView.findViewById(R.id.created_date)).setText(selectedyear + "-" + actualMonth + "-" + selectedday );
+                    String actualDay=""+selectedday;
+                    if(selectedday<10){
+                        actualDay="0"+actualDay;
+                    }
+
+                    ((EditText) addEntryView.findViewById(R.id.datePicker)).setText(actualDay + "-" + actualMonth + "-" + selectedyear);
+
+                    ((EditText) addEntryView.findViewById(R.id.created_date)).setText(selectedyear + "-" + actualMonth + "-" + actualDay );
                 }
             },mYear, mMonth, mDay);
             mDatePicker.setTitle("Select date");
@@ -215,7 +232,7 @@ public class ActivityAddEntry extends ActionBarActivity {
 
         }
     }
-
+*/
 
 
     private class saveData implements View.OnClickListener {
@@ -251,6 +268,7 @@ public class ActivityAddEntry extends ActionBarActivity {
                     i.putExtra("userId", ""+userId);
                     i.putExtra("userName",  userName );
                     startActivity(i);
+                    finish();
 
 
                 } else {

@@ -4,9 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -19,7 +22,11 @@ import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,30 +83,85 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
         ((ImageButton) lendAndBorrowPersonalView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
 
 
-        Cursor entrys =  myDb.getUserEntrys(userId);
+        SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy");
+        String cDate = dmy.format(new Date());
+
+        SimpleDateFormat dbmy = new SimpleDateFormat("yyyy-MM");
+        String cdbDate = dbmy.format(new Date());
+
+
+
+
+
+        Cursor entrys =  myDb.getUserEntrys(userId,cDate);
+
+
+
+        TextView dateChanger= (TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger);
+        TextView dateChangerForDb= (TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChangerForDb);
+        dateChanger.setOnClickListener(new CustomDatePicker(ActivityLendAndBorrowIndividual.this, dateChanger, dateChangerForDb, true));
+
+        dateChanger.setText(cDate);
+        dateChangerForDb.setText(cdbDate);
+
+        dateChangerForDb.addTextChangedListener(new dateChange());
 
         generageTable(entrys);
     }
 
+
+    private class dateChange implements TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            Toast.makeText(getApplicationContext(),""+((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChangerForDb)).getText(),Toast.LENGTH_LONG).show();
+
+            Cursor entrys =  myDb.getUserEntrys(userId,((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
+
+            generageTable(entrys);
+
+        }
+    }
+
+
+
     private void generageTable(Cursor cursor) {
 
-        /* Find Tablelayout defined in main.xml */
-        TableLayout tl = (TableLayout) lendAndBorrowPersonalView.findViewById(R.id.tableLayout);
-
-        /* Create a new row to be added. */
-        TableRow tr; // = new TableRow(this);
-
+        TableLayout tableLayout = (TableLayout) lendAndBorrowPersonalView.findViewById(R.id.tableLayout);
+        TableRow tr, th;
         boolean colorFlag=false;
-
         TextView tv;
-
         String fields[]={"created_date", "description", "from_user", "amt"};
+
+        //setting headder
+        String tablehead[]={"Date", "Description", "From", "Amt"};
+        tableLayout.removeAllViews();
+        th = new TableRow(this);
+        th.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        tr = new TableRow(this);
+        tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        for (int i=0 ;i<4; i++) {
+            tv = generateTextview();
+            tv.setText(tablehead[i]);
+            tv.setTypeface(null, Typeface.BOLD);
+            tr.addView(tv);
+        }
+        tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+        //----
 
         while(cursor.isAfterLast() == false){
 
             tr = new TableRow(this);
             tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
             //tr.setId(cursor.getString(cursor.getColumnIndex("_id")));
+
+            tr.setClickable(true);
+            tr.setOnClickListener(new tableRowClicked( Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id"))) ));
 
             for (int i=0 ;i<4; i++) {
 
@@ -127,8 +189,6 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
 
             cursor.moveToNext();
 
-                    /* Add row to TableLayout. */
-            //tr.setBackgroundResource(R.drawable.sf_gradient_03);
             if(colorFlag){
                 tr.setBackgroundColor(Color.rgb(240, 242, 242));
                 colorFlag=false;
@@ -137,8 +197,68 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
                 tr.setBackgroundColor(Color.rgb(234, 237, 237));
                 colorFlag=true;
             }
-            tl.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+            // Add row to TableLayout.
+            tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
         }
+
+
+        float amtHolder;
+        amtHolder = myDb.getMonthTotalOfGive(userId,((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
+
+        ((TextView)lendAndBorrowPersonalView.findViewById(R.id.monthTotalToGive)).setText(": "+amtHolder);
+
+        amtHolder = myDb.getMonthTotalOfGet(userId, ((TextView) lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
+        ((TextView)lendAndBorrowPersonalView.findViewById(R.id.monthTotalToGet)).setText(": " + amtHolder);
+
+        float balanceAmt=  myDb.getTotalBalance(userId);
+
+        if(balanceAmt<0){
+            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmtLabel)).setText("Balance amount get from him/her");
+            balanceAmt=balanceAmt*-1;
+            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmt)).setText(": "+balanceAmt);
+        }
+        else if (balanceAmt>0){
+            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmtLabel)).setText("Balance amount give to him/her");
+            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmt)).setText(": "+balanceAmt);
+        }
+        else{
+            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmtLabel)).setText("Balance amount");
+            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmt)).setText(": "+balanceAmt);
+        }
+
+
+        amtHolder = myDb.getPrevBalance(userId, ((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
+
+        if(amtHolder<0){
+            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmtLabel)).setText("Balance amount get from him/her");
+            amtHolder=amtHolder*-1;
+            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmt)).setText(": "+amtHolder);
+        }
+        else if (amtHolder>0){
+            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmtLabel)).setText("Balance amount give to him/her");
+            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmt)).setText(": "+amtHolder);
+        }
+        else{
+            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmtLabel)).setText("Balance amount");
+            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmt)).setText(": "+amtHolder);
+        }
+
+        Log.i("pre Bal", ""+amtHolder );
+
+        /*
+        //getting previous month
+        String[] splt = (((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString()).split("-");
+        Calendar c = Calendar.getInstance();
+        c.set(Integer.parseInt(splt[1]), Integer.parseInt(splt[0])-1, 1); //-1 bcz in calernder moth start from 0 to 11 (not 1-12)
+
+        c.add(Calendar.MONTH, -1);
+
+        int month = c.get(Calendar.MONTH) + 1;
+        int year = c.get(Calendar.YEAR);
+
+        //Log.i("New Date",""+ month + " " +year);
+        //
+        */
 
 
 
@@ -146,20 +266,26 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
     }
 
     private TextView generateTextview() {
-
-        /*
-        <TextView
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="01/05/2015"
-        android:padding="5dp"/>
-        */
-
         TextView tv = new TextView(this);
         tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-        tv.setPadding(5,5,5,5);
+        tv.setPadding(5, 5, 5, 5);
+        tv.setClickable(false);
         return tv;
     }
+
+
+    private class tableRowClicked implements View.OnClickListener {
+        int rowId=0;
+        public tableRowClicked(int id) {
+            rowId=id;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(getApplicationContext(),"clicked"+rowId, Toast.LENGTH_LONG).show();
+        }
+    }
+
 
 
     @Override
@@ -206,6 +332,7 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
 
         }
     }
+
 
 
 }

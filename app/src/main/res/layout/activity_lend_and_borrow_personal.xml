@@ -40,10 +40,19 @@
 
 
 
-        <TextView android:text="May - 2015"
+        <TextView
+            android:id="@+id/dateChanger"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true" />
+            android:clickable="true"
+            android:minWidth="100dp"/>
+
+        <TextView
+            android:id="@+id/dateChangerForDb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
 
     </LinearLayout>
 
@@ -59,6 +68,7 @@
         android:paddingLeft="20dp"
         android:layout_below="@+id/l1_1">
 
+        <!--
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,11 +80,62 @@
                 android:text="I need to give him (prev balance)  "/>
 
             <TextView
+                android:id="@+id/mon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=": 3200.00"/>
 
         </LinearLayout>
+
+
+        -->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:id="@+id/balanceAmtLabel"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Balance amount to Give/get  "/>
+
+            <TextView
+                android:id="@+id/balanceAmt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=": 00.00"/>
+
+        </LinearLayout>
+
+
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp"
+            >
+
+            <TextView
+                android:id="@+id/prevBalanceAmtLabel"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Previous balace to Give/get  "/>
+
+            <TextView
+                android:id="@+id/prevBalanceAmt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=": 00.00"/>
+
+        </LinearLayout>
+
+
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -84,12 +145,14 @@
             <TextView
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="Total amount to Give  "/>
+                android:textSize="11dp"
+                android:text="Total amount to Give (Selected Month)  "/>
 
             <TextView
+                android:id="@+id/monthTotalToGive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=": 3700.00"/>
+                android:text=": 00.00"/>
 
         </LinearLayout>
 
@@ -103,14 +166,21 @@
             <TextView
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="Total amount to Get  "/>
+                android:textSize="11dp"
+                android:text="Total amount to Get  (selected Month)  "/>
 
             <TextView
+                android:id="@+id/monthTotalToGet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=": 1500.00"/>
+                android:text=": 00.00"/>
 
         </LinearLayout>
+
+
+
+
+
     </LinearLayout>
 
     <ScrollView

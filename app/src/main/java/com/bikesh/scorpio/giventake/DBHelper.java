@@ -15,6 +15,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.widget.EditText;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -212,14 +213,94 @@ public class DBHelper extends SQLiteOpenHelper {
         return 1;
     }
 
-    public Cursor getUserEntrys(long userId) {
+    //createdDate = > "Month-Year" eg:- 5-2015
+    public Cursor getUserEntrys(long userId, String createdDate) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from lendandborrowtable where from_user = "+userId+" or to_user = "+userId, null );
+        Cursor res =  db.rawQuery( "select * from lendandborrowtable where (from_user = "+userId+" or to_user = "+userId+") and STRFTIME('%m-%Y', created_date) = '"+createdDate+"'", null );
         if (res != null) {
             res.moveToFirst();
         }
         return res;
     }
+
+    public float getMonthTotalOfGive(long userId, String createdDate) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        float amt=0;
+        Cursor res =  db.rawQuery( "select sum(amt) from lendandborrowtable where from_user = "+userId+" and STRFTIME('%m-%Y', created_date) = '"+createdDate+"'", null );
+
+        if (res != null) {
+            res.moveToFirst();
+            amt =  res.getFloat(0);
+        }
+        else{
+            amt=0;
+        }
+
+        res.close();
+
+        return amt;
+    }
+
+    public float getMonthTotalOfGet(long userId, String createdDate) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        float amt=0;
+        Cursor res =  db.rawQuery( "select sum(amt) from lendandborrowtable where to_user = "+userId+" and STRFTIME('%m-%Y', created_date) = '"+createdDate+"'", null );
+
+        if (res != null) {
+            res.moveToFirst();
+            amt =  res.getFloat(0);
+        }
+        else{
+            amt=0;
+        }
+
+        res.close();
+
+        return amt;
+    }
+
+
+    public float getTotalBalance(long userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        float balance=0;
+        //Cursor res =  db.rawQuery( "select sum((select sum(amt) from lendandborrowtable where from_user = "+userId+")-(select sum(amt) from lendandborrowtable where from_user = "+userId+"))") , null );
+
+        Cursor res =  db.rawQuery( "select ((select sum(amt) from lendandborrowtable where from_user = "+userId+")-(select sum(amt) from lendandborrowtable where to_user = "+userId+"))" , null );
+        if (res != null) {
+            res.moveToFirst();
+            balance =  res.getFloat(0);
+        }
+        else{
+            balance=0;
+        }
+
+        res.close();
+
+        return balance;
+    }
+
+    public float getPrevBalance(long userId, String CurrentDate) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        float prevBalance=0;
+        //Cursor res =  db.rawQuery( "select sum((select sum(amt) from lendandborrowtable where from_user = "+userId+")-(select sum(amt) from lendandborrowtable where from_user = "+userId+"))") , null );
+
+        Cursor res =  db.rawQuery( "select ((select TOTAL(amt) from lendandborrowtable where from_user = "+userId+" and  STRFTIME('%m-%Y', created_date) < '"+CurrentDate+"'  )-(select TOTAL(amt) from lendandborrowtable where to_user = "+userId+" and  STRFTIME('%m-%Y', created_date) < '"+CurrentDate+"' ))" , null );
+
+        Log.i("pre Bal", "select ((select sum(amt) from lendandborrowtable where from_user = "+userId+" and  STRFTIME('%m-%Y', created_date) < '"+CurrentDate+"'  )-(select sum(amt) from lendandborrowtable where to_user = "+userId+" and  STRFTIME('%m-%Y', created_date) < '"+CurrentDate+"' ))" );
+
+        if (res != null) {
+            res.moveToFirst();
+            prevBalance =  res.getFloat(0);
+        }
+        else{
+            prevBalance=0;
+        }
+
+        res.close();
+
+        return prevBalance;
+    }
+
 
 
 }
