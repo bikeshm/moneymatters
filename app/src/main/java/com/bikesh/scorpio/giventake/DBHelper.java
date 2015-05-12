@@ -43,7 +43,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // TODO Auto-generated method stub
+
         db.execSQL(
                 "create table usertable  (_id INTEGER primary key autoincrement, name text, email text, phone text, description text, photo BLOB )"
         );
@@ -52,6 +52,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(
                 "create table lendandborrowtable  (_id INTEGER primary key autoincrement, created_date DATE, description text, from_user INTEGER, to_user INTEGER, amt FLOAT )"
         );
+
+
 
         db.execSQL(
                 "create table personaltable  (_id INTEGER primary key autoincrement, category_id INTEGER, created_date DATE, description text, amt FLOAT )"
@@ -72,7 +74,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO Auto-generated method stub
+
         db.execSQL("DROP TABLE IF EXISTS usertable");
         onCreate(db);
     }
@@ -87,6 +89,7 @@ public class DBHelper extends SQLiteOpenHelper {
         //    return 2; //user already exsist
         //}
 
+        //TODO:- move this to loop
         contentValues.put("name", data.get("name").trim());
         contentValues.put("email", data.get("email").trim());
         contentValues.put("phone", data.get("phone").trim());
@@ -198,7 +201,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-
+        //TODO:- move this to loop
         contentValues.put("created_date", data.get("created_date").trim());
         contentValues.put("description", data.get("description").trim());
         contentValues.put("from_user", data.get("from_user").trim());
@@ -207,6 +210,15 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.insert("lendandborrowtable", null, contentValues);
         return 1;
+    }
+
+    public Cursor getUserEntrys(long userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from lendandborrowtable where from_user = "+userId+" or to_user = "+userId, null );
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
     }
 
 

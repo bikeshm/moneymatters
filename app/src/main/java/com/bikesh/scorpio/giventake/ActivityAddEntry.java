@@ -143,9 +143,11 @@ public class ActivityAddEntry extends ActionBarActivity {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if(id==0){
                 ((TextView) addEntryView.findViewById (R.id.selectUserLabel)).setText("Give to ");
+                actionFlag=false;
             }
             else{
                 ((TextView) addEntryView.findViewById (R.id.selectUserLabel)).setText("Borrow from ");
+                actionFlag=true;
             }
         }
 

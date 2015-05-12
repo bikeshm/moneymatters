@@ -2,6 +2,8 @@ package com.bikesh.scorpio.giventake;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,8 +13,11 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -24,7 +29,7 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
     View lendAndBorrowPersonalView;
     DBHelper myDb;
     String fromActivity=null;
-    long userId=0;
+    int  userId=0;
     String userName="";
 
     @Override
@@ -62,7 +67,7 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
             fromActivity= null;
         } else {
             fromActivity= extras.getString("fromActivity");
-            userId = Long.parseLong(extras.getString("userId"));
+            userId = Integer.parseInt(extras.getString("userId"));
             userName = extras.getString("userName");
         }
 
@@ -71,6 +76,89 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
         ((ImageButton) lendAndBorrowPersonalView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
 
 
+        Cursor entrys =  myDb.getUserEntrys(userId);
+
+        generageTable(entrys);
+    }
+
+    private void generageTable(Cursor cursor) {
+
+        /* Find Tablelayout defined in main.xml */
+        TableLayout tl = (TableLayout) lendAndBorrowPersonalView.findViewById(R.id.tableLayout);
+
+        /* Create a new row to be added. */
+        TableRow tr; // = new TableRow(this);
+
+        boolean colorFlag=false;
+
+        TextView tv;
+
+        String fields[]={"created_date", "description", "from_user", "amt"};
+
+        while(cursor.isAfterLast() == false){
+
+            tr = new TableRow(this);
+            tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+            //tr.setId(cursor.getString(cursor.getColumnIndex("_id")));
+
+            for (int i=0 ;i<4; i++) {
+
+                tv = generateTextview();
+
+
+                if(i!=2 ) {
+                    tv.setText(cursor.getString(cursor.getColumnIndex(fields[i])));
+                }
+                else {
+                    if( Integer.parseInt(cursor.getString(cursor.getColumnIndex("from_user"))) == 1 ){ //1== myId
+
+                        tv.setText("Me");
+                    }
+                    else{
+                        tv.setText("Him/Her");
+                    }
+                }
+
+
+
+                /* Add Button to row. */
+                tr.addView(tv);
+            }
+
+            cursor.moveToNext();
+
+                    /* Add row to TableLayout. */
+            //tr.setBackgroundResource(R.drawable.sf_gradient_03);
+            if(colorFlag){
+                tr.setBackgroundColor(Color.rgb(240, 242, 242));
+                colorFlag=false;
+            }
+            else {
+                tr.setBackgroundColor(Color.rgb(234, 237, 237));
+                colorFlag=true;
+            }
+            tl.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+        }
+
+
+
+
+    }
+
+    private TextView generateTextview() {
+
+        /*
+        <TextView
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:text="01/05/2015"
+        android:padding="5dp"/>
+        */
+
+        TextView tv = new TextView(this);
+        tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        tv.setPadding(5,5,5,5);
+        return tv;
     }
 
 
