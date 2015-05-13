@@ -162,9 +162,11 @@ public class DBHelper extends SQLiteOpenHelper {
         int numRows = (int) DatabaseUtils.queryNumEntries(db, USER_TABLE_NAME);
         return numRows;
     }
+
+    //get all users except me
     public Cursor getAllUsers() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from usertable", null );
+        Cursor res =  db.rawQuery( "select * from usertable where _id != 1", null );
         if (res != null) {
             res.moveToFirst();
         }
@@ -260,6 +262,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
+    //<0 get or give
     public float getTotalBalance(long userId) {
         SQLiteDatabase db = this.getReadableDatabase();
         float balance=0;
@@ -286,7 +289,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         Cursor res =  db.rawQuery( "select ((select TOTAL(amt) from lendandborrowtable where from_user = "+userId+" and  STRFTIME('%m-%Y', created_date) < '"+CurrentDate+"'  )-(select TOTAL(amt) from lendandborrowtable where to_user = "+userId+" and  STRFTIME('%m-%Y', created_date) < '"+CurrentDate+"' ))" , null );
 
-        Log.i("pre Bal", "select ((select sum(amt) from lendandborrowtable where from_user = "+userId+" and  STRFTIME('%m-%Y', created_date) < '"+CurrentDate+"'  )-(select sum(amt) from lendandborrowtable where to_user = "+userId+" and  STRFTIME('%m-%Y', created_date) < '"+CurrentDate+"' ))" );
 
         if (res != null) {
             res.moveToFirst();

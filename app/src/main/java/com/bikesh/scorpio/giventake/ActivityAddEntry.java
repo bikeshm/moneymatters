@@ -103,7 +103,7 @@ public class ActivityAddEntry extends ActionBarActivity {
         populateUserListAdapter adapter = new populateUserListAdapter(this, R.layout.custom_spinner_item_template, cursor);
         ((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(adapter);
 
-        //setting defalut user name in spinner
+        //setting passed/selected user name in spinner
         int cpos = 0;
         for(int i = 0; i < adapter.getCount(); i++){
             cursor.moveToPosition(i);
@@ -191,11 +191,6 @@ public class ActivityAddEntry extends ActionBarActivity {
         public void bindView(View view, Context context, Cursor cursor) {
             super.bindView(view, context, cursor);
 
-            //removing current user (me)
-            if(cursor.getString(cursor.getColumnIndex("name")).equals("1") ){
-                view.setVisibility(View.GONE);
-                return;
-            }
             ((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")));
             ((TextView)view.findViewById(R.id.item_phone)).setText(cursor.getString(cursor.getColumnIndex("phone")));
 

@@ -129,10 +129,38 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
 
         Cursor cursor = myDb.getAllUsers();
 
+        float amt=0, togive=0,toget=0;
         listView.setAdapter(new Custom_Adapter(this,		// Context
                 R.layout.listview_item_template,	// Row layout template
                 cursor					// cursor (set of DB records to map)
                 ));
+
+
+        //cursor = myDb.getAllUsers();
+        if(cursor!=null){
+            cursor.moveToFirst();
+
+
+            while(cursor.isAfterLast() == false){
+
+
+
+                amt= myDb.getTotalBalance(Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id"))) );
+
+                if(amt<0){
+                    amt=amt*-1;
+                    toget=toget+amt;
+                }
+                else{
+                    togive=togive+amt;
+                }
+                cursor.moveToNext();
+            }
+        }
+
+        ((TextView)lendAndBorrowView.findViewById(R.id.amt_togive)).setText(": "+togive);
+        ((TextView)lendAndBorrowView.findViewById(R.id.amt_toget)).setText(": " + toget);
+
 
     }
 
@@ -161,11 +189,6 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         public void bindView(View view, Context context, Cursor cursor) {
             super.bindView(view, context, cursor);
 
-            //skipping current user. current user id (myId) = 1
-            if(cursor.getString(cursor.getColumnIndex("_id")).equals("1") ){
-                view.setVisibility(View.GONE);
-                return;
-            }
 
             ((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")));
 
