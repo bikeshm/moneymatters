@@ -80,6 +80,11 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         populateListViewFromDB();
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(ActivityLendAndBorrow.this,ActivityHome.class));
+    }
+
     private class listItemClicked implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -156,8 +161,32 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         public void bindView(View view, Context context, Cursor cursor) {
             super.bindView(view, context, cursor);
 
+            //skipping current user. current user id (myId) = 1
+            if(cursor.getString(cursor.getColumnIndex("_id")).equals("1") ){
+                view.setVisibility(View.GONE);
+                return;
+            }
+
             ((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")));
-            ((TextView)view.findViewById(R.id.item_amt)).setText("100.00");
+
+            float balanceAmt=  myDb.getTotalBalance(Long.parseLong(( cursor.getString(cursor.getColumnIndex("_id")) )) );
+
+            ((TextView)view.findViewById(R.id.item_amt)).setText("" + balanceAmt);
+
+
+
+            if(balanceAmt<0){
+                ((TextView)view.findViewById(R.id.item_description)).setText("Amount get from him/her");
+                balanceAmt=balanceAmt*-1;
+                ((TextView)view.findViewById(R.id.item_amt)).setText(""+balanceAmt);
+            }
+            else if (balanceAmt>0){
+                ((TextView)view.findViewById(R.id.item_description)).setText("Amount give to him/her");
+            }
+            else{
+                ((TextView)view.findViewById(R.id.item_description)).setText("");
+
+            }
 
         }
 

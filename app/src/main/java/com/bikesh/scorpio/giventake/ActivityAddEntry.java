@@ -81,7 +81,9 @@ public class ActivityAddEntry extends ActionBarActivity {
             fromActivity= null;
         } else {
             fromActivity= extras.getString("fromActivity");
-            userId = Long.parseLong(extras.getString("userId"));
+            if(extras.getString("userId")!=null)
+                userId = Long.parseLong(extras.getString("userId"));
+
             userName = extras.getString("userName");
         }
 
@@ -189,6 +191,11 @@ public class ActivityAddEntry extends ActionBarActivity {
         public void bindView(View view, Context context, Cursor cursor) {
             super.bindView(view, context, cursor);
 
+            //removing current user (me)
+            if(cursor.getString(cursor.getColumnIndex("name")).equals("1") ){
+                view.setVisibility(View.GONE);
+                return;
+            }
             ((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")));
             ((TextView)view.findViewById(R.id.item_phone)).setText(cursor.getString(cursor.getColumnIndex("phone")));
 
@@ -197,51 +204,13 @@ public class ActivityAddEntry extends ActionBarActivity {
     }
 
 
-    /*
-    private class datePicker implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-
-
-            //To show current date in the datepicker
-            Calendar mcurrentDate=Calendar.getInstance();
-            int mYear = mcurrentDate.get(Calendar.YEAR);
-            int mMonth = mcurrentDate.get(Calendar.MONTH);
-            int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
-
-            DatePickerDialog mDatePicker=new DatePickerDialog(ActivityAddEntry.this, new DatePickerDialog.OnDateSetListener() {
-                public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
-                    selectedmonth++;
-                    String actualMonth=""+selectedmonth;
-                    if(selectedmonth<10){
-                        actualMonth="0"+actualMonth;
-                    }
-
-                    String actualDay=""+selectedday;
-                    if(selectedday<10){
-                        actualDay="0"+actualDay;
-                    }
-
-                    ((EditText) addEntryView.findViewById(R.id.datePicker)).setText(actualDay + "-" + actualMonth + "-" + selectedyear);
-
-                    ((EditText) addEntryView.findViewById(R.id.created_date)).setText(selectedyear + "-" + actualMonth + "-" + actualDay );
-                }
-            },mYear, mMonth, mDay);
-            mDatePicker.setTitle("Select date");
-            mDatePicker.show();
-
-        }
-    }
-*/
-
-
     private class saveData implements View.OnClickListener {
         @Override
         public void onClick(View v) {
 
             Map<String, String> data = new HashMap<String, String>();
 
-            if(fromActivity.equals("ActivityLendAndBorrowPersonal")) {
+            if(fromActivity.equals("ActivityLendAndBorrowPersonal") || fromActivity.equals("ActivityLendAndBorrow")  ) {
 
                 data.put("created_date",  ((EditText) addEntryView.findViewById(R.id.created_date) ).getText().toString() );
                 data.put("description",  ((EditText) addEntryView.findViewById(R.id.description) ).getText().toString() );
@@ -260,13 +229,16 @@ public class ActivityAddEntry extends ActionBarActivity {
                 if (myDb.insertEntry(data)==1) {
                     Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
 
-
-
-
-                    Intent i = new Intent(ActivityAddEntry.this, ActivityLendAndBorrowIndividual.class);
-                    i.putExtra("fromActivity", "ActivityLendAndBorrow");
-                    i.putExtra("userId", ""+userId);
-                    i.putExtra("userName",  userName );
+                    Intent i;
+                    if(fromActivity.equals("ActivityLendAndBorrowPersonal") ) {
+                        i = new Intent(ActivityAddEntry.this, ActivityLendAndBorrowIndividual.class);
+                        i.putExtra("fromActivity", "ActivityLendAndBorrow");
+                        i.putExtra("userId", "" + userId);
+                        i.putExtra("userName", userName);
+                    }
+                    else{
+                        i = new Intent(ActivityAddEntry.this, ActivityLendAndBorrow .class);
+                    }
                     startActivity(i);
                     finish();
 

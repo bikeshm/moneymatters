@@ -31,17 +31,15 @@
 
 
     <TextView
-        android:id="@+id/item_favcolour"
+        android:text="Medium Text"
+        android:id="@+id/item_description"
+        android:textSize="7dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Medium Text"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_below="@+id/item_name"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="36dp"
-        android:layout_marginStart="36dp"
-        android:visibility="invisible"/>
+        android:textStyle="italic"
+        android:layout_below="@+id/item_studentnum"
+        android:layout_alignRight="@+id/item_studentnum"
+        android:layout_alignEnd="@+id/item_studentnum" />
 
     <TextView
         android:id="@+id/item_studentnum"

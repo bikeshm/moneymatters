@@ -93,7 +93,8 @@ public class ActivityJointExpense extends ActionBarActivity {
         private final String[] values;
 
         public MySimpleArrayAdapter(Context context, String[] values) {
-            super(context, R.layout.item_lend_and_borrow, values);
+            //super(context, R.layout.xxxxxxxxxitem_lend_and_borrow, values);
+            super(context, R.layout.listview_item_template, values);
             this.context = context;
             this.values = values;
         }
@@ -102,10 +103,11 @@ public class ActivityJointExpense extends ActionBarActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
 
             // inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            //View rowView = inflater.inflate(R.layout.item_lend_and_borrow, parent, false);
+            //View rowView = inflater.inflate(R.layout.xxxxxxxxxitem_lend_and_borrow, parent, false);
 
             LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.item_lend_and_borrow, null);
+            //View rowView = inflater.inflate(R.layout.xxxxxxxxxitem_lend_and_borrow, null);
+            View rowView = inflater.inflate(R.layout.listview_item_template, null);
 
             TextView textView = (TextView) rowView.findViewById(R.id.item_name);
             ImageView imageView = (ImageView) rowView.findViewById(R.id.item_icon);
@@ -121,10 +123,9 @@ public class ActivityJointExpense extends ActionBarActivity {
             Random r = new Random();
             //rand.nextInt((max - min) + 1) + min;
             int amt = r.nextInt((500 - 80) + 1) + 80;
-            TextView textPrice = (TextView) rowView.findViewById(R.id.item_studentnum);
+            TextView textPrice = (TextView) rowView.findViewById(R.id.item_amt);
             textPrice.setText(""+amt);
 
-            Log.d("Log", "=============" + position);
 
             return rowView;
         }

@@ -226,7 +226,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public float getMonthTotalOfGive(long userId, String createdDate) {
         SQLiteDatabase db = this.getReadableDatabase();
         float amt=0;
-        Cursor res =  db.rawQuery( "select sum(amt) from lendandborrowtable where from_user = "+userId+" and STRFTIME('%m-%Y', created_date) = '"+createdDate+"'", null );
+        Cursor res =  db.rawQuery( "select TOTAL(amt) from lendandborrowtable where from_user = "+userId+" and STRFTIME('%m-%Y', created_date) = '"+createdDate+"'", null );
 
         if (res != null) {
             res.moveToFirst();
@@ -244,7 +244,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public float getMonthTotalOfGet(long userId, String createdDate) {
         SQLiteDatabase db = this.getReadableDatabase();
         float amt=0;
-        Cursor res =  db.rawQuery( "select sum(amt) from lendandborrowtable where to_user = "+userId+" and STRFTIME('%m-%Y', created_date) = '"+createdDate+"'", null );
+        Cursor res =  db.rawQuery( "select TOTAL(amt) from lendandborrowtable where to_user = "+userId+" and STRFTIME('%m-%Y', created_date) = '"+createdDate+"'", null );
 
         if (res != null) {
             res.moveToFirst();
@@ -265,7 +265,7 @@ public class DBHelper extends SQLiteOpenHelper {
         float balance=0;
         //Cursor res =  db.rawQuery( "select sum((select sum(amt) from lendandborrowtable where from_user = "+userId+")-(select sum(amt) from lendandborrowtable where from_user = "+userId+"))") , null );
 
-        Cursor res =  db.rawQuery( "select ((select sum(amt) from lendandborrowtable where from_user = "+userId+")-(select sum(amt) from lendandborrowtable where to_user = "+userId+"))" , null );
+        Cursor res =  db.rawQuery( "select ((select TOTAL(amt) from lendandborrowtable where from_user = "+userId+")-(select TOTAL(amt) from lendandborrowtable where to_user = "+userId+"))" , null );
         if (res != null) {
             res.moveToFirst();
             balance =  res.getFloat(0);

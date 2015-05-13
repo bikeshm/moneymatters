@@ -1,6 +1,7 @@
 package com.bikesh.scorpio.giventake;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -70,6 +71,7 @@ public class ActivityAddGroup extends ActionBarActivity {
 
         }
 
+
         switch (fromActivity) {
             case "ActivityLendAndBorrow":
                 //((TextView) addGroupView.findViewById(R.id.op)).setText("Add user");
@@ -108,6 +110,12 @@ public class ActivityAddGroup extends ActionBarActivity {
 
                 if (mydb.insertUser(data)==1) {
                     Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+
+
+                    Intent i = new Intent(ActivityAddGroup.this, ActivityLendAndBorrow.class);
+                    startActivity(i);
+                    finish();
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
                 }

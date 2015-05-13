@@ -110,6 +110,22 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
     }
 
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(ActivityLendAndBorrowIndividual.this,ActivityLendAndBorrow.class));
+    }
+
+    //Todo :- handle back click , and goto prev activity page
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Cursor entrys =  myDb.getUserEntrys(userId, ((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
+        generageTable(entrys);
+    }
+
+
+
     private class dateChange implements TextWatcher {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
@@ -212,6 +228,8 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
 
         float balanceAmt=  myDb.getTotalBalance(userId);
 
+        ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmt)).setText(": "+balanceAmt);
+
         if(balanceAmt<0){
             ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmtLabel)).setText("Balance amount get from him/her");
             balanceAmt=balanceAmt*-1;
@@ -219,48 +237,27 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
         }
         else if (balanceAmt>0){
             ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmtLabel)).setText("Balance amount give to him/her");
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmt)).setText(": "+balanceAmt);
         }
         else{
             ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmtLabel)).setText("Balance amount");
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmt)).setText(": "+balanceAmt);
         }
 
 
         amtHolder = myDb.getPrevBalance(userId, ((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
 
         if(amtHolder<0){
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmtLabel)).setText("Balance amount get from him/her");
+            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmtLabel)).setText("Previous balance amount get from him/her");
             amtHolder=amtHolder*-1;
             ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmt)).setText(": "+amtHolder);
         }
         else if (amtHolder>0){
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmtLabel)).setText("Balance amount give to him/her");
+            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmtLabel)).setText("Previous balance amount give to him/her");
             ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmt)).setText(": "+amtHolder);
         }
         else{
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmtLabel)).setText("Balance amount");
+            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmtLabel)).setText("Previous balance amount");
             ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmt)).setText(": "+amtHolder);
         }
-
-        Log.i("pre Bal", ""+amtHolder );
-
-        /*
-        //getting previous month
-        String[] splt = (((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString()).split("-");
-        Calendar c = Calendar.getInstance();
-        c.set(Integer.parseInt(splt[1]), Integer.parseInt(splt[0])-1, 1); //-1 bcz in calernder moth start from 0 to 11 (not 1-12)
-
-        c.add(Calendar.MONTH, -1);
-
-        int month = c.get(Calendar.MONTH) + 1;
-        int year = c.get(Calendar.YEAR);
-
-        //Log.i("New Date",""+ month + " " +year);
-        //
-        */
-
-
 
 
     }
