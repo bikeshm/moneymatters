@@ -127,6 +127,8 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
 
     private void populateListViewFromDB() {
 
+        //Todo :- 1. insted of listing all user just list the user who all are having amt balance
+        //Todo :- need to implement pagination
         Cursor cursor = myDb.getAllUsers();
 
         float amt=0, togive=0,toget=0;
@@ -136,14 +138,13 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
                 ));
 
 
+        //Todo :- make this process assing task
         //cursor = myDb.getAllUsers();
         if(cursor!=null){
             cursor.moveToFirst();
 
 
             while(cursor.isAfterLast() == false){
-
-
 
                 amt= myDb.getTotalBalance(Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id"))) );
 
