@@ -49,6 +49,7 @@
                 android:text="Email"
                 />
             <EditText
+                android:inputType="textEmailAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/email"
@@ -71,7 +72,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/phone"
-                android:hint="Phone"/>
+                android:hint="Phone"
+                android:inputType="phone" />
 
         </LinearLayout>
 
@@ -119,7 +121,7 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_below="@+id/containerLayout"
-        >
+        android:id="@+id/linearLayout2">
 
         <Button
             android:id="@+id/saveBtn"
@@ -134,5 +136,8 @@
             android:text="Cancel"/>
 
     </LinearLayout>
+
+
+
 
 </RelativeLayout>

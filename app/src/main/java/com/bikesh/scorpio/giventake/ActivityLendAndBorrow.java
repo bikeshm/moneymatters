@@ -21,6 +21,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Map;
 import java.util.Random;
 
 
@@ -138,8 +139,11 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
                 ));
 
 
-        //Todo :- make this process assing task
-        //cursor = myDb.getAllUsers();
+
+
+
+        Map<String, String> finalResult = myDb.getFinalResult();
+        /*
         if(cursor!=null){
             cursor.moveToFirst();
 
@@ -158,9 +162,10 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
                 cursor.moveToNext();
             }
         }
+        */
 
-        ((TextView)lendAndBorrowView.findViewById(R.id.amt_togive)).setText(": "+togive);
-        ((TextView)lendAndBorrowView.findViewById(R.id.amt_toget)).setText(": " + toget);
+        ((TextView)lendAndBorrowView.findViewById(R.id.amt_togive)).setText(": "+finalResult.get("amt_toGive"));
+        ((TextView)lendAndBorrowView.findViewById(R.id.amt_toget)).setText(": " + finalResult.get("amt_toGet"));
 
 
     }

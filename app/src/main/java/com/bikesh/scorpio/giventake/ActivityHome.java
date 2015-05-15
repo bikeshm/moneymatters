@@ -10,10 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Map;
+
 public class ActivityHome extends ActionBarActivity {
+
+    DBHelper myDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +47,17 @@ public class ActivityHome extends ActionBarActivity {
 
         frame.addView(homeView);
 
-        ((TextView) homeView.findViewById(R.id.lendAndBorrow)).setOnClickListener(new linkClicked(1));
-        ((TextView) homeView.findViewById(R.id.personalExpense)).setOnClickListener(new linkClicked(2));
-        ((TextView) homeView.findViewById(R.id.jointExpense)).setOnClickListener(new linkClicked(3));
+        myDb = new DBHelper(this);
+
+        ((LinearLayout) homeView.findViewById(R.id.lendAndBorrow)).setOnClickListener(new linkClicked(1));
+        ((LinearLayout) homeView.findViewById(R.id.personalExpense)).setOnClickListener(new linkClicked(2));
+        ((LinearLayout) homeView.findViewById(R.id.jointExpense)).setOnClickListener(new linkClicked(3));
+
+
+        Map<String, String> finalResult = myDb.getFinalResult();
+        ((TextView)homeView.findViewById(R.id.amt_togive)).setText(": " + finalResult.get("amt_toGive"));
+        ((TextView)homeView.findViewById(R.id.amt_toget)).setText(": " + finalResult.get("amt_toGet"));
+
 
     }
 

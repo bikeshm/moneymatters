@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
 
     <LinearLayout
@@ -11,180 +12,223 @@
         android:orientation="vertical"
         android:paddingTop="30dp">
 
-        <TextView android:layout_width="match_parent"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Overview"
+            android:gravity="center_horizontal"
             android:paddingBottom="10dp"
-            android:gravity="center_horizontal"/>
+            android:text="Overview" />
 
 
-        <TextView
+        <LinearLayout
             android:id="@+id/lendAndBorrow"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lend and Borrow "
-            android:layout_marginBottom="10dp"
             android:background="@drawable/clickable_text"
-            android:clickable="true" />
+            android:clickable="true"
+            android:orientation="vertical"
+            android:paddingBottom="10dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="10dp">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:clickable="false">
+            <TextView
 
-            <TextView android:layout_width="200dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Amount to get " />
+                android:layout_marginBottom="10dp"
+                android:clickable="false"
 
-            <TextView android:layout_width="wrap_content"
+                android:text="Lend and Borrow " />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="500.00" />
+                android:clickable="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:text="Amount to get " />
+
+                <TextView
+                    android:id="@+id/amt_toget"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:text="500.00" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:text="Amount to Give " />
+
+                <TextView
+                    android:id="@+id/amt_togive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:text="1500.00" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
+
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <TextView android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:text="Amount to Give " />
-
-            <TextView android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1500.00" />
-
-        </LinearLayout>
-
-
-
-
-        <TextView
             android:id="@+id/personalExpense"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Personal Expense "
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/clickable_text"
-            android:clickable="true"/>
-
-        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:background="@drawable/clickable_text"
+            android:clickable="true"
+            android:orientation="vertical"
+            android:paddingBottom="10dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="10dp">
 
-            <TextView android:layout_width="200dp"
+            <TextView
+
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Total spend " />
+                android:layout_marginBottom="10dp"
+                android:clickable="false"
+                android:text="Personal Expense " />
 
-            <TextView android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2500.00" />
+                android:orientation="horizontal">
 
+                <TextView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="Total spend " />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2500.00" />
+
+            </LinearLayout>
         </LinearLayout>
 
 
-
-
-        <TextView
+        <LinearLayout
             android:id="@+id/jointExpense"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Joint/Group Expense"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="20dp"
             android:background="@drawable/clickable_text"
-            android:clickable="true"/>
+            android:clickable="true"
+            android:orientation="vertical"
+            android:paddingBottom="10dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="10dp">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:clickable="false">
 
-            <TextView android:layout_width="200dp"
+            <TextView
+
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Amount spend " />
+                android:layout_marginBottom="10dp"
+                android:text="Joint/Group Expense" />
 
-            <TextView android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="3000.00" />
+                android:clickable="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="Amount spend " />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3000.00" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="Amount to Get " />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1500.00" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="Amount to Give " />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1500.00" />
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
 
-            <TextView android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:text="Amount to Get " />
-
-            <TextView android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1500.00" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <TextView android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:text="Amount to Give " />
-
-            <TextView android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1500.00" />
-
-        </LinearLayout>
-
-
-
-
-
+        <!-- for Face 2
         <TextView
             android:id="@+id/bank"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Bank"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/clickable_text"
-            android:clickable="true"/>
+            android:clickable="true"
+            android:text="Bank" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
-            <TextView android:layout_width="200dp"
+            <TextView
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:text="Comming soon " />
 
-            <TextView android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00.00" />
 
         </LinearLayout>
-
-
-
-
-
-
+        -->
 
 
     </LinearLayout>
-
-
-
-
-
 </LinearLayout>

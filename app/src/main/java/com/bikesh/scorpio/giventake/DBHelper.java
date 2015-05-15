@@ -64,11 +64,15 @@ public class DBHelper extends SQLiteOpenHelper {
         );
 
 
-        db.execSQL(
-                "create table jointtable  (_id INTEGER primary key autoincrement, joint_group_id INTEGER, created_date DATE, description text, owner_id INTEGER, user_id INTEGER, amt FLOAT )"
-        );
+
         db.execSQL(
                 "create table joint_group  (_id INTEGER primary key autoincrement, name text, is_online INTEGER DEFAULT 0, owner INTEGER, description text, photo BLOB )"
+        );
+        db.execSQL(
+                "create table jointtable  (_id INTEGER primary key autoincrement, joint_group_id INTEGER, created_date DATE, description text, owner_id INTEGER, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0, is_month_wise INTEGER DEFAULT 0 )"
+        );
+        db.execSQL(
+                "create table splittable  (_id INTEGER primary key autoincrement, jointtable_id INTEGER, user_id INTEGER, amt FLOAT )"
         );
 
     }
@@ -273,9 +277,8 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToFirst();
             balance =  res.getFloat(0);
         }
-        else{
-            balance=0;
-        }
+
+
 
         res.close();
 
@@ -294,14 +297,42 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToFirst();
             prevBalance =  res.getFloat(0);
         }
-        else{
-            prevBalance=0;
-        }
+
+
 
         res.close();
 
         return prevBalance;
     }
+
+
+    public Map<String, String> getFinalResult() {
+        Map<String, String> data = new HashMap<String, String>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor res =  db.rawQuery(
+                "select" +
+                " TOTAL ( ( select (select TOTAL(amt) from lendandborrowtable where from_user = 1 and to_user = u._id  )  -(select TOTAL(amt) from lendandborrowtable where from_user =u._id and to_user = 1   ) as amt where amt>0      ) )," +
+                " TOTAL ( ( select (select TOTAL(amt) from lendandborrowtable where from_user = 1 and to_user = u._id  )  -(select TOTAL(amt) from lendandborrowtable where from_user =u._id and to_user = 1   ) as amt where amt<0      ) )" +
+                "from usertable u where _id !=1" , null );
+
+
+        data.put("amt_toGet", "0.0");
+        data.put("amt_toGive", "0.0" );
+        if (res != null) {
+            res.moveToFirst();
+
+
+            data.put("amt_toGet", "" + res.getFloat(0));
+            data.put("amt_toGive", ""+ (res.getFloat(1)*-1) );
+        }
+
+
+        res.close();
+
+        return data;
+    }
+
 
 
 

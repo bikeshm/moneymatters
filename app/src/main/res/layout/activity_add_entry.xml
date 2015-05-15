@@ -10,7 +10,7 @@
         android:id="@+id/l1">
 
         <TextView
-            android:layout_width="60dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="Date : "
             />
@@ -39,9 +39,9 @@
         android:id="@+id/l2">
 
         <TextView
-            android:layout_width="60dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="Date : "
+            android:text="Description : "
             />
 
         <EditText
@@ -65,9 +65,9 @@
         android:id="@+id/l3">
 
         <TextView
-            android:layout_width="60dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="Action "
+            android:text="Action :"
             />
 
         <Spinner
@@ -86,9 +86,9 @@
 
         <TextView
             android:id="@+id/selectUserLabel"
-            android:layout_width="60dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="Giving To "
+            android:text="Giving To : "
             />
 
         <Spinner
@@ -106,7 +106,7 @@
         android:id="@+id/l5">
 
         <TextView
-            android:layout_width="60dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="Amount  : "
             />
