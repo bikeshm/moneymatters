@@ -69,6 +69,11 @@ public class ActivityPersonalExpense extends ActionBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        startActivity(new Intent(ActivityPersonalExpense.this,ActivityHome.class));
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 

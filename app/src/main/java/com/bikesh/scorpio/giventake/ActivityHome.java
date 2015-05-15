@@ -1,6 +1,8 @@
 package com.bikesh.scorpio.giventake;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -85,4 +87,37 @@ public class ActivityHome extends ActionBarActivity {
 
         }
     }
+
+
+    @Override
+    public void onBackPressed() {
+
+        new AlertDialog.Builder(this)
+            .setTitle("Close")
+            .setMessage("Do you really want to Close?")
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int whichButton) {
+
+                    Intent a = new Intent(Intent.ACTION_MAIN);
+                    a.addCategory(Intent.CATEGORY_HOME);
+                    a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(a);
+
+                }})
+            .setNegativeButton(android.R.string.no, null).show();
+
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myDb != null) {
+            myDb.close();
+        }
+    }
+
+
 }
