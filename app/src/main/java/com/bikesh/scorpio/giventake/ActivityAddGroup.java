@@ -100,19 +100,23 @@ public class ActivityAddGroup extends ActionBarActivity {
         public void onClick(View v) {
 
             Map<String, String> data = new HashMap<String, String>();
+            Intent i;
+
+            data.put("name",  ((EditText) addGroupView.findViewById(R.id.name) ).getText().toString() );
+            data.put("description", ((EditText) addGroupView.findViewById(R.id.description) ).getText().toString() );
 
             if(fromActivity.equals("ActivityLendAndBorrow")) {
 
-                data.put("name",  ((EditText) addGroupView.findViewById(R.id.name) ).getText().toString() );
+
                 data.put("email",  ((EditText) addGroupView.findViewById(R.id.email) ).getText().toString() );
                 data.put("phone", ((EditText) addGroupView.findViewById(R.id.phone) ).getText().toString() );
-                data.put("description", ((EditText) addGroupView.findViewById(R.id.description) ).getText().toString() );
+
 
                 if (mydb.insertUser(data)==1) {
                     Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
 
 
-                    Intent i = new Intent(ActivityAddGroup.this, ActivityLendAndBorrow.class);
+                    i = new Intent(ActivityAddGroup.this, ActivityLendAndBorrow.class);
                     startActivity(i);
                     finish();
 
@@ -120,6 +124,24 @@ public class ActivityAddGroup extends ActionBarActivity {
                     Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
                 }
             }
+            else  if(fromActivity.equals("ActivityPersonalExpense")) {
+
+                if (mydb.insertCategory(data)==1) {
+                    Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+
+
+                    i = new Intent(ActivityAddGroup.this, ActivityPersonalExpense.class);
+                    startActivity(i);
+                    finish();
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+
+
 
         }
     }

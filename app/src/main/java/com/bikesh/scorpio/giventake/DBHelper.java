@@ -4,19 +4,15 @@ package com.bikesh.scorpio.giventake;
  * Created by bikesh on 5/8/2015.
  */
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-import android.widget.EditText;
+import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -60,13 +56,13 @@ public class DBHelper extends SQLiteOpenHelper {
                 "create table personaltable  (_id INTEGER primary key autoincrement, category_id INTEGER, created_date DATE, description text, amt FLOAT )"
         );
         db.execSQL(
-                "create table category  (_id INTEGER primary key autoincrement, name text, description text, photo BLOB )"
+                "create table collectiontable  (_id INTEGER primary key autoincrement, name text, description text, photo BLOB )"
         );
 
 
 
         db.execSQL(
-                "create table joint_group  (_id INTEGER primary key autoincrement, name text, is_online INTEGER DEFAULT 0, owner INTEGER, description text, photo BLOB )"
+                "create table joint_grouptable  (_id INTEGER primary key autoincrement, name text, is_online INTEGER DEFAULT 0, owner INTEGER, description text, photo BLOB )"
         );
         db.execSQL(
                 "create table jointtable  (_id INTEGER primary key autoincrement, joint_group_id INTEGER, created_date DATE, description text, owner_id INTEGER, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0, is_month_wise INTEGER DEFAULT 0 )"
@@ -101,6 +97,8 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("description", data.get("description"));
 
         db.insert("usertable", null, contentValues);
+
+        db.close();
         return 1;
     }
 
@@ -316,24 +314,55 @@ public class DBHelper extends SQLiteOpenHelper {
                 " TOTAL ( ( select (select TOTAL(amt) from lendandborrowtable where from_user = 1 and to_user = u._id  )  -(select TOTAL(amt) from lendandborrowtable where from_user =u._id and to_user = 1   ) as amt where amt<0      ) )" +
                 "from usertable u where _id !=1" , null );
 
-
         data.put("amt_toGet", "0.0");
         data.put("amt_toGive", "0.0" );
         if (res != null) {
             res.moveToFirst();
-
-
             data.put("amt_toGet", "" + res.getFloat(0));
-            data.put("amt_toGive", ""+ (res.getFloat(1)*-1) );
+            data.put("amt_toGive", ""+ ((res.getFloat(1)<0) ? (res.getFloat(1)*-1) : 0 ) );
         }
-
 
         res.close();
 
         return data;
     }
 
+    //===========================================================================================================================
 
+    public int insertCategory (Map<String, String> data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+
+        contentValues.put("name", data.get("name").trim());
+        contentValues.put("description", data.get("description"));
+
+        db.insert("collectiontable", null, contentValues);
+        return 1;
+    }
+
+    public Cursor getAllCategory() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from collectiontable", null );
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
+    }
+
+    public float getCategoryTotalBalance(long ColId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        float balance=0;
+        Cursor res =  db.rawQuery( "select ((select TOTAL(amt) from personaltable where category_id = "+ColId+"  )" , null );
+        if (res != null) {
+            res.moveToFirst();
+            balance =  res.getFloat(0);
+        }
+
+        res.close();
+
+        return balance;
+    }
 
 
 }

@@ -3,26 +3,20 @@ package com.bikesh.scorpio.giventake;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import java.util.Map;
-import java.util.Random;
 
 
 public class ActivityLendAndBorrow extends ActionBarActivity {
@@ -132,37 +126,24 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         //Todo :- need to implement pagination
         Cursor cursor = myDb.getAllUsers();
 
-        float amt=0, togive=0,toget=0;
+
+        /*
         listView.setAdapter(new Custom_Adapter(this,		// Context
                 R.layout.listview_item_template,	// Row layout template
                 cursor					// cursor (set of DB records to map)
                 ));
 
+           */
 
+
+        listView.setAdapter(new Adapter_CustomSimpleCursor(this,		// Context
+                R.layout.listview_item_template,	// Row layout template
+                cursor					// cursor (set of DB records to map)
+        ));
 
 
 
         Map<String, String> finalResult = myDb.getFinalResult();
-        /*
-        if(cursor!=null){
-            cursor.moveToFirst();
-
-
-            while(cursor.isAfterLast() == false){
-
-                amt= myDb.getTotalBalance(Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id"))) );
-
-                if(amt<0){
-                    amt=amt*-1;
-                    toget=toget+amt;
-                }
-                else{
-                    togive=togive+amt;
-                }
-                cursor.moveToNext();
-            }
-        }
-        */
 
         ((TextView)lendAndBorrowView.findViewById(R.id.amt_togive)).setText(": "+finalResult.get("amt_toGive"));
         ((TextView)lendAndBorrowView.findViewById(R.id.amt_toget)).setText(": " + finalResult.get("amt_toGet"));
@@ -170,20 +151,22 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
 
     }
 
+
+    /*
     public class Custom_Adapter extends SimpleCursorAdapter {
 
-        private Context mContext;
-        private Context appContext;
+       // private Context mContext;
+        //private Context appContext;
         private int layout;
-        private Cursor cr;
+        //private Cursor cr;
         private final LayoutInflater inflater;
 
         public Custom_Adapter(Context context,int layout, Cursor c ) {
             super(context,layout,c,new String[]{},new int[]{},0);
             this.layout=layout;
-            this.mContext = context;
+            //this.mContext = context;
             this.inflater=LayoutInflater.from(context);
-            this.cr=c;
+            //this.cr=c;
         }
 
         @Override
@@ -219,7 +202,7 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
 
         }
 
-    }
+    }*/
 
 
 
