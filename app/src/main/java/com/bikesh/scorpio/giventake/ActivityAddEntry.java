@@ -21,6 +21,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -46,6 +47,8 @@ public class ActivityAddEntry extends ActionBarActivity {
     boolean actionFlag=false; //if false giving or borrowing
 
     View addEntryView;
+
+    Intent backActivityIntent=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,9 +91,59 @@ public class ActivityAddEntry extends ActionBarActivity {
         }
 
 
+        switch (fromActivity) {
+            case "ActivityLendAndBorrow":
+                backActivityIntent=new Intent(ActivityAddEntry.this, ActivityLendAndBorrow.class);
+                generateDataForLendNBorrow();
+                break;
+
+            case "ActivityLendAndBorrowPersonal":
+                backActivityIntent=new Intent(ActivityAddEntry.this, ActivityLendAndBorrowIndividual.class);
+                backActivityIntent.putExtra("fromActivity", "ActivityLendAndBorrow");
+                backActivityIntent.putExtra("userId", "" + userId);
+                backActivityIntent.putExtra("userName", userName);
+                generateDataForLendNBorrow();
+                break;
 
 
+            case "ActivityPersonalExpense":
+                backActivityIntent=new Intent(ActivityAddEntry.this, ActivityPersonalExpense.class);
+                break;
+            case "ActivityPersonalExpenseIndividual":
+                backActivityIntent=new Intent(ActivityAddEntry.this, ActivityPersonalExpenseIndividual.class);
+                break;
 
+            default:
+                throw new IllegalArgumentException("Invalid  ");
+        }
+
+
+        //implementing date picker
+
+        EditText datePicker = ((EditText) addEntryView.findViewById(R.id.datePicker));
+        //created_date is hidden field for serving date to db (YY-mm-dd format)
+        EditText created_date = ((EditText) addEntryView.findViewById(R.id.created_date));
+
+        //initial date values
+        SimpleDateFormat dmy = new SimpleDateFormat("dd-MM-yyyy");
+        String dmyDate = dmy.format(new Date());
+        datePicker.setText(dmyDate);
+
+        SimpleDateFormat tmpdmy = new SimpleDateFormat("yyyy-MM-dd");
+        String tmpdmyDate = tmpdmy.format(new Date());
+        created_date.setText(tmpdmyDate);
+
+        //setting datepicker adapter
+        datePicker.setOnClickListener(new CustomDatePicker(ActivityAddEntry.this, datePicker, created_date, false));
+        //----implementing date picker
+
+
+        ((Button)addEntryView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
+        ((Button) addEntryView.findViewById(R.id.cancelBtn)).setOnClickListener(new cancelActivity());
+
+    }
+
+    private void generateDataForLendNBorrow(){
 
         // getting options from xml string array
         ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.addEntryAction));
@@ -100,7 +153,8 @@ public class ActivityAddEntry extends ActionBarActivity {
 
         Cursor cursor = myDb.getAllUsers();
 
-        populateUserListAdapter adapter = new populateUserListAdapter(this, R.layout.custom_spinner_item_template, cursor);
+        Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, cursor);
+
         ((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(adapter);
 
         //setting passed/selected user name in spinner
@@ -114,33 +168,7 @@ public class ActivityAddEntry extends ActionBarActivity {
             }
         }
         ((Spinner) addEntryView.findViewById(R.id.fromUser)).setSelection(cpos);
-
-
-
-        SimpleDateFormat dmy = new SimpleDateFormat("dd-MM-yyyy");
-        String dmyDate = dmy.format(new Date());
-
-        ((EditText) addEntryView.findViewById(R.id.datePicker)).setText(dmyDate);
-
-        //((EditText) addEntryView.findViewById(R.id.datePicker)).setOnClickListener(new datePicker());
-
-        EditText datePicker = ((EditText) addEntryView.findViewById(R.id.datePicker));
-        EditText created_date = ((EditText) addEntryView.findViewById(R.id.created_date));
-        datePicker.setOnClickListener(new CustomDatePicker(ActivityAddEntry.this, datePicker, created_date,false));
-
-
-        SimpleDateFormat tmpdmy = new SimpleDateFormat("yyyy-MM-dd");
-        String tmpdmyDate = tmpdmy.format(new Date());
-
-        ((EditText) addEntryView.findViewById(R.id.created_date)).setText(tmpdmyDate);
-
-
-        ((Button)addEntryView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
-
-
-
     }
-
 
 
 
@@ -161,41 +189,6 @@ public class ActivityAddEntry extends ActionBarActivity {
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) { }
-    }
-
-
-
-    // need to make this class as global,
-    public class populateUserListAdapter extends SimpleCursorAdapter {
-
-        private Context mContext;
-        private Context appContext;
-        private int layout;
-        private Cursor cr;
-        private final LayoutInflater inflater;
-
-        public populateUserListAdapter(Context context,int layout, Cursor c ) {
-            super(context,layout,c,new String[]{},new int[]{},0);
-            this.layout=layout;
-            this.mContext = context;
-            this.inflater=LayoutInflater.from(context);
-            this.cr=c;
-        }
-
-        @Override
-        public View newView (Context context, Cursor cursor, ViewGroup parent) {
-            return inflater.inflate(layout, null);
-        }
-
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-            super.bindView(view, context, cursor);
-
-            ((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")));
-            ((TextView)view.findViewById(R.id.item_phone)).setText(cursor.getString(cursor.getColumnIndex("phone")));
-
-        }
-
     }
 
 
@@ -224,19 +217,7 @@ public class ActivityAddEntry extends ActionBarActivity {
                 if (myDb.insertEntry(data)==1) {
                     Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
 
-                    Intent i;
-                    if(fromActivity.equals("ActivityLendAndBorrowPersonal") ) {
-                        i = new Intent(ActivityAddEntry.this, ActivityLendAndBorrowIndividual.class);
-                        i.putExtra("fromActivity", "ActivityLendAndBorrow");
-                        i.putExtra("userId", "" + userId);
-                        i.putExtra("userName", userName);
-                    }
-                    else{
-                        i = new Intent(ActivityAddEntry.this, ActivityLendAndBorrow .class);
-                    }
-                    startActivity(i);
-                    finish();
-
+                    goBack();
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
@@ -246,5 +227,26 @@ public class ActivityAddEntry extends ActionBarActivity {
         }
     }
 
+
+    private class cancelActivity implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            goBack();
+        }
+    }
+
+    private void goBack(){
+        startActivity(backActivityIntent);
+        finish();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myDb != null) {
+            myDb.close();
+        }
+    }
 
 }

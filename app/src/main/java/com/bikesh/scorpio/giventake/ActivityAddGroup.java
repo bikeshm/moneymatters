@@ -27,7 +27,9 @@ public class ActivityAddGroup extends ActionBarActivity {
 
     View addGroupView;
 
-    private DBHelper mydb ;
+    private DBHelper myDb ;
+
+    Intent backActivityIntent=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,7 @@ public class ActivityAddGroup extends ActionBarActivity {
         frame.addView(addGroupView);
 
 
-        mydb = new DBHelper(this);
+        myDb = new DBHelper(this);
 
 
         Bundle extras = getIntent().getExtras();
@@ -64,21 +66,25 @@ public class ActivityAddGroup extends ActionBarActivity {
             fromActivity= null;
         } else {
             fromActivity= extras.getString("fromActivity");
-        }
-
-
-        if(fromActivity.equals("ActivityLendAndBorrow")){
 
         }
+
+
+
+
 
 
         switch (fromActivity) {
             case "ActivityLendAndBorrow":
                 //((TextView) addGroupView.findViewById(R.id.op)).setText("Add user");
+                backActivityIntent=new Intent(ActivityAddGroup.this, ActivityLendAndBorrow.class);
+
                 break;
             case "ActivityPersonalExpense":
                 ((LinearLayout) addGroupView.findViewById(R.id.emailLayer) ).setVisibility(View.GONE);
                 ((LinearLayout) addGroupView.findViewById(R.id.phoneLayer) ).setVisibility(View.GONE);
+
+                backActivityIntent=new Intent(ActivityAddGroup.this, ActivityPersonalExpense.class);
                 break;
 
             default:
@@ -88,6 +94,7 @@ public class ActivityAddGroup extends ActionBarActivity {
 
 
         ((Button) addGroupView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
+        ((Button) addGroupView.findViewById(R.id.cancelBtn)).setOnClickListener(new cancelActivity());
 
 
 
@@ -100,7 +107,7 @@ public class ActivityAddGroup extends ActionBarActivity {
         public void onClick(View v) {
 
             Map<String, String> data = new HashMap<String, String>();
-            Intent i;
+
 
             data.put("name",  ((EditText) addGroupView.findViewById(R.id.name) ).getText().toString() );
             data.put("description", ((EditText) addGroupView.findViewById(R.id.description) ).getText().toString() );
@@ -112,13 +119,12 @@ public class ActivityAddGroup extends ActionBarActivity {
                 data.put("phone", ((EditText) addGroupView.findViewById(R.id.phone) ).getText().toString() );
 
 
-                if (mydb.insertUser(data)==1) {
+                if (myDb.insertUser(data)==1) {
                     Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
 
-
-                    i = new Intent(ActivityAddGroup.this, ActivityLendAndBorrow.class);
-                    startActivity(i);
-                    finish();
+                    //startActivity(backActivityIntent);
+                    //finish();
+                    goBack();
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
@@ -126,13 +132,12 @@ public class ActivityAddGroup extends ActionBarActivity {
             }
             else  if(fromActivity.equals("ActivityPersonalExpense")) {
 
-                if (mydb.insertCategory(data)==1) {
+                if (myDb.insertCategory(data)==1) {
                     Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
 
-
-                    i = new Intent(ActivityAddGroup.this, ActivityPersonalExpense.class);
-                    startActivity(i);
-                    finish();
+                    //startActivity(backActivityIntent);
+                    //finish();
+                    goBack();
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
@@ -168,5 +173,27 @@ public class ActivityAddGroup extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    private class cancelActivity implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            goBack();
+        }
+    }
+
+    private void goBack(){
+        startActivity(backActivityIntent);
+        finish();
+    }
+
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myDb != null) {
+            myDb.close();
+        }
+    }
 
 }

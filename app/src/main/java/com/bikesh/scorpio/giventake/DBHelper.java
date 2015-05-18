@@ -279,6 +279,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         res.close();
+        db.close();
 
         return balance;
     }
