@@ -101,13 +101,14 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
 
         dateChangerForDb.addTextChangedListener(new dateChange());
 
-        generageTable(entrys);
+        generateTable(entrys);
     }
 
 
     @Override
     public void onBackPressed() {
         startActivity(new Intent(ActivityLendAndBorrowIndividual.this,ActivityLendAndBorrow.class));
+        finish();
     }
 
     //Todo :- handle back click , and goto prev activity page
@@ -116,7 +117,7 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
         super.onResume();
 
         Cursor entrys =  myDb.getUserEntrys(userId, ((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
-        generageTable(entrys);
+        generateTable(entrys);
     }
 
 
@@ -134,14 +135,14 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
 
             Cursor entrys =  myDb.getUserEntrys(userId,((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
 
-            generageTable(entrys);
+            generateTable(entrys);
 
         }
     }
 
 
 
-    private void generageTable(Cursor cursor) {
+    private void generateTable(Cursor cursor) {
 
         TableLayout tableLayout = (TableLayout) lendAndBorrowPersonalView.findViewById(R.id.tableLayout);
         TableRow tr, th;
@@ -318,8 +319,8 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
 
             Intent i = new Intent(ActivityLendAndBorrowIndividual.this, ActivityAddEntry.class);
             i.putExtra("fromActivity", "ActivityLendAndBorrowPersonal");
-            i.putExtra("userId", ""+userId);
-            i.putExtra("userName",  userName );
+            i.putExtra("ID", ""+userId);
+            i.putExtra("Name",  userName );
             startActivity(i);
 
         }

@@ -77,9 +77,17 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
             }
         }
         else if(cContext.getResources().getResourceEntryName(layout).equals("custom_spinner_item_template")){
-
+            // this usess loading user and collection
             ((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")));
-            ((TextView)view.findViewById(R.id.item_phone)).setText(cursor.getString(cursor.getColumnIndex("phone")));
+
+
+            // if cusersor having phone meanse this is loading user fields or loadding collection
+            if(cursor.getColumnIndex("phone")!=-1) {
+                ((TextView) view.findViewById(R.id.item_phone)).setText(cursor.getString(cursor.getColumnIndex("phone")));
+            }
+            else{
+                ((TextView) view.findViewById(R.id.item_phone)).setVisibility(View.GONE);
+            }
         }
 
     }

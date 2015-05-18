@@ -13,7 +13,7 @@
         android:id="@+id/l1"
         android:paddingLeft="20dp" >
 
-        <TextView android:text="Showing details of "
+        <TextView android:text="Month-Year  : "
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -23,10 +23,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <TextView android:text=" May - 2015"
+        <TextView
+            android:id="@+id/dateChanger"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true" />
+            android:clickable="true"
+            android:minWidth="100dp"/>
+
+        <TextView
+            android:id="@+id/dateChangerForDb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
 
     </LinearLayout>
 
@@ -76,158 +85,15 @@
         android:id="@+id/scrollView">
 
         <TableLayout
+            android:id="@+id/tableLayout"
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:shrinkColumns="1"
             android:stretchColumns="1"
+            android:background="#DFD080"
+            android:paddingBottom="2dp"
             >
-
-            <TableRow
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:background="#BBBBBB">
-                <TextView
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="Date"
-                    android:padding="5dp"
-                    android:textStyle="bold"/>
-                <TextView
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="Description"
-                    android:padding="5dp"
-                    android:textStyle="bold"/>
-
-
-                <TextView
-                    android:layout_weight="4"
-                    android:layout_height="wrap_content"
-                    android:text="Amount"
-                    android:padding="5dp"
-                    android:textStyle="bold"/>
-            </TableRow>
-
-            <TableRow
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:background="#AAAAAA"
-                android:clickable="true"
-                >
-
-                <TextView
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="01/05/2015"
-                    android:padding="5dp"/>
-
-                <TextView
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-
-                    android:text="1kg rice, 1kg potato, 1kg abcdf, 1k dkfskfjskf"/>
-
-
-
-                <TextView
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="3200.00"
-                    android:padding="5dp"
-                    />
-            </TableRow>
-
-            <TableRow
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:background="#BBBBBB">
-
-                <TextView
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="20/05/2015"
-                    android:padding="5dp"/>
-
-                <TextView
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-
-                    android:text="Bus ticket online booking"/>
-
-
-
-                <TextView
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="1500.00"
-                    android:padding="5dp"
-                    />
-            </TableRow>
-
-            <TableRow
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:background="#AAAAAA"
-                >
-
-                <TextView
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="20/05/2015"
-                    android:padding="5dp"/>
-
-                <TextView
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-
-                    android:text="Bus ticket online booking"/>
-
-
-
-                <TextView
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="1500.00"
-                    android:padding="5dp"
-                    />
-            </TableRow>
-
-            <TableRow
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:background="#BBBBBB">
-
-                <TextView
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="20/05/2015"
-                    android:padding="5dp"/>
-
-                <TextView
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-
-                    android:text="Bus ticket online booking"/>
-
-
-
-                <TextView
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="1500.00"
-                    android:padding="5dp"
-                    />
-            </TableRow>
-
-
-
-
-
 
         </TableLayout>
 

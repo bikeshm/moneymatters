@@ -40,8 +40,8 @@ import java.util.Map;
 public class ActivityAddEntry extends ActionBarActivity {
 
     String fromActivity=null;
-    long userId=0;
-    String userName="";
+    long ID=0;
+    String Name="";
     DBHelper myDb;
 
     boolean actionFlag=false; //if false giving or borrowing
@@ -84,10 +84,11 @@ public class ActivityAddEntry extends ActionBarActivity {
             fromActivity= null;
         } else {
             fromActivity= extras.getString("fromActivity");
-            if(extras.getString("userId")!=null)
-                userId = Long.parseLong(extras.getString("userId"));
 
-            userName = extras.getString("userName");
+            if(extras.getString("ID")!=null)
+                ID = Long.parseLong(extras.getString("ID"));
+
+            Name = extras.getString("Name");
         }
 
 
@@ -100,17 +101,21 @@ public class ActivityAddEntry extends ActionBarActivity {
             case "ActivityLendAndBorrowPersonal":
                 backActivityIntent=new Intent(ActivityAddEntry.this, ActivityLendAndBorrowIndividual.class);
                 backActivityIntent.putExtra("fromActivity", "ActivityLendAndBorrow");
-                backActivityIntent.putExtra("userId", "" + userId);
-                backActivityIntent.putExtra("userName", userName);
+                backActivityIntent.putExtra("userId", "" + ID);
+                backActivityIntent.putExtra("userName", Name);
                 generateDataForLendNBorrow();
                 break;
 
 
             case "ActivityPersonalExpense":
                 backActivityIntent=new Intent(ActivityAddEntry.this, ActivityPersonalExpense.class);
+                generateDataForPersonalExpense();
                 break;
             case "ActivityPersonalExpenseIndividual":
                 backActivityIntent=new Intent(ActivityAddEntry.this, ActivityPersonalExpenseIndividual.class);
+                backActivityIntent.putExtra("colId", "" + ID);
+                backActivityIntent.putExtra("colName", Name);
+                generateDataForPersonalExpense();
                 break;
 
             default:
@@ -143,15 +148,16 @@ public class ActivityAddEntry extends ActionBarActivity {
 
     }
 
-    private void generateDataForLendNBorrow(){
+    private void generateDataForPersonalExpense(){
 
-        // getting options from xml string array
-        ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.addEntryAction));
-        ((Spinner)findViewById(R.id.actionSpinner)).setAdapter(actionSpinnerArrayAdapter);
-        ((Spinner)findViewById(R.id.actionSpinner)).setOnItemSelectedListener(new selectedAction());
+        ((LinearLayout) addEntryView.findViewById(R.id.l3) ).setVisibility(View.GONE);
+        ((TextView)addEntryView.findViewById(R.id.selectUserLabel)).setText("Select Collection : ");
 
+        Cursor cursor = myDb.getAllCollection();
+        generate_FromuserSpinner(cursor);
+    }
 
-        Cursor cursor = myDb.getAllUsers();
+    private void generate_FromuserSpinner(Cursor cursor) {
 
         Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, cursor);
 
@@ -162,12 +168,28 @@ public class ActivityAddEntry extends ActionBarActivity {
         for(int i = 0; i < adapter.getCount(); i++){
             cursor.moveToPosition(i);
             Double temp = Double.parseDouble( cursor.getString(cursor.getColumnIndex("_id")) );
-            if ( temp == userId ){
+            if ( temp == ID ){
                 cpos = i;
                 break;
             }
         }
         ((Spinner) addEntryView.findViewById(R.id.fromUser)).setSelection(cpos);
+
+    }
+
+
+    private void generateDataForLendNBorrow(){
+
+        // getting options from xml string array
+        ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.addEntryAction));
+        ((Spinner)findViewById(R.id.actionSpinner)).setAdapter(actionSpinnerArrayAdapter);
+        ((Spinner)findViewById(R.id.actionSpinner)).setOnItemSelectedListener(new selectedAction());
+
+
+        Cursor cursor = myDb.getAllUsers();
+
+        generate_FromuserSpinner(cursor);
+
     }
 
 
@@ -198,10 +220,13 @@ public class ActivityAddEntry extends ActionBarActivity {
 
             Map<String, String> data = new HashMap<String, String>();
 
-            if(fromActivity.equals("ActivityLendAndBorrowPersonal") || fromActivity.equals("ActivityLendAndBorrow")  ) {
+            //common field
+            data.put("created_date",  ((EditText) addEntryView.findViewById(R.id.created_date) ).getText().toString() );
+            data.put("description",  ((EditText) addEntryView.findViewById(R.id.description) ).getText().toString() );
 
-                data.put("created_date",  ((EditText) addEntryView.findViewById(R.id.created_date) ).getText().toString() );
-                data.put("description",  ((EditText) addEntryView.findViewById(R.id.description) ).getText().toString() );
+            data.put("amt", ((EditText) addEntryView.findViewById(R.id.amount) ).getText().toString() );
+
+            if(fromActivity.equals("ActivityLendAndBorrowPersonal") || fromActivity.equals("ActivityLendAndBorrow")  ) {
 
                 if(actionFlag==false) {
                     data.put("from_user", "1" );
@@ -212,7 +237,6 @@ public class ActivityAddEntry extends ActionBarActivity {
                     data.put("to_user", "1" );
                 }
 
-                data.put("amt", ((EditText) addEntryView.findViewById(R.id.amount) ).getText().toString() );
 
                 if (myDb.insertEntry(data)==1) {
                     Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
@@ -223,6 +247,22 @@ public class ActivityAddEntry extends ActionBarActivity {
                     Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
                 }
             }
+
+
+            if(fromActivity.equals("ActivityPersonalExpense") || fromActivity.equals("ActivityPersonalExpenseIndividual") ){
+                data.put("collection_id",  ((Spinner) addEntryView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
+
+                if (myDb.insertPersonalExpense(data)==1) {
+                    Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+
+                    goBack();
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
 
         }
     }

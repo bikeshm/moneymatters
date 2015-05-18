@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,16 +20,19 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "GivnTake.db";
 
     public static final String USER_TABLE_NAME = "usertable";
-    //public static final String USER_COLUMN_ID = "_id";
-    //public static final String  USER_COLUMN_NAME = "name";
-    //public static final String  USER_COLUMN_EMAIL = "email";
-    //public static final String  USER_COLUMN_PHONE = "phone";
-    //public static final String  USER_COLUMN_CITY = "description";
-    //public static final String  USER_COLUMN_PHOTO = "photo";
+    public static final String USER_TABLE_FIELDS[]={"name","email","phone","description","photo"};
 
     public static final String LENDANDBORROW_TABLE_NAME = "lendandborrowtable";
+
     public static final String PERSONAL_TABLE_NAME = "personaltable";
-    public static final String JOINT_TABLE_NAME = "jointtable";
+    public static final String PERSONAL_TABLE_FIELDS[]={"category_id","created_date","description","amt"};
+
+    public static final String COLLECTION_TABLE_NAME = "collectiontable";
+
+    public static final String JOINTENTRY_TABLE_NAME = "jointtable";
+    public static final String JOINTGROUP_TABLE_NAME = "joint_grouptable";
+    public static final String JOINTSPLITE_TABLE_NAME = "splittable";
+
 
 
 
@@ -53,7 +57,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         db.execSQL(
-                "create table personaltable  (_id INTEGER primary key autoincrement, category_id INTEGER, created_date DATE, description text, amt FLOAT )"
+                "create table personaltable  (_id INTEGER primary key autoincrement, collection_id INTEGER, created_date DATE, description text, amt FLOAT )"
         );
         db.execSQL(
                 "create table collectiontable  (_id INTEGER primary key autoincrement, name text, description text, photo BLOB )"
@@ -330,7 +334,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //===========================================================================================================================
 
-    public int insertCategory (Map<String, String> data) {
+    public int insertCollection (Map<String, String> data) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -342,7 +346,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return 1;
     }
 
-    public Cursor getAllCategory() {
+    public Cursor getAllCollection() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select * from collectiontable", null );
         if (res != null) {
@@ -351,7 +355,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public float getCategoryTotalBalance(long ColId) {
+    public float getCollectionTotalBalance(long ColId) {
         SQLiteDatabase db = this.getReadableDatabase();
         float balance=0;
         Cursor res =  db.rawQuery( "select ((select TOTAL(amt) from personaltable where category_id = "+ColId+"  )" , null );
@@ -363,6 +367,30 @@ public class DBHelper extends SQLiteOpenHelper {
         res.close();
 
         return balance;
+    }
+    //===========================================================================================================================
+
+    public int insertPersonalExpense (Map<String, String> data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        for (Map.Entry<String, String> entry : data.entrySet())
+        {
+            contentValues.put(entry.getKey(), entry.getValue() );
+        }
+
+        db.insert("personaltable", null, contentValues);
+        return 1;
+    }
+
+    public Cursor getPersonalExpense(long collectionId, String month) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Log.i("bm info", "select * from personaltable where collection_id = " + collectionId + "  and STRFTIME('%m-%Y', created_date) = '" + month + "'");
+        Cursor res =  db.rawQuery( "select * from personaltable where collection_id = "+collectionId+"  and STRFTIME('%m-%Y', created_date) = '"+month+"'", null );
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
     }
 
 

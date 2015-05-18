@@ -3,6 +3,7 @@ package com.bikesh.scorpio.giventake;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
@@ -37,6 +38,7 @@ public class CustomDatePicker implements View.OnClickListener {
         textViewdatePicker=datePicker;
         textViewtempDatePicker=tempDatePicker;
         this.removeDay=removeDay;
+        Log.i("datepicker", "cccccccccc");
     }
 
     @Override

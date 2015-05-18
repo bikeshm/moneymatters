@@ -132,7 +132,7 @@ public class ActivityAddGroup extends ActionBarActivity {
             }
             else  if(fromActivity.equals("ActivityPersonalExpense")) {
 
-                if (myDb.insertCategory(data)==1) {
+                if (myDb.insertCollection(data)==1) {
                     Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
 
                     //startActivity(backActivityIntent);

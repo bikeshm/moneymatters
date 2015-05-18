@@ -85,7 +85,7 @@ public class ActivityPersonalExpense extends ActionBarActivity {
         //Todo :- 1. insted of listing all category just list the category which is having entry
         //Todo :- need to implement pagination
         //Todo : - implement search option
-        Cursor cursor = myDb.getAllCategory();
+        Cursor cursor = myDb.getAllCollection();
 
         listView.setAdapter(new Adapter_CustomSimpleCursor(this,		// Context
                 R.layout.listview_item_template,	// Row layout template
