@@ -13,7 +13,7 @@ import android.widget.Toast;
 public class ActivitySplash extends ActionBarActivity {
 
 
-
+    DBHelper myDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,16 +25,26 @@ public class ActivitySplash extends ActionBarActivity {
         setContentView(R.layout.activity_splash);
 
 
+        myDb = new DBHelper(this);
+
         new Handler().postDelayed(new Runnable() {
 
             // Using handler with postDelayed called runnable run method
-
             @Override
             public void run() {
-                Intent i = new Intent(ActivitySplash.this, ActivityHome.class);
-                startActivity(i);
 
-                // close this activity
+                Intent i=new Intent(ActivitySplash.this, ActivityHome.class);
+
+                // if first time opening the app , need to register root user (me user)
+                if(myDb.getNumRowsUsertable()==0){
+                    //register user
+                    i = new Intent(ActivitySplash.this, ActivityAddGroup.class);
+                    i.putExtra("fromActivity", "ActivitySplash");
+
+                }
+
+
+                startActivity(i);
                 finish();
             }
         }, 3*1000); // wait for 3 seconds

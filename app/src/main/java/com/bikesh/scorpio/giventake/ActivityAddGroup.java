@@ -63,7 +63,7 @@ public class ActivityAddGroup extends ActionBarActivity {
         Bundle extras = getIntent().getExtras();
 
         if(extras == null) {
-            fromActivity= null;
+            fromActivity= "";
         } else {
             fromActivity= extras.getString("fromActivity");
 
@@ -78,13 +78,20 @@ public class ActivityAddGroup extends ActionBarActivity {
             case "ActivityLendAndBorrow":
                 //((TextView) addGroupView.findViewById(R.id.op)).setText("Add user");
                 backActivityIntent=new Intent(ActivityAddGroup.this, ActivityLendAndBorrow.class);
-
+                getSupportActionBar().setTitle("Create User");
                 break;
+
+            case "ActivitySplash":
+                ((Button) addGroupView.findViewById(R.id.cancelBtn)).setVisibility(View.GONE);
+                getSupportActionBar().setTitle("Register");
+                backActivityIntent=new Intent(ActivityAddGroup.this, ActivityHome.class);
+                break;
+
             case "ActivityPersonalExpense":
                 ((LinearLayout) addGroupView.findViewById(R.id.emailLayer) ).setVisibility(View.GONE);
                 ((LinearLayout) addGroupView.findViewById(R.id.phoneLayer) ).setVisibility(View.GONE);
-
                 backActivityIntent=new Intent(ActivityAddGroup.this, ActivityPersonalExpense.class);
+                getSupportActionBar().setTitle("Create Collection");
                 break;
 
             default:
@@ -112,7 +119,7 @@ public class ActivityAddGroup extends ActionBarActivity {
             data.put("name",  ((EditText) addGroupView.findViewById(R.id.name) ).getText().toString() );
             data.put("description", ((EditText) addGroupView.findViewById(R.id.description) ).getText().toString() );
 
-            if(fromActivity.equals("ActivityLendAndBorrow")) {
+            if(fromActivity.equals("ActivityLendAndBorrow") || fromActivity.equals("ActivitySplash") ) {
 
 
                 data.put("email",  ((EditText) addGroupView.findViewById(R.id.email) ).getText().toString() );

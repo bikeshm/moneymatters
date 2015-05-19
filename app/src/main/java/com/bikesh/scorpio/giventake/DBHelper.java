@@ -46,7 +46,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(
-                "create table usertable  (_id INTEGER primary key autoincrement, name text, email text, phone text, description text, photo BLOB )"
+                "create table usertable  (_id INTEGER primary key autoincrement, onlineid INTEGER, name text, email text, phone text, description text, photo BLOB )"
         );
         // getting error is set _id numeric  (error: AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY:)
 
@@ -95,10 +95,15 @@ public class DBHelper extends SQLiteOpenHelper {
         //}
 
         //TODO:- move this to loop
-        contentValues.put("name", data.get("name").trim());
-        contentValues.put("email", data.get("email").trim());
-        contentValues.put("phone", data.get("phone").trim());
-        contentValues.put("description", data.get("description"));
+        //contentValues.put("name", data.get("name").trim());
+        //contentValues.put("email", data.get("email").trim());
+        //contentValues.put("phone", data.get("phone").trim());
+        //contentValues.put("description", data.get("description"));
+
+        for (Map.Entry<String, String> entry : data.entrySet())
+        {
+            contentValues.put(entry.getKey(), entry.getValue() );
+        }
 
         db.insert("usertable", null, contentValues);
 
@@ -112,20 +117,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor res =  db.rawQuery( "select * from usertable where _id="+id+"", null );
 
         data = fetchUserData(res );
-        /*if(res!=null) {
-            res.moveToFirst();
-        }
 
-        while(res.isAfterLast() == false){
-
-            //Log.i("DB", res.getString(res.getColumnIndex("name")) );
-            data.put("_id",  res.getString(res.getColumnIndex("_id")) );
-            data.put("name",  res.getString(res.getColumnIndex("name")) );
-            data.put("email",  res.getString(res.getColumnIndex("email")) );
-            data.put("phone", res.getString(res.getColumnIndex("phone")) );
-            data.put("description", res.getString(res.getColumnIndex("description")));
-            res.moveToNext();
-        }*/
         res.close();
         return data;
     }
@@ -211,11 +203,16 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
 
         //TODO:- move this to loop
-        contentValues.put("created_date", data.get("created_date").trim());
-        contentValues.put("description", data.get("description").trim());
-        contentValues.put("from_user", data.get("from_user").trim());
-        contentValues.put("to_user", data.get("to_user"));
-        contentValues.put("amt", data.get("amt"));
+        //contentValues.put("created_date", data.get("created_date").trim());
+        //contentValues.put("description", data.get("description").trim());
+        //contentValues.put("from_user", data.get("from_user").trim());
+        //contentValues.put("to_user", data.get("to_user"));
+        //contentValues.put("amt", data.get("amt"));
+
+        for (Map.Entry<String, String> entry : data.entrySet())
+        {
+            contentValues.put(entry.getKey(), entry.getValue() );
+        }
 
         db.insert("lendandborrowtable", null, contentValues);
         return 1;
