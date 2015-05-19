@@ -22,6 +22,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -180,10 +181,26 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
                 tv = generateTextview();
 
 
-                if(i!=2 ) {
+                //changing date format
+                if(fields[i].equals("created_date")){
+
+                    try {
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//set format of date you receiving from db
+                        Date date = (Date) sdf.parse(  cursor.getString(cursor.getColumnIndex(fields[i]))  );
+                        SimpleDateFormat newDate = new SimpleDateFormat("dd-MM-yyyy");//set format of new date
+                        tv.setText(""+ newDate.format(date) );
+                    }
+                    catch(ParseException pe) {
+                        tv.setText(cursor.getString(cursor.getColumnIndex(fields[i])));
+                    }
+
+
+                } else if(i!=2 ) {
                     tv.setText(cursor.getString(cursor.getColumnIndex(fields[i])));
                 }
                 else {
+                    // for from user
                     if( Integer.parseInt(cursor.getString(cursor.getColumnIndex("from_user"))) == 1 ){ //1== myId
 
                         tv.setText("Me");

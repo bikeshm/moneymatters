@@ -23,6 +23,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -158,7 +159,25 @@ public class ActivityPersonalExpenseIndividual extends ActionBarActivity {
             for (int i=0 ;i<fields.length; i++) {
 
                 tv = generateTextview();
-                tv.setText(cursor.getString(cursor.getColumnIndex(fields[i])));
+
+                //changing date format
+                if(fields[i].equals("created_date")){
+
+                    try {
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//set format of date you receiving from db
+                        Date date = (Date) sdf.parse(  cursor.getString(cursor.getColumnIndex(fields[i]))  );
+                        SimpleDateFormat newDate = new SimpleDateFormat("dd-MM-yyyy");//set format of new date
+                        tv.setText(""+ newDate.format(date) );
+                    }
+                    catch(ParseException pe) {
+                        tv.setText(cursor.getString(cursor.getColumnIndex(fields[i])));
+                    }
+                }
+                else {
+                    tv.setText(cursor.getString(cursor.getColumnIndex(fields[i])));
+                }
+
                 tr.addView(tv);
             }
 
@@ -178,13 +197,13 @@ public class ActivityPersonalExpenseIndividual extends ActionBarActivity {
 
 
 
-        /*
+
 
         float amtHolder;
-        amtHolder = myDb.getMonthTotalOfGive(userId,((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
+        amtHolder = myDb.getMonthTotalOfPersonalExpenseIndividual(colId, ((TextView) personalExpenseIndividualView.findViewById(R.id.dateChanger)).getText().toString());
+        ((TextView)personalExpenseIndividualView.findViewById(R.id.monthlyTotal)).setText(": "+amtHolder);
 
-        ((TextView)lendAndBorrowPersonalView.findViewById(R.id.monthTotalToGive)).setText(": "+amtHolder);
-
+        /*
         amtHolder = myDb.getMonthTotalOfGet(userId, ((TextView) lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
         ((TextView)lendAndBorrowPersonalView.findViewById(R.id.monthTotalToGet)).setText(": " + amtHolder);
 
@@ -259,7 +278,7 @@ public class ActivityPersonalExpenseIndividual extends ActionBarActivity {
         public void afterTextChanged(Editable s) {
             Toast.makeText(getApplicationContext(),""+((TextView)personalExpenseIndividualView.findViewById(R.id.dateChangerForDb)).getText(),Toast.LENGTH_LONG).show();
 
-            Cursor entrys =  myDb.getUserEntrys(colId,((TextView)personalExpenseIndividualView.findViewById(R.id.dateChanger)).getText().toString() );
+            Cursor entrys =  myDb.getPersonalExpense(colId, ((TextView) personalExpenseIndividualView.findViewById(R.id.dateChanger)).getText().toString() );
 
             generateTable(entrys);
 

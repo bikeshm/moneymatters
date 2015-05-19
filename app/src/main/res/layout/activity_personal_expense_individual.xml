@@ -67,6 +67,7 @@
                 android:text="Total amount spend "/>
 
             <TextView
+                android:id="@+id/monthlyTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=": 3700.00"/>

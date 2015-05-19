@@ -29,9 +29,19 @@
                 android:text="Expense month :  "/>
 
             <TextView
+                android:id="@+id/dateChanger"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="May-2015"/>
+                android:clickable="true"
+                android:minWidth="100dp"/>
+
+
+            <TextView
+                android:id="@+id/dateChangerForDb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                />
 
         </LinearLayout>
 
@@ -48,6 +58,7 @@
                 android:text="Total Expence : "/>
 
             <TextView
+                android:id="@+id/monthlyTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="500.00"/>

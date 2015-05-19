@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -15,12 +17,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -59,6 +67,24 @@ public class ActivityPersonalExpense extends ActionBarActivity {
 
         listView = (ListView) ActivityPersonalExpenseView.findViewById(R.id.listViewFromDB);
 
+
+        SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy");
+        String cDate = dmy.format(new Date());
+
+        SimpleDateFormat dbmy = new SimpleDateFormat("yyyy-MM");
+        String cdbDate = dbmy.format(new Date());
+
+        TextView dateChanger= (TextView)ActivityPersonalExpenseView.findViewById(R.id.dateChanger);
+        TextView dateChangerForDb= (TextView)ActivityPersonalExpenseView.findViewById(R.id.dateChangerForDb);
+
+        dateChanger.setOnClickListener(new CustomDatePicker(ActivityPersonalExpense.this, dateChanger, dateChangerForDb, true));
+
+        dateChanger.setText(cDate);
+        dateChangerForDb.setText(cdbDate);
+
+        dateChangerForDb.addTextChangedListener(new dateChange());
+
+
         myDb = new DBHelper(this);
         populateListViewFromDB();
 
@@ -67,6 +93,25 @@ public class ActivityPersonalExpense extends ActionBarActivity {
         ((ImageButton)ActivityPersonalExpenseView.findViewById(R.id.addExpenseGroup)).setOnClickListener(new openAddnewGroup());
 
     }
+
+
+    private class dateChange implements TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            Toast.makeText(getApplicationContext(), "" + ((TextView) ActivityPersonalExpenseView.findViewById(R.id.dateChangerForDb)).getText(), Toast.LENGTH_LONG).show();
+
+
+            populateListViewFromDB();
+
+        }
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -85,14 +130,25 @@ public class ActivityPersonalExpense extends ActionBarActivity {
         //Todo :- 1. insted of listing all category just list the category which is having entry
         //Todo :- need to implement pagination
         //Todo : - implement search option
-        Cursor cursor = myDb.getAllCollection();
+        Cursor cursor = myDb.getAllCollectionByMonth( ((TextView) ActivityPersonalExpenseView.findViewById(R.id.dateChanger)).getText().toString() );
+
+        Map<String, String> dataExtra = new HashMap<String, String>();
+
+        dataExtra.put("selectedDate",  ((TextView) ActivityPersonalExpenseView.findViewById(R.id.dateChanger)).getText().toString() );
 
         listView.setAdapter(new Adapter_CustomSimpleCursor(this,		// Context
                 R.layout.listview_item_template,	// Row layout template
-                cursor					// cursor (set of DB records to map)
+                cursor,					// cursor (set of DB records to map)
+                dataExtra
         ));
 
         listView.setOnItemClickListener(new listItemClicked());
+
+
+        float amtHolder;
+        amtHolder = myDb.getMonthTotalOfPersonalExpense(((TextView) ActivityPersonalExpenseView.findViewById(R.id.dateChanger)).getText().toString());
+        ((TextView)ActivityPersonalExpenseView.findViewById(R.id.monthlyTotal)).setText(": " + amtHolder);
+
     }
 
     private class listItemClicked implements android.widget.AdapterView.OnItemClickListener {

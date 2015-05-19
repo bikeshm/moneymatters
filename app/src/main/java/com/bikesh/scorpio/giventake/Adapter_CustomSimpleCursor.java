@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import java.util.Map;
+
 /**
  * Created by bikesh on 5/15/2015.
  * thia adapter userd to generate fist level listview (eg:- ActivityLendandBorrow, ActivityPersonalExpense, etc)
@@ -21,12 +23,24 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
 
     Context cContext;
 
+    Map<String, String> dataExtra;
+
     public Adapter_CustomSimpleCursor(Context context,int layout, Cursor c ) {
         super(context,layout,c,new String[]{},new int[]{},0);
         this.layout=layout;
         this.cContext = context;
         this.inflater=LayoutInflater.from(context);
         myDb = new DBHelper(context);
+    }
+
+    public Adapter_CustomSimpleCursor(Context context,int layout, Cursor c, Map<String, String> data ) {
+        super(context,layout,c,new String[]{},new int[]{},0);
+        this.layout=layout;
+        this.cContext = context;
+        this.inflater=LayoutInflater.from(context);
+        myDb = new DBHelper(context);
+
+        dataExtra=data;
     }
 
     @Override
@@ -45,6 +59,7 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
 
         //for first level display
         if(cContext.getResources().getResourceEntryName(layout).equals("listview_item_template")) {
+
             String amdGiveString = "Amount give", amdGetString = "Amount get";
 
             float balanceAmt = 0;
@@ -58,8 +73,9 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
             }
 
             if (cContext.getClass().getSimpleName().equals("ActivityPersonalExpense")) {
+                balanceAmt = myDb.getMonthTotalOfPersonalExpenseIndividual(Long.parseLong((cursor.getString(cursor.getColumnIndex("_id")))), dataExtra.get("selectedDate") );
+                ((TextView) view.findViewById(R.id.item_description)).setVisibility(View.GONE);
 
-                balanceAmt = myDb.getTotalBalance(Long.parseLong((cursor.getString(cursor.getColumnIndex("_id")))));
             }
 
             ((TextView) view.findViewById(R.id.item_amt)).setText("" + balanceAmt);

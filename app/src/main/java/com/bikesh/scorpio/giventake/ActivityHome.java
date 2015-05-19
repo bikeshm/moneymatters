@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 public class ActivityHome extends ActionBarActivity {
@@ -59,6 +61,13 @@ public class ActivityHome extends ActionBarActivity {
         Map<String, String> finalResult = myDb.getFinalResult();
         ((TextView)homeView.findViewById(R.id.amt_togive)).setText(": " + finalResult.get("amt_toGive"));
         ((TextView)homeView.findViewById(R.id.amt_toget)).setText(": " + finalResult.get("amt_toGet"));
+
+
+        SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy");
+        String cDate = dmy.format(new Date());
+        float amtHolder;
+        amtHolder = myDb.getMonthTotalOfPersonalExpense(cDate );
+        ((TextView)homeView.findViewById(R.id.personalExpenseTotal)).setText(": " + amtHolder);
 
 
     }

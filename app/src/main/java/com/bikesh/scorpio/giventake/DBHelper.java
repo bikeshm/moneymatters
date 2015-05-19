@@ -224,7 +224,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //createdDate = > "Month-Year" eg:- 5-2015
     public Cursor getUserEntrys(long userId, String createdDate) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from lendandborrowtable where (from_user = "+userId+" or to_user = "+userId+") and STRFTIME('%m-%Y', created_date) = '"+createdDate+"'", null );
+        Cursor res =  db.rawQuery( "select * from lendandborrowtable where (from_user = "+userId+" or to_user = "+userId+") and STRFTIME('%m-%Y', created_date) = '"+createdDate+"' order by created_date ", null );
         if (res != null) {
             res.moveToFirst();
         }
@@ -355,6 +355,15 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getAllCollectionByMonth(String month) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from collectiontable  where _id in ( select collection_id from personaltable where  STRFTIME('%m-%Y', created_date) = '"+month+"') ", null );
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
+    }
+
     public float getCollectionTotalBalance(long ColId) {
         SQLiteDatabase db = this.getReadableDatabase();
         float balance=0;
@@ -393,5 +402,41 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
+
+    public float getMonthTotalOfPersonalExpenseIndividual(long collectionId, String createdDate) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        float amt=0;
+        Cursor res =  db.rawQuery( "select TOTAL(amt) from personaltable where collection_id = "+collectionId+" and STRFTIME('%m-%Y', created_date) = '"+createdDate+"'", null );
+
+        if (res != null) {
+            res.moveToFirst();
+            amt =  res.getFloat(0);
+        }
+        else{
+            amt=0;
+        }
+
+        res.close();
+
+        return amt;
+    }
+
+    public float getMonthTotalOfPersonalExpense( String createdDate) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        float amt=0;
+        Cursor res =  db.rawQuery( "select TOTAL(amt) from personaltable where  STRFTIME('%m-%Y', created_date) = '"+createdDate+"'", null );
+
+        if (res != null) {
+            res.moveToFirst();
+            amt =  res.getFloat(0);
+        }
+        else{
+            amt=0;
+        }
+
+        res.close();
+
+        return amt;
+    }
 
 }
