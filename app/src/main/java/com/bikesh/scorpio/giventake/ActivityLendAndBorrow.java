@@ -127,14 +127,6 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
         Cursor cursor = myDb.getAllUsers();
 
 
-        /*
-        listView.setAdapter(new Custom_Adapter(this,		// Context
-                R.layout.listview_item_template,	// Row layout template
-                cursor					// cursor (set of DB records to map)
-                ));
-
-           */
-
 
         listView.setAdapter(new Adapter_CustomSimpleCursor(this,		// Context
                 R.layout.listview_item_template,	// Row layout template
@@ -150,82 +142,6 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
 
 
     }
-
-
-    /*
-    public class Custom_Adapter extends SimpleCursorAdapter {
-
-       // private Context mContext;
-        //private Context appContext;
-        private int layout;
-        //private Cursor cr;
-        private final LayoutInflater inflater;
-
-        public Custom_Adapter(Context context,int layout, Cursor c ) {
-            super(context,layout,c,new String[]{},new int[]{},0);
-            this.layout=layout;
-            //this.mContext = context;
-            this.inflater=LayoutInflater.from(context);
-            //this.cr=c;
-        }
-
-        @Override
-        public View newView (Context context, Cursor cursor, ViewGroup parent) {
-            return inflater.inflate(layout, null);
-        }
-
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-            super.bindView(view, context, cursor);
-
-
-            ((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")));
-
-            float balanceAmt=  myDb.getTotalBalance(Long.parseLong(( cursor.getString(cursor.getColumnIndex("_id")) )) );
-
-            ((TextView)view.findViewById(R.id.item_amt)).setText("" + balanceAmt);
-
-
-
-            if(balanceAmt<0){
-                ((TextView)view.findViewById(R.id.item_description)).setText("Amount get from him/her");
-                balanceAmt=balanceAmt*-1;
-                ((TextView)view.findViewById(R.id.item_amt)).setText(""+balanceAmt);
-            }
-            else if (balanceAmt>0){
-                ((TextView)view.findViewById(R.id.item_description)).setText("Amount give to him/her");
-            }
-            else{
-                ((TextView)view.findViewById(R.id.item_description)).setText("");
-
-            }
-
-        }
-
-    }*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

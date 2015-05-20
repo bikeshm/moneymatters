@@ -78,6 +78,18 @@ public class ActivityJointExpense extends ActionBarActivity {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        //populateListViewFromDB();
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(ActivityJointExpense.this,ActivityHome.class));
+    }
+
 
     private class listItemClicked implements android.widget.AdapterView.OnItemClickListener {
         @Override

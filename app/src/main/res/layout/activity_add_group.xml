@@ -36,6 +36,45 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/isOnlineLayer"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="Is Online "
+                />
+
+            <RadioGroup
+                android:id="@+id/isOnline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <RadioButton
+                    android:id="@+id/radioYes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Yes" />
+
+                <RadioButton
+                    android:id="@+id/radioNo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No"
+                    android:checked="true" />
+
+            </RadioGroup>
+        </LinearLayout>
+
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -102,6 +141,29 @@
                 android:hint="Description"/>
 
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/grupMembersLayer">
+
+            <TextView
+                android:id="@+id/selectUserLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Members "
+                />
+
+
+            <ListView
+                android:id="@+id/users"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" >
+            </ListView>
+
+        </LinearLayout>
+
 
 
 

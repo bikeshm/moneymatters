@@ -105,6 +105,11 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
                 ((TextView) view.findViewById(R.id.item_phone)).setVisibility(View.GONE);
             }
         }
+        else if(cContext.getResources().getResourceEntryName(layout).equals("listview_item_with_checkbox_template")){
+
+            ((TextView) view.findViewById(R.id.item_id)).setText(cursor.getString(cursor.getColumnIndex("_id")));
+
+        }
 
     }
 

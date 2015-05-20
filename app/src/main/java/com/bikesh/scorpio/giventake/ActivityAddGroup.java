@@ -2,21 +2,28 @@ package com.bikesh.scorpio.giventake;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -94,6 +101,25 @@ public class ActivityAddGroup extends ActionBarActivity {
                 getSupportActionBar().setTitle("Create Collection");
                 break;
 
+            case "ActivityJointExpense":
+                getSupportActionBar().setTitle("Create a Group");
+
+                ((LinearLayout) addGroupView.findViewById(R.id.isOnlineLayer) ).setVisibility(View.VISIBLE);
+                ((LinearLayout) addGroupView.findViewById(R.id.emailLayer) ).setVisibility(View.GONE);
+                ((LinearLayout) addGroupView.findViewById(R.id.phoneLayer) ).setVisibility(View.GONE);
+
+                backActivityIntent=new Intent(ActivityAddGroup.this, ActivityJointExpense.class);
+
+
+                Cursor cursor = myDb.getAllUsers();
+                Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.listview_item_with_checkbox_template, cursor);
+
+                ((ListView) addGroupView.findViewById(R.id.users)).setAdapter(adapter);
+
+                break;
+
+
+
             default:
                 throw new IllegalArgumentException("Invalid  ");
         }
@@ -117,7 +143,7 @@ public class ActivityAddGroup extends ActionBarActivity {
 
 
             data.put("name",  ((EditText) addGroupView.findViewById(R.id.name) ).getText().toString() );
-            data.put("description", ((EditText) addGroupView.findViewById(R.id.description) ).getText().toString() );
+            data.put("description", ((EditText) addGroupView.findViewById(R.id.description)).getText().toString());
 
             if(fromActivity.equals("ActivityLendAndBorrow") || fromActivity.equals("ActivitySplash") ) {
 
@@ -129,8 +155,6 @@ public class ActivityAddGroup extends ActionBarActivity {
                 if (myDb.insertUser(data)==1) {
                     Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
 
-                    //startActivity(backActivityIntent);
-                    //finish();
                     goBack();
 
                 } else {
@@ -142,8 +166,6 @@ public class ActivityAddGroup extends ActionBarActivity {
                 if (myDb.insertCollection(data)==1) {
                     Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
 
-                    //startActivity(backActivityIntent);
-                    //finish();
                     goBack();
 
                 } else {
@@ -153,6 +175,71 @@ public class ActivityAddGroup extends ActionBarActivity {
 
             }
 
+            else  if(fromActivity.equals("ActivityJointExpense")) {
+
+                ArrayList<Integer> members =new ArrayList<Integer>();
+
+
+                CheckBox cb;
+                ListView mainListView =((ListView) addGroupView.findViewById(R.id.users));
+                for (int x = 0; x<mainListView.getChildCount();x++){
+                    cb = (CheckBox)mainListView.getChildAt(x).findViewById(R.id.item_checkBox);
+
+                    if(cb.isChecked()){
+                        Log.i ( "selected", ((TextView) mainListView.getChildAt(x).findViewById(R.id.item_id)).getText().toString()  );
+                        members.add( Integer.parseInt( ((TextView) mainListView.getChildAt(x).findViewById(R.id.item_id)).getText().toString()  )  );
+                    }
+                }
+
+
+                int id = ((RadioGroup) addGroupView.findViewById(R.id.isOnline)).getCheckedRadioButtonId();
+                if (id == -1){
+                    //no item selected
+                }
+                else{
+
+                    members.add(1); // adding root user id
+
+                    data.put("members_count", ""+ members.size()  );
+
+                    if (id == R.id.radioNo){  //selected offline save to local db
+
+                        if (myDb.insertJointGroup(data)==1) {
+                            Toast.makeText(getApplicationContext(), "Group created", Toast.LENGTH_SHORT).show();
+
+                           //getting group details
+                            Map<String, String> result = new HashMap<String, String>();
+                            result=myDb.getJointGroup(data);
+
+                            //insert user relation
+                            if(result.size()>0){
+                                if(myDb.insertUserGroupRelation( Integer.parseInt(result.get("_id")), members)==1){
+                                    Toast.makeText(getApplicationContext(), "Data saved", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            goBack();
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } else{ //selected  online save groupdetails to local online group table and  parse
+
+                    }
+                }
+                /*
+
+                */
+
+
+
+
+
+            }
 
 
         }

@@ -1,8 +1,9 @@
 package com.bikesh.scorpio.giventake;
 
 /**
- * Created by bikesh on 5/8/2015.
+ * Author : bikesh on 5/8/2015.
  */
+
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,7 +12,9 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.EditText;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,9 +32,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static final String COLLECTION_TABLE_NAME = "collectiontable";
 
-    public static final String JOINTENTRY_TABLE_NAME = "jointtable";
+    public static final String JOINTENTRY_TABLE_NAME = "joint_entrytable";
     public static final String JOINTGROUP_TABLE_NAME = "joint_grouptable";
-    public static final String JOINTSPLITE_TABLE_NAME = "splittable";
+    public static final String JOINTSPLITE_TABLE_NAME = "joint_splittable";
+    public static final String JOINT_USER_GROUP_RELATION_TABLE_NAME="joint_usergrouprelationtable";
+
+    public static final String ONLINEJOINTGROUP_TABLE_NAME = "onlinejoint_grouptable";
 
 
 
@@ -46,33 +52,42 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(
-                "create table usertable  (_id INTEGER primary key autoincrement, onlineid INTEGER, name text, email text, phone text, description text, photo BLOB )"
-        );
-        // getting error is set _id numeric  (error: AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY:)
-
-        db.execSQL(
-                "create table lendandborrowtable  (_id INTEGER primary key autoincrement, created_date DATE, description text, from_user INTEGER, to_user INTEGER, amt FLOAT )"
+                "create table "+USER_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid INTEGER, name text, email text, phone text, description text, photo BLOB )"
         );
 
-
-
         db.execSQL(
-                "create table personaltable  (_id INTEGER primary key autoincrement, collection_id INTEGER, created_date DATE, description text, amt FLOAT )"
-        );
-        db.execSQL(
-                "create table collectiontable  (_id INTEGER primary key autoincrement, name text, description text, photo BLOB )"
+                "create table "+LENDANDBORROW_TABLE_NAME+"  (_id INTEGER primary key autoincrement, created_date DATE, description text, from_user INTEGER, to_user INTEGER, amt FLOAT )"
         );
 
 
 
         db.execSQL(
-                "create table joint_grouptable  (_id INTEGER primary key autoincrement, name text, is_online INTEGER DEFAULT 0, owner INTEGER, description text, photo BLOB )"
+                "create table "+PERSONAL_TABLE_NAME+"  (_id INTEGER primary key autoincrement, collection_id INTEGER, created_date DATE, description text, amt FLOAT )"
         );
         db.execSQL(
-                "create table jointtable  (_id INTEGER primary key autoincrement, joint_group_id INTEGER, created_date DATE, description text, owner_id INTEGER, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0, is_month_wise INTEGER DEFAULT 0 )"
+                "create table "+COLLECTION_TABLE_NAME+"  (_id INTEGER primary key autoincrement, name text, description text, photo BLOB )"
+        );
+
+
+
+        db.execSQL(
+                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, name text,  members_count INTEGER, description text, totalamt FLOAT DEFAULT 0,photo BLOB )"
         );
         db.execSQL(
-                "create table splittable  (_id INTEGER primary key autoincrement, jointtable_id INTEGER, user_id INTEGER, amt FLOAT )"
+                "create table "+JOINTENTRY_TABLE_NAME+"  (_id INTEGER primary key autoincrement, joint_group_id INTEGER, created_date DATE, description text, owner_id INTEGER, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0, is_month_wise INTEGER DEFAULT 0 )"
+        );
+        db.execSQL(
+                "create table "+JOINT_USER_GROUP_RELATION_TABLE_NAME+"  (_id INTEGER primary key autoincrement, user_id INTEGER, joint_group_id INTEGER  )"
+        );
+
+        db.execSQL(
+                "create table "+JOINTSPLITE_TABLE_NAME+"  (_id INTEGER primary key autoincrement, jointtable_id INTEGER, user_id INTEGER, amt FLOAT )"
+        );
+
+        //table for storing online shard joint groups for offine use (backup database)
+        //online_id:- this is the row id in parse, after inseting to parse this field will update
+        db.execSQL(
+                "create table " + ONLINEJOINTGROUP_TABLE_NAME + "  (_id INTEGER primary key autoincrement, online_id text, name text, member_count INTEGER, owner text, description text, totalamt FLOAT DEFAULT 0, photo BLOB )"
         );
 
     }
@@ -93,12 +108,6 @@ public class DBHelper extends SQLiteOpenHelper {
         //if(getUserByEmail(data.get("email")).getCount()>0 || getUserByPhone(data.get("phone")).getCount()>0 ){
         //    return 2; //user already exsist
         //}
-
-        //TODO:- move this to loop
-        //contentValues.put("name", data.get("name").trim());
-        //contentValues.put("email", data.get("email").trim());
-        //contentValues.put("phone", data.get("phone").trim());
-        //contentValues.put("description", data.get("description"));
 
         for (Map.Entry<String, String> entry : data.entrySet())
         {
@@ -145,7 +154,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Cursor getUserByEmail(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from usertable where email='"+email.trim()+"'", null );
+        Cursor res =  db.rawQuery("select * from usertable where email='" + email.trim() + "'", null);
         return res;
     }
 
@@ -202,13 +211,6 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        //TODO:- move this to loop
-        //contentValues.put("created_date", data.get("created_date").trim());
-        //contentValues.put("description", data.get("description").trim());
-        //contentValues.put("from_user", data.get("from_user").trim());
-        //contentValues.put("to_user", data.get("to_user"));
-        //contentValues.put("amt", data.get("amt"));
-
         for (Map.Entry<String, String> entry : data.entrySet())
         {
             contentValues.put(entry.getKey(), entry.getValue() );
@@ -221,7 +223,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //createdDate = > "Month-Year" eg:- 5-2015
     public Cursor getUserEntrys(long userId, String createdDate) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from lendandborrowtable where (from_user = "+userId+" or to_user = "+userId+") and STRFTIME('%m-%Y', created_date) = '"+createdDate+"' order by created_date ", null );
+        Cursor res =  db.rawQuery("select * from lendandborrowtable where (from_user = " + userId + " or to_user = " + userId + ") and STRFTIME('%m-%Y', created_date) = '" + createdDate + "' order by created_date ", null);
         if (res != null) {
             res.moveToFirst();
         }
@@ -269,15 +271,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public float getTotalBalance(long userId) {
         SQLiteDatabase db = this.getReadableDatabase();
         float balance=0;
-        //Cursor res =  db.rawQuery( "select sum((select sum(amt) from lendandborrowtable where from_user = "+userId+")-(select sum(amt) from lendandborrowtable where from_user = "+userId+"))") , null );
 
         Cursor res =  db.rawQuery( "select ((select TOTAL(amt) from lendandborrowtable where from_user = "+userId+")-(select TOTAL(amt) from lendandborrowtable where to_user = "+userId+"))" , null );
         if (res != null) {
             res.moveToFirst();
             balance =  res.getFloat(0);
         }
-
-
 
         res.close();
         db.close();
@@ -288,17 +287,13 @@ public class DBHelper extends SQLiteOpenHelper {
     public float getPrevBalance(long userId, String CurrentDate) {
         SQLiteDatabase db = this.getReadableDatabase();
         float prevBalance=0;
-        //Cursor res =  db.rawQuery( "select sum((select sum(amt) from lendandborrowtable where from_user = "+userId+")-(select sum(amt) from lendandborrowtable where from_user = "+userId+"))") , null );
 
         Cursor res =  db.rawQuery( "select ((select TOTAL(amt) from lendandborrowtable where from_user = "+userId+" and  STRFTIME('%m-%Y', created_date) < '"+CurrentDate+"'  )-(select TOTAL(amt) from lendandborrowtable where to_user = "+userId+" and  STRFTIME('%m-%Y', created_date) < '"+CurrentDate+"' ))" , null );
-
 
         if (res != null) {
             res.moveToFirst();
             prevBalance =  res.getFloat(0);
         }
-
-
 
         res.close();
 
@@ -317,7 +312,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "from usertable u where _id !=1" , null );
 
         data.put("amt_toGet", "0.0");
-        data.put("amt_toGive", "0.0" );
+        data.put("amt_toGive", "0.0");
         if (res != null) {
             res.moveToFirst();
             data.put("amt_toGet", "" + res.getFloat(0));
@@ -335,17 +330,19 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-
-        contentValues.put("name", data.get("name").trim());
-        contentValues.put("description", data.get("description"));
+        for (Map.Entry<String, String> entry : data.entrySet())
+        {
+            contentValues.put(entry.getKey(), entry.getValue() );
+        }
 
         db.insert("collectiontable", null, contentValues);
+        db.close();
         return 1;
     }
 
     public Cursor getAllCollection() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from collectiontable", null );
+        Cursor res =  db.rawQuery("select * from collectiontable", null);
         if (res != null) {
             res.moveToFirst();
         }
@@ -371,7 +368,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         res.close();
-
+        db.close();
         return balance;
     }
     //===========================================================================================================================
@@ -386,6 +383,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         db.insert("personaltable", null, contentValues);
+        db.close();
         return 1;
     }
 
@@ -414,7 +412,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         res.close();
-
+        db.close();
         return amt;
     }
 
@@ -432,8 +430,97 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         res.close();
-
+        db.close();
         return amt;
     }
+
+
+    //===========================================================================================================================
+
+
+    public int insertJointGroup (Map<String, String> data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        for (Map.Entry<String, String> entry : data.entrySet())
+        {
+            contentValues.put(entry.getKey(), entry.getValue() );
+        }
+
+        db.insert(JOINTGROUP_TABLE_NAME, null, contentValues);
+        db.close();
+        return 1;
+    }
+
+    public  Map<String, String> getJointGroup(Map<String, String> data) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Map<String, String> result = new HashMap<String, String>();
+
+
+        //data.put("name",  ((EditText) addGroupView.findViewById(R.id.name) ).getText().toString() );
+
+        String where="";
+        for (Map.Entry<String, String> entry : data.entrySet())
+        {
+            where = where + " " + entry.getKey() +" = '"+ entry.getValue()+"' and ";
+        }
+
+        if(where.equals("")){
+            return result;
+        }
+        else{
+            where = where.substring(0,where.length()-5); // removing last 'and'
+        }
+
+        Cursor res =  db.rawQuery( "select * from "+JOINTGROUP_TABLE_NAME+" where "+where+" " , null );
+
+        data.put("_id", "0" ); // just adding id fied for fetching
+
+        if (res != null) {
+            res.moveToFirst();
+
+            for (Map.Entry<String, String> entry : data.entrySet())
+            {
+                result.put(entry.getKey(), res.getString(res.getColumnIndex(entry.getKey())) );
+
+            }
+
+        }
+
+
+
+        res.close();
+        db.close();
+        return result;
+    }
+
+
+
+
+
+    //===========================================================================================================================
+
+
+//    "create table "+JOINT_USER_GROUP_RELATION_TABLE_NAME+"  (_id INTEGER primary key autoincrement, user_id INTEGER, joint_group_id INTEGER  )"
+
+    public int insertUserGroupRelation (int groupId, ArrayList<Integer> members) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues;
+
+        for(int i=0;i<members.size();i++)
+        {
+            contentValues = new ContentValues();
+            contentValues.put("joint_group_id",groupId );
+            contentValues.put("user_id",members.get(i) );
+
+            db.insert(JOINT_USER_GROUP_RELATION_TABLE_NAME, null, contentValues);
+        }
+
+
+        db.close();
+        return 1;
+    }
+
 
 }
