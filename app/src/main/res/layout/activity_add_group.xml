@@ -74,6 +74,44 @@
         </LinearLayout>
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/groupTypeLayer"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="Group type "
+                />
+
+            <RadioGroup
+                android:id="@+id/groupType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <RadioButton
+                    android:id="@+id/radioOnGoingSingle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="On going single"
+                    android:checked="true"/>
+
+                <RadioButton
+                    android:id="@+id/radioMonthlyRenewing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Monthly renewing" />
+
+            </RadioGroup>
+        </LinearLayout>
+
+
 
 
         <LinearLayout
@@ -159,7 +197,7 @@
             <ListView
                 android:id="@+id/users"
                 android:layout_width="match_parent"
-                android:layout_height="200dp" >
+                android:layout_height="120dp" >
             </ListView>
 
         </LinearLayout>

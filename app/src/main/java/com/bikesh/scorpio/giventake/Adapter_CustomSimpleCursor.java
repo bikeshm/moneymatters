@@ -6,9 +6,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -24,6 +28,10 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
     Context cContext;
 
     Map<String, String> dataExtra;
+
+
+    ArrayList<String> CheckBoxSelected = new ArrayList<String>();
+
 
     public Adapter_CustomSimpleCursor(Context context,int layout, Cursor c ) {
         super(context,layout,c,new String[]{},new int[]{},0);
@@ -107,10 +115,69 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
         }
         else if(cContext.getResources().getResourceEntryName(layout).equals("listview_item_with_checkbox_template")){
 
-            ((TextView) view.findViewById(R.id.item_id)).setText(cursor.getString(cursor.getColumnIndex("_id")));
+            String id= cursor.getString(cursor.getColumnIndex("_id"));
+            ((TextView) view.findViewById(R.id.item_id)).setText(id);
+            ((CheckBox) view.findViewById(R.id.item_name)).setOnCheckedChangeListener(new checkboxClicked(view));
+
+            Log.i("checked id", "" + id);
+
+            if (CheckBoxSelected.contains(id)) {
+                ((CheckBox) view.findViewById(R.id.item_name)).setChecked(true);
+            } else {
+                ((CheckBox) view.findViewById(R.id.item_name)).setChecked(false);
+            }
+            ((CheckBox) view.findViewById(R.id.item_name)).setFocusable(false);
+            ((CheckBox) view.findViewById(R.id.item_name)).setFocusableInTouchMode(false);
+
+            //((CheckBox) view.findViewById(R.id.item_name)).clearFocus();
+
+            //((CheckBox) view.findViewById(R.id.item_name)).setFocusable(false);
+            //CheckBoxSelected
 
         }
 
     }
 
+
+    private class checkboxClicked implements CompoundButton.OnCheckedChangeListener {
+        View v;
+        public checkboxClicked(View view) {
+            v=view;
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+            //Log.i("checked",""+isChecked);
+            //Log.i("checked", ((TextView) v.findViewById(R.id.item_id)).getText().toString());
+
+
+
+            if(isChecked) {
+                if (!CheckBoxSelected.contains(((TextView) v.findViewById(R.id.item_id)).getText().toString())) {
+
+                    CheckBoxSelected.add("" + ((TextView) v.findViewById(R.id.item_id)).getText().toString());
+                }
+
+            } else {
+                Log.i("checked index", "" + CheckBoxSelected.indexOf(((TextView) v.findViewById(R.id.item_id)).getText().toString()));
+                Log.i("checked index", "" +  ((TextView) v.findViewById(R.id.item_id)).getText().toString() );
+
+                        //if(CheckBoxSelected.indexOf( ((TextView) v.findViewById(R.id.item_id)).getText().toString())>0) {
+                        CheckBoxSelected.remove(((TextView) v.findViewById(R.id.item_id)).getText().toString());
+                //}
+            }
+
+
+            for (int i = 0; i < CheckBoxSelected.size(); i++) {
+                Log.i("checked", "" + CheckBoxSelected.get(i));
+            }
+
+            //((CheckBox) v.findViewById(R.id.item_name)).clearFocus();
+
+        }
+
+
+
+    }
 }

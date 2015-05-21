@@ -2,6 +2,7 @@ package com.bikesh.scorpio.giventake;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -20,10 +21,15 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.Map;
 import java.util.Random;
 
 
 public class ActivityJointExpense extends ActionBarActivity {
+
+    View jointExpenseView;
+    ListView listView;
+    DBHelper myDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,44 +45,55 @@ public class ActivityJointExpense extends ActionBarActivity {
         //setting up navigation drawer
         GiveNTakeApplication AC = (GiveNTakeApplication)getApplicationContext();
         View view = getWindow().getDecorView().findViewById(android.R.id.content);
-        AC.setupDrawer(view, ActivityJointExpense.this, toolbar );
+        AC.setupDrawer(view, ActivityJointExpense.this, toolbar);
 
         //loading home activity templet in to template frame
         FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
         frame.removeAllViews();
         Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
         LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View jointExpenseView=  inflater.inflate(R.layout.activity_joint_expense, null);
+        jointExpenseView=  inflater.inflate(R.layout.activity_joint_expense, null);
 
         frame.addView(jointExpenseView);
 
 
-        ListView listView = (ListView) jointExpenseView.findViewById(R.id.listViewFromDB);
-
-        String[] values = new String[] {
-                "Room rent",
-                "Food expense",
-                "Mysore Tour",
-                "Lalbagh outing",
-                "Me and Vyshu food expence",
-                "Me and Maoj expence",
-                "B V M",
-                "Family tour",
-                "School Tour",
-
-        };
-
-
-        MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(ActivityJointExpense.this, values);
-        listView.setAdapter(adapter);
-
+        listView = (ListView) jointExpenseView.findViewById(R.id.listViewFromDB);
         listView.setOnItemClickListener(new listItemClicked());
 
         ((ImageButton)jointExpenseView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
         ((ImageButton)jointExpenseView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewGroup());
 
 
+        myDb = new DBHelper(this);
+        populateListViewFromDB();
+
+
     }
+
+    private void populateListViewFromDB() {
+
+        //Todo :- 1. insted of listing all user just list the user who all are having amt balance
+        //Todo :- need to implement pagination
+        Cursor cursor = myDb.getAllUsers();
+
+
+
+        listView.setAdapter(new Adapter_CustomSimpleCursor(this,		// Context
+                R.layout.listview_item_template,	// Row layout template
+                cursor					// cursor (set of DB records to map)
+        ));
+
+
+
+        /*
+        Map<String, String> finalResult = myDb.getFinalResult();
+
+        ((TextView)lendAndBorrowView.findViewById(R.id.amt_togive)).setText(": "+finalResult.get("amt_toGive"));
+        ((TextView)lendAndBorrowView.findViewById(R.id.amt_toget)).setText(": " + finalResult.get("amt_toGet"));
+        */
+
+    }
+
 
     @Override
     public void onResume() {

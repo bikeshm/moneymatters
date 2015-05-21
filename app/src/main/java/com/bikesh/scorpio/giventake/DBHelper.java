@@ -71,7 +71,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         db.execSQL(
-                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, name text,  members_count INTEGER, description text, totalamt FLOAT DEFAULT 0,photo BLOB )"
+                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, name text,  members_count INTEGER,ismonthlytask INTEGER , description text, totalamt FLOAT DEFAULT 0,photo BLOB )"
         );
         db.execSQL(
                 "create table "+JOINTENTRY_TABLE_NAME+"  (_id INTEGER primary key autoincrement, joint_group_id INTEGER, created_date DATE, description text, owner_id INTEGER, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0, is_month_wise INTEGER DEFAULT 0 )"

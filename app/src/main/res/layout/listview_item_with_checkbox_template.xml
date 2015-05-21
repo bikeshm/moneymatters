@@ -12,13 +12,12 @@
 
 
     <CheckBox
-        android:id="@+id/item_checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
-    <TextView
         android:id="@+id/item_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text=""
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+
+
 </LinearLayout>

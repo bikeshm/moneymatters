@@ -105,6 +105,8 @@ public class ActivityAddGroup extends ActionBarActivity {
                 getSupportActionBar().setTitle("Create a Group");
 
                 ((LinearLayout) addGroupView.findViewById(R.id.isOnlineLayer) ).setVisibility(View.VISIBLE);
+                ((LinearLayout) addGroupView.findViewById(R.id.groupTypeLayer) ).setVisibility(View.VISIBLE);
+
                 ((LinearLayout) addGroupView.findViewById(R.id.emailLayer) ).setVisibility(View.GONE);
                 ((LinearLayout) addGroupView.findViewById(R.id.phoneLayer) ).setVisibility(View.GONE);
 
@@ -177,13 +179,16 @@ public class ActivityAddGroup extends ActionBarActivity {
 
             else  if(fromActivity.equals("ActivityJointExpense")) {
 
+                int ismonthlytask=0;
                 ArrayList<Integer> members =new ArrayList<Integer>();
+
+
 
 
                 CheckBox cb;
                 ListView mainListView =((ListView) addGroupView.findViewById(R.id.users));
                 for (int x = 0; x<mainListView.getChildCount();x++){
-                    cb = (CheckBox)mainListView.getChildAt(x).findViewById(R.id.item_checkBox);
+                    cb = (CheckBox)mainListView.getChildAt(x).findViewById(R.id.item_name);
 
                     if(cb.isChecked()){
                         Log.i ( "selected", ((TextView) mainListView.getChildAt(x).findViewById(R.id.item_id)).getText().toString()  );
@@ -192,7 +197,17 @@ public class ActivityAddGroup extends ActionBarActivity {
                 }
 
 
-                int id = ((RadioGroup) addGroupView.findViewById(R.id.isOnline)).getCheckedRadioButtonId();
+                int id = ((RadioGroup) addGroupView.findViewById(R.id.groupType)).getCheckedRadioButtonId();
+                if (id == -1){
+                    //no item selected
+                }
+                else {
+                    if (id == R.id.radioMonthlyRenewing) {
+                        ismonthlytask=1;
+                    }
+                }
+
+                id = ((RadioGroup) addGroupView.findViewById(R.id.isOnline)).getCheckedRadioButtonId();
                 if (id == -1){
                     //no item selected
                 }
@@ -200,7 +215,8 @@ public class ActivityAddGroup extends ActionBarActivity {
 
                     members.add(1); // adding root user id
 
-                    data.put("members_count", ""+ members.size()  );
+                    data.put("members_count", "" + members.size());
+                    data.put("ismonthlytask",""+ismonthlytask);
 
                     if (id == R.id.radioNo){  //selected offline save to local db
 
@@ -231,9 +247,9 @@ public class ActivityAddGroup extends ActionBarActivity {
 
                     }
                 }
-                /*
 
-                */
+
+
 
 
 
