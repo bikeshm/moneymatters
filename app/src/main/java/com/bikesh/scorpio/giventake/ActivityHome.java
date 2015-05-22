@@ -70,7 +70,7 @@ public class ActivityHome extends ActionBarActivity {
         ((TextView)homeView.findViewById(R.id.personalExpenseTotal)).setText(": " + amtHolder);
 
 
-        ((TextView)homeView.findViewById(R.id.overviewHead)).setText( getDatabasePath("GivnTake.db").getAbsolutePath() );
+        //((TextView)homeView.findViewById(R.id.overviewHead)).setText( getDatabasePath("GivnTake.db").getAbsolutePath() );
     }
 
     private class linkClicked implements View.OnClickListener {

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -37,6 +39,9 @@ public class ActivityAddGroup extends ActionBarActivity {
     private DBHelper myDb ;
 
     Intent backActivityIntent=null;
+
+    RecyclerView recyclerView;
+    Adapter_RecyclerViewList adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,9 +119,20 @@ public class ActivityAddGroup extends ActionBarActivity {
 
 
                 Cursor cursor = myDb.getAllUsers();
-                Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.listview_item_with_checkbox_template, cursor);
 
-                ((ListView) addGroupView.findViewById(R.id.users)).setAdapter(adapter);
+                //Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.listview_item_with_checkbox_template, cursor);
+
+                //((ListView) addGroupView.findViewById(R.id.users)).setAdapter(adapter);
+
+                recyclerView = (RecyclerView) findViewById(R.id.users);
+                recyclerView.setHasFixedSize(true);
+
+                LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+                recyclerView.setLayoutManager(layoutManager);
+
+                adapter = new Adapter_RecyclerViewList(cursor, this);
+                recyclerView.setAdapter(adapter);
+
 
                 break;
 
@@ -140,6 +156,11 @@ public class ActivityAddGroup extends ActionBarActivity {
     private class saveData implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+
+            if(((EditText) addGroupView.findViewById(R.id.name) ).getText().toString().trim().equals("")){
+                Toast.makeText(getApplicationContext(),"Name required", Toast.LENGTH_LONG).show();
+                return;
+            }
 
             Map<String, String> data = new HashMap<String, String>();
 
@@ -180,11 +201,13 @@ public class ActivityAddGroup extends ActionBarActivity {
             else  if(fromActivity.equals("ActivityJointExpense")) {
 
                 int ismonthlytask=0;
-                ArrayList<Integer> members =new ArrayList<Integer>();
+
+                ArrayList<String> members =new ArrayList<String>(adapter.CheckBoxSelected);
 
 
 
 
+                /*
                 CheckBox cb;
                 ListView mainListView =((ListView) addGroupView.findViewById(R.id.users));
                 for (int x = 0; x<mainListView.getChildCount();x++){
@@ -195,6 +218,7 @@ public class ActivityAddGroup extends ActionBarActivity {
                         members.add( Integer.parseInt( ((TextView) mainListView.getChildAt(x).findViewById(R.id.item_id)).getText().toString()  )  );
                     }
                 }
+                */
 
 
                 int id = ((RadioGroup) addGroupView.findViewById(R.id.groupType)).getCheckedRadioButtonId();
@@ -213,7 +237,7 @@ public class ActivityAddGroup extends ActionBarActivity {
                 }
                 else{
 
-                    members.add(1); // adding root user id
+                    members.add("1"); // adding root user id
 
                     data.put("members_count", "" + members.size());
                     data.put("ismonthlytask",""+ismonthlytask);

@@ -504,7 +504,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 //    "create table "+JOINT_USER_GROUP_RELATION_TABLE_NAME+"  (_id INTEGER primary key autoincrement, user_id INTEGER, joint_group_id INTEGER  )"
 
-    public int insertUserGroupRelation (int groupId, ArrayList<Integer> members) {
+    public int insertUserGroupRelation (int groupId, ArrayList<String> members) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues;
 
