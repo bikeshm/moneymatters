@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Map;
 import java.util.Random;
@@ -60,7 +61,7 @@ public class ActivityJointExpense extends ActionBarActivity {
         listView = (ListView) jointExpenseView.findViewById(R.id.listViewFromDB);
         listView.setOnItemClickListener(new listItemClicked());
 
-        ((ImageButton)jointExpenseView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+        //((ImageButton)jointExpenseView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
         ((ImageButton)jointExpenseView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewGroup());
 
 
@@ -74,7 +75,7 @@ public class ActivityJointExpense extends ActionBarActivity {
 
         //Todo :- 1. insted of listing all user just list the user who all are having amt balance
         //Todo :- need to implement pagination
-        Cursor cursor = myDb.getAllUsers();
+        Cursor cursor = myDb.getAllJointGroups();
 
 
 
@@ -112,11 +113,16 @@ public class ActivityJointExpense extends ActionBarActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Intent i = new Intent(ActivityJointExpense.this, ActivityJointExpenseIndividual.class);
+            i.putExtra("fromActivity", "ActivityJointExpense");
+            i.putExtra("groupId", ""+id);
             startActivity(i);
+
+            Toast.makeText(getApplicationContext(),"groupId : "+id, Toast.LENGTH_LONG).show();
         }
     }
 
 
+    /*
     class MySimpleArrayAdapter extends ArrayAdapter<String> {
         private final Context context;
         private final String[] values;
@@ -161,6 +167,7 @@ public class ActivityJointExpense extends ActionBarActivity {
 
 
     }
+    */
 
     private class openAddnewGroup implements View.OnClickListener {
         @Override

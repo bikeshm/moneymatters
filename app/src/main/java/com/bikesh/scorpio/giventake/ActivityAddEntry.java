@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +25,8 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -50,6 +55,11 @@ public class ActivityAddEntry extends ActionBarActivity {
 
     Intent backActivityIntent=null;
 
+    RecyclerView recyclerView;
+
+    Adapter_TextRecyclerViewList adapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +87,13 @@ public class ActivityAddEntry extends ActionBarActivity {
 
         myDb = new DBHelper(this);
 
+        //--- initialising RecyclerView otherwise it is throwing null pointer exception
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_Users);
+        recyclerView.setHasFixedSize(true);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        //--
 
         Bundle extras = getIntent().getExtras();
 
@@ -117,6 +134,19 @@ public class ActivityAddEntry extends ActionBarActivity {
                 backActivityIntent.putExtra("colName", Name);
                 generateDataForPersonalExpense();
                 break;
+            case "ActivityJointExpenseIndividual":
+                backActivityIntent=new Intent(ActivityAddEntry.this, ActivityJointExpenseIndividual.class);
+                backActivityIntent.putExtra("groupId", "" + ID);
+
+                //=====split --face 2
+                //Cursor cursor = myDb.getAllUsersIncludedMe();
+                //adapter = new Adapter_TextRecyclerViewList(cursor, this);
+                //recyclerView.setAdapter(adapter);
+                //=====split --face 2
+
+                generateDataForJointExpenseIndividual();
+
+                break;
 
             default:
                 throw new IllegalArgumentException("Invalid  ");
@@ -145,6 +175,36 @@ public class ActivityAddEntry extends ActionBarActivity {
 
         ((Button)addEntryView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
         ((Button) addEntryView.findViewById(R.id.cancelBtn)).setOnClickListener(new cancelActivity());
+
+    }
+
+
+
+
+    private void generateDataForJointExpenseIndividual() {
+        ((LinearLayout) addEntryView.findViewById(R.id.l3) ).setVisibility(View.GONE);
+
+        //===================face 2
+        //((LinearLayout) addEntryView.findViewById(R.id.isSplitLayer) ).setVisibility(View.VISIBLE);
+        //((LinearLayout) addEntryView.findViewById(R.id.grupMembersLayer) ).setVisibility(View.VISIBLE);
+        //=====================face 2
+
+        ((TextView) addEntryView.findViewById(R.id.selectUserLabel)).setText("Spend By");
+        Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, myDb.getAllUsersIncludedMe()  );
+        ((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(adapter);
+
+
+
+        ((RadioGroup) addEntryView.findViewById(R.id.isSplit)).setOnCheckedChangeListener(new isSplitChanged());
+
+        recyclerView.setOnKeyListener(new recyclerViewKeyListener());
+
+
+
+
+
+
+
 
     }
 
@@ -263,6 +323,40 @@ public class ActivityAddEntry extends ActionBarActivity {
 
             }
 
+            if(fromActivity.equals("ActivityJointExpenseIndividual")  ){
+                int is_split=0;
+
+                data.put("joint_group_id",  ID+"" );
+                data.put("user_id",  ((Spinner) addEntryView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
+
+                int id = ((RadioGroup) addEntryView.findViewById(R.id.isSplit)).getCheckedRadioButtonId();
+                if (id == -1){ /*no item selected*/ }
+                else {
+                    if (id == R.id.isSplitradioYes) {
+                        is_split = 1;
+                    }
+                }
+
+
+                data.put("is_split",  is_split+"" );
+
+
+
+                if (myDb.insertGroupEntry(data) == 1) {
+                    Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+
+                    goBack();
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+
+
+
+
 
         }
     }
@@ -289,4 +383,29 @@ public class ActivityAddEntry extends ActionBarActivity {
         }
     }
 
+    private class isSplitChanged implements RadioGroup.OnCheckedChangeListener {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            Toast.makeText( getApplicationContext(),""+ checkedId,Toast.LENGTH_LONG).show();
+
+            if(checkedId==R.id.isSplitradioYes){
+                ((LinearLayout) addEntryView.findViewById(R.id.grupMembersLayer) ).setVisibility(View.VISIBLE);
+                ((EditText)addEntryView.findViewById(R.id.amount)).setEnabled(false);
+            }
+            else{
+                ((LinearLayout) addEntryView.findViewById(R.id.grupMembersLayer) ).setVisibility(View.GONE);
+                ((EditText)addEntryView.findViewById(R.id.amount)).setEnabled(true);
+            }
+        }
+    }
+
+    private class recyclerViewKeyListener implements View.OnKeyListener {
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+            Toast.makeText(getApplicationContext(),"keyup",Toast.LENGTH_LONG).show();
+
+            return false;
+        }
+    }
 }

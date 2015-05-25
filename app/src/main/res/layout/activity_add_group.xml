@@ -184,7 +184,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:id="@+id/grupMembersLayer">
+            android:id="@+id/grupMembersLayer"
+            android:visibility="gone" >
 
             <TextView
                 android:id="@+id/selectUserLabel"
@@ -202,9 +203,10 @@
             -->
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/users"
+                android:id="@+id/recycler_Users"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
+
                 />
 
         </LinearLayout>

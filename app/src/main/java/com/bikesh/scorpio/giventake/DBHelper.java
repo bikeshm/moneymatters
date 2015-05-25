@@ -74,7 +74,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, name text,  members_count INTEGER,ismonthlytask INTEGER , description text, totalamt FLOAT DEFAULT 0,photo BLOB )"
         );
         db.execSQL(
-                "create table "+JOINTENTRY_TABLE_NAME+"  (_id INTEGER primary key autoincrement, joint_group_id INTEGER, created_date DATE, description text, owner_id INTEGER, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0, is_month_wise INTEGER DEFAULT 0 )"
+                "create table "+JOINTENTRY_TABLE_NAME+"  (_id INTEGER primary key autoincrement, joint_group_id INTEGER, created_date DATE, description text, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0)"
         );
         db.execSQL(
                 "create table "+JOINT_USER_GROUP_RELATION_TABLE_NAME+"  (_id INTEGER primary key autoincrement, user_id INTEGER, joint_group_id INTEGER  )"
@@ -174,6 +174,16 @@ public class DBHelper extends SQLiteOpenHelper {
     public Cursor getAllUsers() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select * from usertable where _id != 1", null );
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
+    }
+
+    //get all users included me
+    public Cursor getAllUsersIncludedMe() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from usertable ", null );
         if (res != null) {
             res.moveToFirst();
         }
@@ -452,6 +462,15 @@ public class DBHelper extends SQLiteOpenHelper {
         return 1;
     }
 
+    public Cursor getAllJointGroups() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from "+JOINTGROUP_TABLE_NAME, null );
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
+    }
+
     public  Map<String, String> getJointGroup(Map<String, String> data) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -522,5 +541,43 @@ public class DBHelper extends SQLiteOpenHelper {
         return 1;
     }
 
+
+    public Cursor getGroupUsersData(int groupId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select U.name, " +
+                "(select Total(amt) from joint_entrytable where user_id = U._id and joint_group_id = "+groupId+" ), " +
+                "((select Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id = "+groupId+"  ) from joint_entrytable where joint_group_id = "+groupId+" )- (select Total(amt) from joint_entrytable where user_id = U._id and joint_group_id = "+groupId+"  ))  " +
+                "from usertable U", null );
+
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
+    }
+
+    public Cursor getGroupUsersData(String month) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from "+JOINTGROUP_TABLE_NAME, null );
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
+    }
+
+
+    //=======================================================
+    public int insertGroupEntry(Map<String, String> data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        for (Map.Entry<String, String> entry : data.entrySet())
+        {
+            contentValues.put(entry.getKey(), entry.getValue() );
+        }
+
+        db.insert(JOINTENTRY_TABLE_NAME, null, contentValues);
+        db.close();
+        return 1;
+    }
 
 }

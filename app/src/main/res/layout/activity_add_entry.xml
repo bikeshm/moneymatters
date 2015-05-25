@@ -99,11 +99,82 @@
          />
     </LinearLayout>
 
+
+    <!-- Face 2 implementation -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:id="@+id/isSplitLayer"
+        android:visibility="gone"
         android:layout_below="@+id/l4"
+        >
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Is Split "
+            />
+
+        <RadioGroup
+            android:id="@+id/isSplit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+
+            >
+
+            <RadioButton
+                android:id="@+id/isSplitradioNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No"
+                android:checked="true"
+                android:layout_marginRight="10dp"/>
+
+            <RadioButton
+                android:id="@+id/isSplitradioYes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Yes" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+
+    <!-- Face 2 implementation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/grupMembersLayer"
+        android:layout_below="@+id/isSplitLayer"
+        android:visibility="gone" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Members "
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_Users"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            />
+
+    </LinearLayout>
+
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/grupMembersLayer"
         android:id="@+id/l5">
 
         <TextView

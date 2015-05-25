@@ -2,9 +2,13 @@ package com.bikesh.scorpio.giventake;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,11 +19,24 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class ActivityJointExpenseIndividual extends ActionBarActivity {
 
     View JointExpenseIndividual;
+
+    DBHelper myDb;
+    String fromActivity=null;
+    int  groupId=0;
+    //String groupName="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +63,123 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
 
         frame.addView(JointExpenseIndividual);
 
+        myDb = new DBHelper(this);
+
+        Bundle extras = getIntent().getExtras();
+
+        if(extras == null) {
+            fromActivity= null;
+        } else {
+            fromActivity= extras.getString("fromActivity");
+            groupId = Integer.parseInt(extras.getString("groupId"));
+            //groupName = extras.getString("colName");
+        }
+
 
         ((ImageButton)JointExpenseIndividual.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
 
+        //slide up and down the table
         ((LinearLayout)JointExpenseIndividual.findViewById(R.id.restore)).setOnClickListener(new restoreTable());
         ((ImageView)JointExpenseIndividual.findViewById(R.id.restorebtn)).setOnClickListener(new restoreTable());
 
 
+        generateTables();
+
     }
 
+    private void generateTables() {
+
+        generateGroupUsersTable();
+
+        generateEntryTable();
+    }
+
+    private void generateEntryTable() {
+
+    }
+
+    private void generateGroupUsersTable() {
+
+        TableLayout tableLayout = (TableLayout) JointExpenseIndividual.findViewById(R.id.groupUserTableLayout);
+        TableRow tr, th;
+        boolean colorFlag=false;
+        TextView tv;
+        //String fields[]={"created_date", "description",  "amt"};
+
+        //setting headder
+        String tablehead[]={"Name", "Amt Spend", "Amt Balance"};
+        tableLayout.removeAllViews();
+        th = new TableRow(this);
+        th.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        tr = new TableRow(this);
+        tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+
+
+
+        //Log.i("bm info", "" + colId + " cc " + cursor.getCount());
+        //Log.i("bm info", "" + tablehead.length);
+
+        //Creating Table Header
+        for (int i=0 ;i< tablehead.length; i++) {
+            tv = generateTextview();
+            tv.setText(tablehead[i]);
+            tv.setTypeface(null, Typeface.BOLD);
+            tr.addView(tv);
+        }
+        tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+        //----
+
+        Cursor cursor =  myDb.getGroupUsersData(groupId);
+
+        while(cursor.isAfterLast() == false){
+
+            tr = new TableRow(this);
+            tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+            //tr.setClickable(true);
+            //tr.setOnClickListener(new tableRowClicked(Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id")))));
+
+            //Log.i("bm info", "" + fields.length);
+
+            for (int i=0 ;i<3; i++) {
+
+                tv = generateTextview();
+
+                if(i==2 &&  Float.parseFloat(cursor.getString(i))<0 ){
+
+                    tv.setText((Float.parseFloat(cursor.getString(i))*-1)+" Get" );
+
+                }
+                else if(i==2 &&  Float.parseFloat(cursor.getString(i))>0 ) {
+
+                    tv.setText(cursor.getString(i)+ " Give");
+
+                }
+                else{
+                    tv.setText(cursor.getString(i));
+                }
+
+                tr.addView(tv);
+            }
+
+            cursor.moveToNext();
+
+            if(colorFlag){
+                tr.setBackgroundColor(Color.rgb(240, 242, 242));
+                colorFlag=false;
+            }
+            else {
+                tr.setBackgroundColor(Color.rgb(234, 237, 237));
+                colorFlag=true;
+            }
+            // Add row to TableLayout.
+            tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+        }
+
+
+
+    }
 
 
     private class restoreTable implements View.OnClickListener {
@@ -84,13 +209,24 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
 
             Intent i = new Intent(ActivityJointExpenseIndividual.this, ActivityAddEntry.class);
             i.putExtra("fromActivity", "ActivityJointExpenseIndividual");
+            i.putExtra("ID", ""+groupId );
             startActivity(i);
 
         }
     }
 
 
+    private class tableRowClicked implements View.OnClickListener {
+        int rowId=0;
+        public tableRowClicked(int id) {
+            rowId=id;
+        }
 
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(getApplicationContext(), "clicked" + rowId, Toast.LENGTH_LONG).show();
+        }
+    }
 
 
 
@@ -118,5 +254,13 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    private TextView generateTextview() {
+        TextView tv = new TextView(this);
+        tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        tv.setPadding(5, 5, 5, 5);
+        tv.setClickable(false);
+        return tv;
+    }
 
 }

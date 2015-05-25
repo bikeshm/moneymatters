@@ -71,6 +71,13 @@ public class ActivityAddGroup extends ActionBarActivity {
 
         myDb = new DBHelper(this);
 
+        //--- initialising RecyclerView otherwise it is throwing null pointer exception
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_Users);
+        recyclerView.setHasFixedSize(true);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        //--
 
         Bundle extras = getIntent().getExtras();
 
@@ -111,6 +118,8 @@ public class ActivityAddGroup extends ActionBarActivity {
 
                 ((LinearLayout) addGroupView.findViewById(R.id.isOnlineLayer) ).setVisibility(View.VISIBLE);
                 ((LinearLayout) addGroupView.findViewById(R.id.groupTypeLayer) ).setVisibility(View.VISIBLE);
+                ((LinearLayout) addGroupView.findViewById(R.id.grupMembersLayer) ).setVisibility(View.VISIBLE);
+
 
                 ((LinearLayout) addGroupView.findViewById(R.id.emailLayer) ).setVisibility(View.GONE);
                 ((LinearLayout) addGroupView.findViewById(R.id.phoneLayer) ).setVisibility(View.GONE);
@@ -123,13 +132,13 @@ public class ActivityAddGroup extends ActionBarActivity {
                 //Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.listview_item_with_checkbox_template, cursor);
 
                 //((ListView) addGroupView.findViewById(R.id.users)).setAdapter(adapter);
-
+                /*
                 recyclerView = (RecyclerView) findViewById(R.id.users);
                 recyclerView.setHasFixedSize(true);
 
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);
                 recyclerView.setLayoutManager(layoutManager);
-
+                */
                 adapter = new Adapter_RecyclerViewList(cursor, this);
                 recyclerView.setAdapter(adapter);
 

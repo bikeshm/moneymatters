@@ -102,6 +102,7 @@
             android:id="@+id/scrollView1">
 
             <TableLayout
+                android:id="@+id/groupUserTableLayout"
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -98,6 +98,7 @@
         android:layout_alignParentEnd="true" />
 
 
+    <!--
     <ImageButton
         android:id="@+id/addEntry"
         android:layout_width="@dimen/floating_button_diameter"
@@ -110,6 +111,6 @@
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/addUser"
         android:layout_toStartOf="@+id/addUser" />
-
+    -->
 
 </RelativeLayout>
