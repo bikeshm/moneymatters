@@ -480,6 +480,35 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
+
+    //---
+    public Cursor getAllJointGroupsWithData() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res=null;
+        Map<String, String> data = new HashMap<String, String>();
+
+
+        String sql="select G._id,  G.name, " +
+                " (select Total(amt) from joint_entrytable where joint_entrytable.joint_group_id = G._id ) as group_total," +
+                " (select count(user_id) from joint_usergrouprelationtable where  joint_group_id = G._id) as user_count," +
+                " ( (select Total(amt) from joint_entrytable where joint_entrytable.joint_group_id = G._id ) / (select count(user_id) from joint_usergrouprelationtable where  joint_group_id = G._id)  ) as perhead," +
+                " (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  G._id  ) as i_spend," +
+                " ((select Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id =  G._id  ) from joint_entrytable where joint_group_id =  G._id )- (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  G._id  ))  as my_balance" +
+                " from joint_grouptable G";
+
+        res = db.rawQuery(sql, null);
+
+
+
+
+
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
+    }
+    //---
+
     public  Map<String, String> getJointGroup(Map<String, String> data) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -659,6 +688,10 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
         return data;
     }
+
+
+
+
 
 
 

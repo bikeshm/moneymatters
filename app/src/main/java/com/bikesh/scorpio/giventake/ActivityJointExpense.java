@@ -75,7 +75,8 @@ public class ActivityJointExpense extends ActionBarActivity {
 
         //Todo :- 1. insted of listing all user just list the user who all are having amt balance
         //Todo :- need to implement pagination
-        Cursor cursor = myDb.getAllJointGroups();
+        //Cursor cursor = myDb.getAllJointGroups();
+        Cursor cursor =myDb.getAllJointGroupsWithData();
 
 
 
