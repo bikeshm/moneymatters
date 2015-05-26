@@ -94,9 +94,7 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
         generateEntryTable();
     }
 
-    private void generateEntryTable() {
 
-    }
 
     private void generateGroupUsersTable() {
 
@@ -148,12 +146,12 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
 
                 if(i==2 &&  Float.parseFloat(cursor.getString(i))<0 ){
 
-                    tv.setText((Float.parseFloat(cursor.getString(i))*-1)+" Get" );
+                    tv.setText(String.format("%.2f", (Float.parseFloat(cursor.getString(i))*-1) )+" Get" );
 
                 }
                 else if(i==2 &&  Float.parseFloat(cursor.getString(i))>0 ) {
 
-                    tv.setText(cursor.getString(i)+ " Give");
+                    tv.setText( String.format("%.2f", Float.parseFloat(cursor.getString(i)) )+ " Give");
 
                 }
                 else{
@@ -166,11 +164,11 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
             cursor.moveToNext();
 
             if(colorFlag){
-                tr.setBackgroundColor(Color.rgb(240, 242, 242));
+                tr.setBackgroundColor(Color.rgb(255, 235, 230));
                 colorFlag=false;
             }
             else {
-                tr.setBackgroundColor(Color.rgb(234, 237, 237));
+                tr.setBackgroundColor(Color.rgb(236, 251, 255));
                 colorFlag=true;
             }
             // Add row to TableLayout.
@@ -180,6 +178,89 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
 
 
     }
+
+
+
+
+
+
+
+    private void generateEntryTable() {
+
+        TableLayout tableLayout = (TableLayout) JointExpenseIndividual.findViewById(R.id.groupEntryTableLayout);
+        TableRow tr, th;
+        boolean colorFlag=false;
+        TextView tv;
+
+        //setting headder
+        String tablehead[]={"Date", "Description", "Name","Amount"};
+        tableLayout.removeAllViews();
+        th = new TableRow(this);
+        th.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        tr = new TableRow(this);
+        tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+
+
+
+        //Log.i("bm info", "" + colId + " cc " + cursor.getCount());
+        //Log.i("bm info", "" + tablehead.length);
+
+        //Creating Table Header
+        for (int i=0 ;i< tablehead.length; i++) {
+            tv = generateTextview();
+            tv.setText(tablehead[i]);
+            tv.setTypeface(null, Typeface.BOLD);
+            tr.addView(tv);
+        }
+        tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+        //----
+
+        String fields[]={"created_date", "description",  "name", "amt" }; /*, "is_split"*/
+
+        Cursor cursor =  myDb.getGroupEntrys(groupId + "");
+
+        while(cursor.isAfterLast() == false){
+
+            tr = new TableRow(this);
+            tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+            //tr.setClickable(true);
+            //tr.setOnClickListener(new tableRowClicked(Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id")))));
+
+            //Log.i("bm info", "" + fields.length);
+
+            for (int i=0 ;i<fields.length; i++) {
+
+                tv = generateTextview();
+
+                tv.setText(cursor.getString(cursor.getColumnIndex(fields[i])));
+
+                tr.addView(tv);
+            }
+
+            cursor.moveToNext();
+
+            if(colorFlag){
+                tr.setBackgroundColor(Color.rgb(255, 235, 230));
+                colorFlag=false;
+            }
+            else {
+                tr.setBackgroundColor(Color.rgb(236, 251, 255));
+                colorFlag=true;
+            }
+            // Add row to TableLayout.
+            tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+        }
+
+
+
+    }
+
+
+
+
+
 
 
     private class restoreTable implements View.OnClickListener {

@@ -190,7 +190,7 @@ public class ActivityAddEntry extends ActionBarActivity {
         //=====================face 2
 
         ((TextView) addEntryView.findViewById(R.id.selectUserLabel)).setText("Spend By");
-        Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, myDb.getAllUsersIncludedMe()  );
+        Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, myDb.getAllUsersInGroup(ID+"")  );
         ((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(adapter);
 
 

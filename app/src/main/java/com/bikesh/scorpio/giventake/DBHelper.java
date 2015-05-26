@@ -542,12 +542,22 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
+
+    public Cursor getAllUsersInGroup(String groupId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from usertable where _id in ( select user_id from "+JOINT_USER_GROUP_RELATION_TABLE_NAME+" where joint_group_id = "+groupId+")", null );
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
+    }
+
     public Cursor getGroupUsersData(int groupId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select U.name, " +
                 "(select Total(amt) from joint_entrytable where user_id = U._id and joint_group_id = "+groupId+" ), " +
                 "((select Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id = "+groupId+"  ) from joint_entrytable where joint_group_id = "+groupId+" )- (select Total(amt) from joint_entrytable where user_id = U._id and joint_group_id = "+groupId+"  ))  " +
-                "from usertable U", null );
+                "from usertable U where u._id in ( select user_id from  joint_usergrouprelationtable  where  joint_group_id = "+groupId+" ) ", null );
 
         if (res != null) {
             res.moveToFirst();
@@ -579,5 +589,30 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
         return 1;
     }
+
+
+    public Cursor getGroupEntrys(String groupId) {
+        return getGroupEntrys(groupId,null);
+    }
+
+    public Cursor getGroupEntrys(String groupId, String month) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res=null;
+
+        if(month == null) {
+            res = db.rawQuery("select E.created_date,E.description,U.name,E.amt,E.is_split from " + JOINTENTRY_TABLE_NAME +" E, usertable U where E.user_id = U._id and  joint_group_id = "+groupId, null);
+        }
+        else{
+            // for monthly recurring
+            res = db.rawQuery("select * from " + JOINTENTRY_TABLE_NAME +" where joint_group_id = "+groupId+" and STRFTIME('%m-%Y', created_date) = '"+month+"'" , null);
+        }
+
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
+    }
+
+
 
 }

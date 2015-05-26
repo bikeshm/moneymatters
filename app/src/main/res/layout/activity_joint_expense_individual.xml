@@ -91,23 +91,29 @@
 
         </LinearLayout>
 
+    </LinearLayout>
 
-
+    <LinearLayout
+        android:id="@+id/groupUsersLayer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/l2">
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginTop="15dp"
             android:paddingBottom="15dp"
-            android:id="@+id/scrollView1">
+            android:id="@+id/scrollView1" >
 
             <TableLayout
                 android:id="@+id/groupUserTableLayout"
-                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:shrinkColumns="1"
-                android:stretchColumns="1" >
+                android:stretchColumns="1"
+                android:background="#ffae9a"
+                android:paddingBottom="2dp" >
 
                 <TableRow
                     android:layout_height="wrap_content"
@@ -137,151 +143,23 @@
                 </TableRow>
 
 
-                <TableRow
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent" >
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="Bikesh "/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="1000.00"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="2000.00"/>
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent" >
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="Vyshakh "/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="2000.00"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="1000.00"/>
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent" >
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="Manoj"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="1000.00"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="2000.00"/>
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent" >
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="Kundathil Rajeesh "/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="1000.00"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="2000.00"/>
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent" >
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="Manoj"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="1000.00"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="2000.00"/>
-
-                </TableRow>
 
             </TableLayout>
 
         </ScrollView>
 
-
-
-
-
-
-
     </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/restore"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_below="@+id/l2"
+        android:layout_below="@+id/groupUsersLayer"
         android:layout_marginTop="15dp"
-        android:onClick="">
+        >
 
         <ImageView
             android:id="@+id/restorebtn"
@@ -308,17 +186,23 @@
 
 
             <TableLayout
+                android:id="@+id/groupEntryTableLayout"
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:shrinkColumns="1"
                 android:stretchColumns="1"
+                android:background="#DFD080"
+                android:paddingBottom="2dp"
                 >
 
                 <TableRow
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
-                    android:background="#BBBBBB">
+                    android:shrinkColumns="1"
+                    android:stretchColumns="1"
+                    android:background="#DFD080"
+                    android:paddingBottom="2dp">
                     <TextView
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
@@ -344,137 +228,6 @@
                         android:padding="5dp"
                         android:textStyle="bold"/>
                 </TableRow>
-
-                <TableRow
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:background="#AAAAAA"
-                    android:clickable="true"
-                    >
-
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="01/05/2015"
-                        android:padding="5dp"/>
-
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-
-                        android:text="Previous month carryforword"/>
-
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="Bikesh"
-                        android:padding="5dp"/>
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="3200.00"
-                        android:padding="5dp"
-                        />
-                </TableRow>
-
-                <TableRow
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:background="#BBBBBB">
-
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="20/05/2015"
-                        android:padding="5dp"/>
-
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-
-                        android:text="Bus ticket online booking"/>
-
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="Vyshakh kv"
-                        android:padding="5dp"/>
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="1500.00"
-                        android:padding="5dp"
-                        />
-                </TableRow>
-
-                <TableRow
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:background="#AAAAAA"
-                    >
-
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="20/05/2015"
-                        android:padding="5dp"/>
-
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-
-                        android:text="Bus ticket online booking"/>
-
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="Manoj"
-                        android:padding="5dp"/>
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="1500.00"
-                        android:padding="5dp"
-                        />
-                </TableRow>
-
-                <TableRow
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:background="#BBBBBB">
-
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="20/05/2015"
-                        android:padding="5dp"/>
-
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-
-                        android:text="Bus ticket online booking"/>
-
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="Kundathil Rajeesh"
-                        android:padding="5dp"/>
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="1500.00"
-                        android:padding="5dp"
-                        />
-                </TableRow>
-
-
-
-
 
 
             </TableLayout>
