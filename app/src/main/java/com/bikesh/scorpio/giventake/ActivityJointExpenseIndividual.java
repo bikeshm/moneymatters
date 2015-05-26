@@ -27,6 +27,8 @@ import android.widget.Toast;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ActivityJointExpenseIndividual extends ActionBarActivity {
@@ -37,6 +39,7 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
     String fromActivity=null;
     int  groupId=0;
     //String groupName="";
+    boolean ismonthlytask=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +91,22 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
     }
 
     private void generateTables() {
+
+        Map<String, String> data = new HashMap<String, String>();
+        data = myDb.getGroupEntryTotalPerHead(groupId+"");
+
+        ((TextView)JointExpenseIndividual.findViewById(R.id.amtTotal)).setText(data.get("total"));
+        ((TextView)JointExpenseIndividual.findViewById(R.id.amtPerHead)).setText(data.get("perhead"));
+
+
+        Cursor cursor = myDb.getJointGroupbyId(groupId+"");
+
+        if(cursor.getInt(cursor.getColumnIndex("ismonthlytask"))==0){
+            ((LinearLayout)JointExpenseIndividual.findViewById(R.id.l1)).setVisibility(View.GONE);
+            ((LinearLayout)JointExpenseIndividual.findViewById(R.id.carryForwordLayer)).setVisibility(View.GONE);
+            ismonthlytask=false;
+        }
+
 
         generateGroupUsersTable();
 

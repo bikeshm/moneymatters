@@ -39,6 +39,7 @@
         android:layout_below="@+id/l1">
 
         <LinearLayout
+            android:id="@+id/carryForwordLayer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -66,6 +67,7 @@
                 android:text="Total amount  "/>
 
             <TextView
+                android:id="@+id/amtTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=": 12000.00"/>
@@ -85,6 +87,7 @@
                 android:text="Amount per head  "/>
 
             <TextView
+                android:id="@+id/amtPerHead"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=": 3000.00"/>

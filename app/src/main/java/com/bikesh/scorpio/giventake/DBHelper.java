@@ -462,6 +462,15 @@ public class DBHelper extends SQLiteOpenHelper {
         return 1;
     }
 
+    public Cursor getJointGroupbyId(String groupId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from "+JOINTGROUP_TABLE_NAME+" where _id = "+ groupId, null );
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
+    }
+
     public Cursor getAllJointGroups() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select * from "+JOINTGROUP_TABLE_NAME, null );
@@ -479,20 +488,20 @@ public class DBHelper extends SQLiteOpenHelper {
 
         //data.put("name",  ((EditText) addGroupView.findViewById(R.id.name) ).getText().toString() );
 
-        String where="";
+        String where="where";
         for (Map.Entry<String, String> entry : data.entrySet())
         {
             where = where + " " + entry.getKey() +" = '"+ entry.getValue()+"' and ";
         }
 
-        if(where.equals("")){
-            return result;
+        if(where.equals("where")){
+            where="";
         }
         else{
             where = where.substring(0,where.length()-5); // removing last 'and'
         }
 
-        Cursor res =  db.rawQuery( "select * from "+JOINTGROUP_TABLE_NAME+" where "+where+" " , null );
+        Cursor res =  db.rawQuery( "select * from "+JOINTGROUP_TABLE_NAME+"  "+where+" " , null );
 
         data.put("_id", "0" ); // just adding id fied for fetching
 
@@ -565,14 +574,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public Cursor getGroupUsersData(String month) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from "+JOINTGROUP_TABLE_NAME, null );
-        if (res != null) {
-            res.moveToFirst();
-        }
-        return res;
-    }
+
 
 
     //=======================================================
@@ -611,6 +613,40 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToFirst();
         }
         return res;
+    }
+
+
+    public Map<String, String> getGroupEntryTotalPerHead(String groupId) {
+        return getGroupEntryTotalPerHead(groupId, null);
+    }
+
+    public Map<String, String> getGroupEntryTotalPerHead(String groupId, String month) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res=null;
+        Map<String, String> data = new HashMap<String, String>();
+
+        data.put("total", "0");
+        data.put("perhead", "0");
+
+        if(month == null) {
+            res = db.rawQuery("select Total(amt), Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id = "+groupId+"  )  from " + JOINTENTRY_TABLE_NAME +" where  joint_group_id = "+groupId+"", null);
+        }
+        else{
+            // for monthly recurring
+            res = db.rawQuery("select Total(amt), Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id = "+groupId+"  )  from " + JOINTENTRY_TABLE_NAME +" where  joint_group_id = "+groupId+" and STRFTIME('%m-%Y', created_date) = '"+month+"'" , null);
+        }
+
+        if (res != null) {
+            res.moveToFirst();
+            data.put("total", "" + String.format("%.2f", res.getFloat(0)) );
+            data.put("perhead", ""+ String.format("%.2f", res.getFloat(1)) );
+        }
+
+
+
+        res.close();
+        db.close();
+        return data;
     }
 
 
