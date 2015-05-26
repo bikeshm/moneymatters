@@ -90,8 +90,6 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
 
                 balanceAmt = cursor.getFloat(cursor.getColumnIndex("my_balance"));
 
-                //((TextView) view.findViewById(R.id.item_description)).setVisibility(View.GONE);
-
             }
 
             ((TextView) view.findViewById(R.id.item_amt)).setText("" + balanceAmt);
