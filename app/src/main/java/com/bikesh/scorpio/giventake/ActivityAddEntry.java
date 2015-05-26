@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -190,7 +191,7 @@ public class ActivityAddEntry extends ActionBarActivity {
         //=====================face 2
 
         ((TextView) addEntryView.findViewById(R.id.selectUserLabel)).setText("Spend By");
-        Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, myDb.getAllUsersInGroup(ID+"")  );
+        Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, myDb.getAllUsersInGroup(ID + "")  );
         ((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(adapter);
 
 
@@ -282,9 +283,11 @@ public class ActivityAddEntry extends ActionBarActivity {
 
             //common field
             data.put("created_date",  ((EditText) addEntryView.findViewById(R.id.created_date) ).getText().toString() );
-            data.put("description",  ((EditText) addEntryView.findViewById(R.id.description) ).getText().toString() );
+            data.put("description", ((EditText) addEntryView.findViewById(R.id.description)).getText().toString());
 
-            data.put("amt", ((EditText) addEntryView.findViewById(R.id.amount) ).getText().toString() );
+
+
+            data.put("amt", ((EditText) addEntryView.findViewById(R.id.amount)).getText().toString());
 
             if(fromActivity.equals("ActivityLendAndBorrowPersonal") || fromActivity.equals("ActivityLendAndBorrow")  ) {
 

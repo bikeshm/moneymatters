@@ -491,7 +491,14 @@ public class DBHelper extends SQLiteOpenHelper {
         String where="where";
         for (Map.Entry<String, String> entry : data.entrySet())
         {
-            where = where + " " + entry.getKey() +" = '"+ entry.getValue()+"' and ";
+            String value = entry.getValue();
+
+            if(value.contains("'")){
+                value=value.replace("'", "''").replace("\"", "\"\"");
+            }
+
+
+            where = where + " " + entry.getKey() +" = '"+ value +"' and ";
         }
 
         if(where.equals("where")){
@@ -590,6 +597,10 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert(JOINTENTRY_TABLE_NAME, null, contentValues);
         db.close();
         return 1;
+
+        //String p_query = "select * from mytable where name_field = ?";
+        //db.rawQuery(p_query, new String[]{uvalue});
+
     }
 
 

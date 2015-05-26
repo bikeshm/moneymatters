@@ -99,8 +99,7 @@ public class ActivityJointExpense extends ActionBarActivity {
     @Override
     public void onResume() {
         super.onResume();
-
-        //populateListViewFromDB();
+        populateListViewFromDB();
     }
 
     @Override

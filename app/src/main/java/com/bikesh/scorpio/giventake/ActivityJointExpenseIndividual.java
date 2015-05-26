@@ -90,6 +90,18 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        generateTables();
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(ActivityJointExpenseIndividual.this,ActivityJointExpense.class));
+    }
+
+
     private void generateTables() {
 
         Map<String, String> data = new HashMap<String, String>();

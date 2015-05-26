@@ -173,9 +173,10 @@ public class ActivityAddGroup extends ActionBarActivity {
 
             Map<String, String> data = new HashMap<String, String>();
 
-
-            data.put("name",  ((EditText) addGroupView.findViewById(R.id.name) ).getText().toString() );
+            //Todo:- validate and escape incomming data
+            data.put("name",  ((EditText) addGroupView.findViewById(R.id.name) ).getText().toString());
             data.put("description", ((EditText) addGroupView.findViewById(R.id.description)).getText().toString());
+
 
             if(fromActivity.equals("ActivityLendAndBorrow") || fromActivity.equals("ActivitySplash") ) {
 
@@ -254,11 +255,16 @@ public class ActivityAddGroup extends ActionBarActivity {
                     if (id == R.id.radioNo){  //selected offline save to local db
 
                         if (myDb.insertJointGroup(data)==1) {
+
                             Toast.makeText(getApplicationContext(), "Group created", Toast.LENGTH_SHORT).show();
 
                            //getting group details
                             Map<String, String> result = new HashMap<String, String>();
+
+
                             result=myDb.getJointGroup(data);
+
+
 
                             //insert user relation
                             if(result.size()>0){
