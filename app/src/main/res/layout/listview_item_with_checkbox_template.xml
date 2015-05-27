@@ -17,7 +17,8 @@
         android:layout_height="wrap_content"
         android:text=""
         android:focusable="false"
-        android:focusableInTouchMode="false" />
+        android:focusableInTouchMode="false"
+        android:button="@drawable/custom_checkbox_design"/>
 
 
 </LinearLayout>
