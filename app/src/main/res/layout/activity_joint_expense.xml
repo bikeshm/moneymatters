@@ -4,12 +4,12 @@
     tools:context="com.bikesh.scorpio.giventake.ActivityJointExpense">
 
 
-        <!--
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center"
+            android:paddingLeft="10dp"
             android:layout_marginTop="10dp"
             android:id="@+id/linearLayout">
 
@@ -22,9 +22,10 @@
             <TextView
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="Total amount to Spend"/>
+                android:text="Total amount Spend"/>
 
             <TextView
+                android:id="@+id/totalspend"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="500.00"/>
@@ -42,6 +43,7 @@
                 android:text="Total amount to Give"/>
 
             <TextView
+                android:id="@+id/amtToGive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="500.00"/>
@@ -59,6 +61,7 @@
                 android:text="Total amount to Get"/>
 
             <TextView
+                android:id="@+id/amtToGet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="500.00"/>
@@ -67,7 +70,7 @@
 
 
     </LinearLayout>
-    -->
+
 
 
 

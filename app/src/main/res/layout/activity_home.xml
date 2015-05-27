@@ -158,6 +158,7 @@
                     android:text="Amount spend " />
 
                 <TextView
+                    android:id="@+id/joint_amtSpend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="3000.00" />
@@ -175,6 +176,7 @@
                     android:text="Amount to Get " />
 
                 <TextView
+                    android:id="@+id/joint_amtGet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1500.00" />
@@ -192,6 +194,7 @@
                     android:text="Amount to Give " />
 
                 <TextView
+                    android:id="@+id/joint_amtGive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1500.00" />

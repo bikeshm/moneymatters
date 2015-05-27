@@ -71,7 +71,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         db.execSQL(
-                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, name text,  members_count INTEGER,ismonthlytask INTEGER , description text, totalamt FLOAT DEFAULT 0,photo BLOB )"
+                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, name text,  members_count INTEGER,ismonthlytask INTEGER , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB )"
         );
         db.execSQL(
                 "create table "+JOINTENTRY_TABLE_NAME+"  (_id INTEGER primary key autoincrement, joint_group_id INTEGER, created_date DATE, description text, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0)"
@@ -488,12 +488,9 @@ public class DBHelper extends SQLiteOpenHelper {
         Map<String, String> data = new HashMap<String, String>();
 
 
-        String sql="select G._id,  G.name, " +
-                " (select Total(amt) from joint_entrytable where joint_entrytable.joint_group_id = G._id ) as group_total," +
-                " (select count(user_id) from joint_usergrouprelationtable where  joint_group_id = G._id) as user_count," +
-                " ( (select Total(amt) from joint_entrytable where joint_entrytable.joint_group_id = G._id ) / (select count(user_id) from joint_usergrouprelationtable where  joint_group_id = G._id)  ) as perhead," +
-                " (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  G._id  ) as i_spend," +
-                " ((select Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id =  G._id  ) from joint_entrytable where joint_group_id =  G._id )- (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  G._id  ))  as my_balance" +
+        String sql=" select G._id,  G.name, G.totalamt,G.members_count,G.balanceamt," +
+                " (G.totalamt / G.members_count  ) as perhead," +
+                " (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  G._id  ) as i_spend" +
                 " from joint_grouptable G";
 
         res = db.rawQuery(sql, null);
@@ -625,12 +622,108 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.insert(JOINTENTRY_TABLE_NAME, null, contentValues);
         db.close();
+
+        updateGroupTotalAndBalance(data.get("joint_group_id"));
         return 1;
-
-        //String p_query = "select * from mytable where name_field = ?";
-        //db.rawQuery(p_query, new String[]{uvalue});
-
     }
+
+    //--
+
+
+    public Map<String, String> getAllGroupTotalSpendGiveGet() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res=null;
+        Map<String, String> data = new HashMap<String, String>();
+
+        data.put("total", "0");
+        data.put("togive", "0");
+        data.put("toget", "0");
+
+
+        res = db.rawQuery(" select" +
+                " (select Total(amt) from joint_entrytable where user_id = 1 ) as total," +
+                " (select Total(balanceamt) from joint_grouptable where balanceamt >0  ) as togive," +
+                " (select Total(balanceamt) from joint_grouptable where balanceamt <0  ) as toget", null);
+
+
+        if (res != null) {
+            res.moveToFirst();
+            data.put("total", "" + String.format("%.2f", res.getFloat(0)));
+            data.put("togive", ""+ String.format("%.2f", res.getFloat(1)) );
+            data.put("toget", ""+ String.format("%.2f", (res.getFloat(2)*-1) ) );
+        }
+
+
+
+        res.close();
+        db.close();
+        return data;
+    }
+
+    //--
+
+
+    public void updateGroupTotalAndBalance(String groupId){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        //isted of this send the new amount to this function and use that
+        Cursor res =  db.rawQuery("UPDATE joint_grouptable " +
+                " SET totalamt=(select Total(amt) from joint_entrytable where joint_group_id ="+groupId+"), " +
+                " balanceamt = (((select Total(amt) from joint_entrytable where joint_group_id ="+groupId+")/members_count )- (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  "+groupId+" )) "+
+                " WHERE _id ="+groupId, null);
+
+        res.moveToFirst();
+        res.close();
+    }
+
+
+
+    public Map<String, String> getGroupEntry(Map<String, String> data){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Map<String, String> result = new HashMap<String, String>();
+
+        String where="where";
+        for (Map.Entry<String, String> entry : data.entrySet())
+        {
+            String value = entry.getValue();
+
+            if(value.contains("'")){
+                value=value.replace("'", "''").replace("\"", "\"\"");
+            }
+            where = where + " " + entry.getKey() +" = '"+ value +"' and ";
+        }
+
+        if(where.equals("where")){
+            where="";
+        }
+        else{
+            where = where.substring(0,where.length()-5); // removing last 'and'
+        }
+
+        Cursor res =  db.rawQuery( "select * from "+JOINTENTRY_TABLE_NAME+"  "+where+" " , null );
+
+        data.put("_id", "0" ); // just adding id fied for fetching
+
+        if (res != null) {
+            res.moveToFirst();
+
+            for (Map.Entry<String, String> entry : data.entrySet())
+            {
+                result.put(entry.getKey(), res.getString(res.getColumnIndex(entry.getKey())) );
+
+            }
+
+        }
+
+        res.close();
+        db.close();
+        return result;
+    }
+
+
+
 
 
     public Cursor getGroupEntrys(String groupId) {
@@ -669,11 +762,15 @@ public class DBHelper extends SQLiteOpenHelper {
         data.put("perhead", "0");
 
         if(month == null) {
-            res = db.rawQuery("select Total(amt), Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id = "+groupId+"  )  from " + JOINTENTRY_TABLE_NAME +" where  joint_group_id = "+groupId+"", null);
+            res = db.rawQuery("select Total(amt), "+
+                    " Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id = "+groupId+"  ) " +
+                    " from " + JOINTENTRY_TABLE_NAME +" where  joint_group_id = "+groupId+"", null);
         }
         else{
             // for monthly recurring
-            res = db.rawQuery("select Total(amt), Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id = "+groupId+"  )  from " + JOINTENTRY_TABLE_NAME +" where  joint_group_id = "+groupId+" and STRFTIME('%m-%Y', created_date) = '"+month+"'" , null);
+            res = db.rawQuery("select Total(amt)," +
+                    " Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id = "+groupId+"  ) " +
+                    " from " + JOINTENTRY_TABLE_NAME +" where  joint_group_id = "+groupId+" and STRFTIME('%m-%Y', created_date) = '"+month+"'" , null);
         }
 
         if (res != null) {

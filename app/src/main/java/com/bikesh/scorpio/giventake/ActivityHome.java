@@ -62,6 +62,12 @@ public class ActivityHome extends ActionBarActivity {
         ((TextView)homeView.findViewById(R.id.amt_togive)).setText(": " + finalResult.get("amt_toGive"));
         ((TextView)homeView.findViewById(R.id.amt_toget)).setText(": " + finalResult.get("amt_toGet"));
 
+        Map<String, String> jointfinalResult = myDb.getAllGroupTotalSpendGiveGet();
+        ((TextView)homeView.findViewById(R.id.joint_amtSpend)).setText(": "+jointfinalResult.get("total"));
+        ((TextView)homeView.findViewById(R.id.joint_amtGet)).setText(": " + jointfinalResult.get("toget"));
+        ((TextView)homeView.findViewById(R.id.joint_amtGive)).setText(": " + jointfinalResult.get("togive"));
+
+
 
         SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy");
         String cDate = dmy.format(new Date());

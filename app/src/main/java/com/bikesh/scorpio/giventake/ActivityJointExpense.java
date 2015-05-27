@@ -80,19 +80,20 @@ public class ActivityJointExpense extends ActionBarActivity {
 
 
 
-        listView.setAdapter(new Adapter_CustomSimpleCursor(this,		// Context
-                R.layout.listview_item_template,	// Row layout template
-                cursor					// cursor (set of DB records to map)
+        listView.setAdapter(new Adapter_CustomSimpleCursor(this,        // Context
+                R.layout.listview_item_template,    // Row layout template
+                cursor                    // cursor (set of DB records to map)
         ));
 
 
 
-        /*
-        Map<String, String> finalResult = myDb.getFinalResult();
 
-        ((TextView)lendAndBorrowView.findViewById(R.id.amt_togive)).setText(": "+finalResult.get("amt_toGive"));
-        ((TextView)lendAndBorrowView.findViewById(R.id.amt_toget)).setText(": " + finalResult.get("amt_toGet"));
-        */
+        Map<String, String> finalResult = myDb.getAllGroupTotalSpendGiveGet();
+
+        ((TextView)jointExpenseView.findViewById(R.id.totalspend)).setText(": "+finalResult.get("total"));
+        ((TextView)jointExpenseView.findViewById(R.id.amtToGive)).setText(": " + finalResult.get("togive"));
+        ((TextView)jointExpenseView.findViewById(R.id.amtToGet)).setText(": " + finalResult.get("toget"));
+
 
     }
 

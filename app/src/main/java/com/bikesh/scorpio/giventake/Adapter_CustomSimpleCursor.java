@@ -88,7 +88,8 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
 
             if (cContext.getClass().getSimpleName().equals("ActivityJointExpense")) {
 
-                balanceAmt = cursor.getFloat(cursor.getColumnIndex("my_balance"));
+                balanceAmt = cursor.getFloat(cursor.getColumnIndex("balanceamt"));
+                ((TextView) view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")) + " -"+ cursor.getString(cursor.getColumnIndex("members_count")) );
 
             }
 
