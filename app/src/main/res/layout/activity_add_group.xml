@@ -62,7 +62,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Yes"
-                    android:button="@drawable/custom_radio_button"/>
+                    />
 
                 <RadioButton
                     android:id="@+id/radioNo"
@@ -70,7 +70,8 @@
                     android:layout_height="wrap_content"
                     android:text="No"
                     android:checked="true"
-                    android:button="@drawable/custom_radio_button"/>
+                    />
+                <!-- android:button="@drawable/custom_radio_button" -->
 
             </RadioGroup>
         </LinearLayout>
@@ -103,14 +104,14 @@
                     android:layout_height="wrap_content"
                     android:text="On going single"
                     android:checked="true"
-                    android:button="@drawable/custom_radio_button"/>
+                    />
 
                 <RadioButton
                     android:id="@+id/radioMonthlyRenewing"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Monthly renewing"
-                    android:button="@drawable/custom_radio_button"/>
+                    />
 
             </RadioGroup>
         </LinearLayout>
