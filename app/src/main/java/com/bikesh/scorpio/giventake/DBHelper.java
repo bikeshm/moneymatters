@@ -14,7 +14,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.EditText;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -487,10 +489,14 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor res=null;
         Map<String, String> data = new HashMap<String, String>();
 
+        SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy");
+
+
 
         String sql=" select G._id,  G.name, G.totalamt,G.members_count,G.balanceamt," +
                 " (G.totalamt / G.members_count  ) as perhead," +
-                " (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  G._id  ) as i_spend" +
+                " (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  G._id  ) as i_spend, " +
+                " (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  G._id and STRFTIME('%m-%Y', created_date) = '"+dmy.format(new Date())+"'  ) as i_spendinmonth" +
                 " from joint_grouptable G";
 
         res = db.rawQuery(sql, null);
@@ -594,11 +600,36 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public Cursor getGroupUsersData(int groupId) {
+    //for ongoing single exp
+    public Cursor getGroupUsersData(String groupId) {
+        /*
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select U.name, " +
                 "(select Total(amt) from joint_entrytable where user_id = U._id and joint_group_id = "+groupId+" ), " +
                 "((select Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id = "+groupId+"  ) from joint_entrytable where joint_group_id = "+groupId+" )- (select Total(amt) from joint_entrytable where user_id = U._id and joint_group_id = "+groupId+"  ))  " +
+                "from usertable U where u._id in ( select user_id from  joint_usergrouprelationtable  where  joint_group_id = "+groupId+" ) ", null );
+
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
+        */
+        return getGroupUsersData(groupId,null);
+    }
+
+    //for monthly renewing
+    public Cursor getGroupUsersData(String groupId,String month) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        if(month!=null){
+            month= "  and STRFTIME('%m-%Y', created_date) = '"+month+"'";
+        }else{
+            month="";
+        }
+
+        Cursor res =  db.rawQuery( "select U.name, " +
+                "(select Total(amt) from joint_entrytable where user_id = U._id and joint_group_id = "+groupId+ month +" ), " +
+                "((select Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id = "+groupId+"  ) from joint_entrytable where joint_group_id = "+groupId+ month +" )- (select Total(amt) from joint_entrytable where user_id = U._id and joint_group_id = "+groupId+ month +"  ))  " +
                 "from usertable U where u._id in ( select user_id from  joint_usergrouprelationtable  where  joint_group_id = "+groupId+" ) ", null );
 
         if (res != null) {
@@ -667,10 +698,21 @@ public class DBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
+        SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy");
+
+        Cursor c=getJointGroupbyId(groupId);
+
+        String month = "";
+        if(c.getInt(c.getColumnIndex("ismonthlytask")) == 1){
+            month= "  and STRFTIME('%m-%Y', created_date) = '"+dmy.format(new Date())+"'";
+        }
+
+
+
         //isted of this send the new amount to this function and use that
         Cursor res =  db.rawQuery("UPDATE joint_grouptable " +
-                " SET totalamt=(select Total(amt) from joint_entrytable where joint_group_id ="+groupId+"), " +
-                " balanceamt = (((select Total(amt) from joint_entrytable where joint_group_id ="+groupId+")/members_count )- (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  "+groupId+" )) "+
+                " SET totalamt=(select Total(amt) from joint_entrytable where joint_group_id ="+groupId+ month +"), " +
+                " balanceamt = (((select Total(amt) from joint_entrytable where joint_group_id ="+groupId+ month +")/members_count )- (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  "+groupId+ month +" )) "+
                 " WHERE _id ="+groupId, null);
 
         res.moveToFirst();
@@ -734,13 +776,13 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res=null;
 
-        if(month == null) {
-            res = db.rawQuery("select E.created_date,E.description,U.name,E.amt,E.is_split from " + JOINTENTRY_TABLE_NAME +" E, usertable U where E.user_id = U._id and  joint_group_id = "+groupId, null);
+        if(month!=null){
+            month= "  and STRFTIME('%m-%Y', created_date) = '"+month+"'";
+        }else{
+            month="";
         }
-        else{
-            // for monthly recurring
-            res = db.rawQuery("select * from " + JOINTENTRY_TABLE_NAME +" where joint_group_id = "+groupId+" and STRFTIME('%m-%Y', created_date) = '"+month+"'" , null);
-        }
+
+        res = db.rawQuery("select E.created_date,E.description,U.name,E.amt,E.is_split from " + JOINTENTRY_TABLE_NAME +" E, usertable U where E.user_id = U._id and  joint_group_id = "+groupId+ month, null);
 
         if (res != null) {
             res.moveToFirst();
@@ -761,17 +803,17 @@ public class DBHelper extends SQLiteOpenHelper {
         data.put("total", "0");
         data.put("perhead", "0");
 
-        if(month == null) {
-            res = db.rawQuery("select Total(amt), "+
-                    " Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id = "+groupId+"  ) " +
-                    " from " + JOINTENTRY_TABLE_NAME +" where  joint_group_id = "+groupId+"", null);
+        if(month!=null){
+            month= "  and STRFTIME('%m-%Y', created_date) = '"+month+"'";
+        }else{
+            month="";
         }
-        else{
-            // for monthly recurring
-            res = db.rawQuery("select Total(amt)," +
-                    " Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id = "+groupId+"  ) " +
-                    " from " + JOINTENTRY_TABLE_NAME +" where  joint_group_id = "+groupId+" and STRFTIME('%m-%Y', created_date) = '"+month+"'" , null);
-        }
+
+
+        res = db.rawQuery("select Total(amt), "+
+                " Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id = "+groupId+"  ) " +
+                " from " + JOINTENTRY_TABLE_NAME +" where  joint_group_id = " + groupId + month, null);
+
 
         if (res != null) {
             res.moveToFirst();

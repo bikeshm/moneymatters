@@ -13,14 +13,23 @@
         android:id="@+id/l1"
         android:paddingLeft="20dp" >
 
-        <TextView android:text="Showing details of : "
+        <TextView android:text="Showing details of (Month/Year) : "
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <TextView android:text="May - 2015"
+        <TextView
+            android:id="@+id/dateChanger"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true" />
+            android:clickable="true"
+            android:minWidth="100dp"/>
+
+        <TextView
+            android:id="@+id/dateChangerForDb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
 
     </LinearLayout>
 
@@ -37,24 +46,6 @@
 
         android:paddingLeft="20dp"
         android:layout_below="@+id/l1">
-
-        <LinearLayout
-            android:id="@+id/carryForwordLayer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:text="Carry forword  "/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=": "/>
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"

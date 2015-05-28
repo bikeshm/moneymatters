@@ -8,6 +8,8 @@ import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -39,7 +41,7 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
     String fromActivity=null;
     int  groupId=0;
     //String groupName="";
-    boolean ismonthlytask=true;
+    boolean isMonthlyRenewing=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +88,24 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
         ((ImageView)JointExpenseIndividual.findViewById(R.id.restorebtn)).setOnClickListener(new restoreTable());
 
 
+
+        SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy");
+        String cDate = dmy.format(new Date());
+
+        SimpleDateFormat dbmy = new SimpleDateFormat("yyyy-MM");
+        String cdbDate = dbmy.format(new Date());
+
+        TextView dateChanger= (TextView)JointExpenseIndividual.findViewById(R.id.dateChanger);
+        TextView dateChangerForDb= (TextView)JointExpenseIndividual.findViewById(R.id.dateChangerForDb);
+        dateChanger.setOnClickListener(new CustomDatePicker(ActivityJointExpenseIndividual.this, dateChanger, dateChangerForDb, true));
+
+        dateChanger.setText(cDate);
+        dateChangerForDb.setText(cdbDate);
+
+        dateChangerForDb.addTextChangedListener(new dateChange());
+
+
+
         generateTables();
 
     }
@@ -102,10 +122,34 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
     }
 
 
+    private class dateChange implements TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            generateTables();
+        }
+    }
+
+
+
     private void generateTables() {
 
         Map<String, String> data = new HashMap<String, String>();
-        data = myDb.getGroupEntryTotalPerHead(groupId+"");
+
+
+        if(isMonthlyRenewing == false) {
+            data = myDb.getGroupEntryTotalPerHead(groupId + "");
+        }
+        else {
+            data = myDb.getGroupEntryTotalPerHead(groupId+"", ((TextView)JointExpenseIndividual.findViewById(R.id.dateChanger)).getText().toString()) ;
+        }
+
+
 
         ((TextView)JointExpenseIndividual.findViewById(R.id.amtTotal)).setText(data.get("total"));
         ((TextView)JointExpenseIndividual.findViewById(R.id.amtPerHead)).setText(data.get("perhead"));
@@ -115,8 +159,7 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
 
         if(cursor.getInt(cursor.getColumnIndex("ismonthlytask"))==0){
             ((LinearLayout)JointExpenseIndividual.findViewById(R.id.l1)).setVisibility(View.GONE);
-            ((LinearLayout)JointExpenseIndividual.findViewById(R.id.carryForwordLayer)).setVisibility(View.GONE);
-            ismonthlytask=false;
+            isMonthlyRenewing=false;
         }
 
 
@@ -158,8 +201,13 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
         }
         tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
         //----
-
-        Cursor cursor =  myDb.getGroupUsersData(groupId);
+        Cursor cursor;
+        if(isMonthlyRenewing == false) {
+            cursor = myDb.getGroupUsersData(groupId + "");
+        }
+        else {
+            cursor = myDb.getGroupUsersData(groupId + "", ((TextView)JointExpenseIndividual.findViewById(R.id.dateChanger)).getText().toString()) ;
+        }
 
         while(cursor.isAfterLast() == false){
 
@@ -249,7 +297,16 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
 
         String fields[]={"created_date", "description",  "name", "amt" }; /*, "is_split"*/
 
-        Cursor cursor =  myDb.getGroupEntrys(groupId + "");
+        //Cursor cursor =  myDb.getGroupEntrys(groupId + "");
+
+        Cursor cursor;
+        if(isMonthlyRenewing == false) {
+            cursor = myDb.getGroupEntrys(groupId + "");
+        }
+        else {
+            cursor = myDb.getGroupEntrys(groupId + "", ((TextView) JointExpenseIndividual.findViewById(R.id.dateChanger)).getText().toString()) ;
+        }
+
 
         while(cursor.isAfterLast() == false){
 
