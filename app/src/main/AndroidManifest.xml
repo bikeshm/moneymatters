@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.bikesh.scorpio.giventake" >
 
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:name=".GiveNTakeApplication"
         android:allowBackup="true"

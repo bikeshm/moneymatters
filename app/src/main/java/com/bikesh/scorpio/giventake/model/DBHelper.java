@@ -1,4 +1,4 @@
-package com.bikesh.scorpio.giventake;
+package com.bikesh.scorpio.giventake.model;
 
 /**
  * Author : bikesh on 5/8/2015.

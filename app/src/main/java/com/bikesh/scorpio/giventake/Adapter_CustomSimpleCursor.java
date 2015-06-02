@@ -2,6 +2,7 @@ package com.bikesh.scorpio.giventake;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +12,9 @@ import android.widget.CompoundButton;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.bikesh.scorpio.giventake.model.DBHelper;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -63,10 +65,14 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
         Log.i("La:", cContext.getResources().getResourceEntryName(layout) );
 
         //common
-        ((TextView) view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")));
+        if(cursor.getColumnIndex("name")!=-1) {
+            ((TextView) view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")));
+        }
 
         //for first level display
         if(cContext.getResources().getResourceEntryName(layout).equals("listview_item_template")) {
+
+            ((TextView) view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")));
 
             String amdGiveString = "Amount give", amdGetString = "Amount get";
 
@@ -75,8 +81,8 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
             if (cContext.getClass().getSimpleName().equals("ActivityLendAndBorrow")) {
 
                 balanceAmt = myDb.getTotalBalance(Long.parseLong((cursor.getString(cursor.getColumnIndex("_id")))));
-                amdGiveString = amdGiveString + "from him/her";
-                amdGetString = amdGetString + "from him/her";
+                amdGiveString = amdGiveString + " to him/her";
+                amdGetString = amdGetString + " from him/her";
 
             }
 
@@ -110,11 +116,16 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
             }
         }
         else if(cContext.getResources().getResourceEntryName(layout).equals("custom_spinner_item_template")){
+
+
+            //((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+
+            //((TextView) view.findViewById(R.id.item_phone)).setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)) );
+
             // this usess loading user and collection
             ((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")));
 
-
-            // if cusersor having phone meanse this is loading user fields or loadding collection
+             //if cusersor having phone meanse this is loading user fields or loadding collection
             if(cursor.getColumnIndex("phone")!=-1) {
                 ((TextView) view.findViewById(R.id.item_phone)).setText(cursor.getString(cursor.getColumnIndex("phone")));
             }

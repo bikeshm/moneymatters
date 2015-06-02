@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,7 +25,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.ParseException;
+import com.bikesh.scorpio.giventake.model.DBHelper;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;

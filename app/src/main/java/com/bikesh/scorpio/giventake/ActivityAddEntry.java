@@ -1,45 +1,34 @@
 package com.bikesh.scorpio.giventake;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
+import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bikesh.scorpio.giventake.model.DBHelper;
+
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -110,47 +99,42 @@ public class ActivityAddEntry extends ActionBarActivity {
         }
 
 
-        switch (fromActivity) {
-            case "ActivityLendAndBorrow":
-                backActivityIntent=new Intent(ActivityAddEntry.this, ActivityLendAndBorrow.class);
-                generateDataForLendNBorrow();
-                break;
+        if (fromActivity.equals("ActivityLendAndBorrow")) {
+            backActivityIntent = new Intent(ActivityAddEntry.this, ActivityLendAndBorrow.class);
+            generateDataForLendNBorrow();
 
-            case "ActivityLendAndBorrowPersonal":
-                backActivityIntent=new Intent(ActivityAddEntry.this, ActivityLendAndBorrowIndividual.class);
-                backActivityIntent.putExtra("fromActivity", "ActivityLendAndBorrow");
-                backActivityIntent.putExtra("userId", "" + ID);
-                backActivityIntent.putExtra("userName", Name);
-                generateDataForLendNBorrow();
-                break;
+        } else if (fromActivity.equals("ActivityLendAndBorrowPersonal")) {
+            backActivityIntent = new Intent(ActivityAddEntry.this, ActivityLendAndBorrowIndividual.class);
+            backActivityIntent.putExtra("fromActivity", "ActivityLendAndBorrow");
+            backActivityIntent.putExtra("userId", "" + ID);
+            backActivityIntent.putExtra("userName", Name);
+            generateDataForLendNBorrow();
+
+        } else if (fromActivity.equals("ActivityPersonalExpense")) {
+            backActivityIntent = new Intent(ActivityAddEntry.this, ActivityPersonalExpense.class);
+            generateDataForPersonalExpense();
+
+        } else if (fromActivity.equals("ActivityPersonalExpenseIndividual")) {
+            backActivityIntent = new Intent(ActivityAddEntry.this, ActivityPersonalExpenseIndividual.class);
+            backActivityIntent.putExtra("colId", "" + ID);
+            backActivityIntent.putExtra("colName", Name);
+            generateDataForPersonalExpense();
+
+        } else if (fromActivity.equals("ActivityJointExpenseIndividual")) {
+            backActivityIntent = new Intent(ActivityAddEntry.this, ActivityJointExpenseIndividual.class);
+            backActivityIntent.putExtra("groupId", "" + ID);
+
+            //=====split --face 2
+            //Cursor cursor = myDb.getAllUsersIncludedMe();
+            //adapter = new Adapter_TextRecyclerViewList(cursor, this);
+            //recyclerView.setAdapter(adapter);
+            //=====split --face 2
+
+            generateDataForJointExpenseIndividual();
 
 
-            case "ActivityPersonalExpense":
-                backActivityIntent=new Intent(ActivityAddEntry.this, ActivityPersonalExpense.class);
-                generateDataForPersonalExpense();
-                break;
-            case "ActivityPersonalExpenseIndividual":
-                backActivityIntent=new Intent(ActivityAddEntry.this, ActivityPersonalExpenseIndividual.class);
-                backActivityIntent.putExtra("colId", "" + ID);
-                backActivityIntent.putExtra("colName", Name);
-                generateDataForPersonalExpense();
-                break;
-            case "ActivityJointExpenseIndividual":
-                backActivityIntent=new Intent(ActivityAddEntry.this, ActivityJointExpenseIndividual.class);
-                backActivityIntent.putExtra("groupId", "" + ID);
-
-                //=====split --face 2
-                //Cursor cursor = myDb.getAllUsersIncludedMe();
-                //adapter = new Adapter_TextRecyclerViewList(cursor, this);
-                //recyclerView.setAdapter(adapter);
-                //=====split --face 2
-
-                generateDataForJointExpenseIndividual();
-
-                break;
-
-            default:
-                throw new IllegalArgumentException("Invalid  ");
+        } else {
+            throw new IllegalArgumentException("Invalid  ");
         }
 
 
@@ -248,6 +232,9 @@ public class ActivityAddEntry extends ActionBarActivity {
 
 
         Cursor cursor = myDb.getAllUsers();
+
+        //getting user from contact
+        //Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
         generate_FromuserSpinner(cursor);
 

@@ -8,22 +8,19 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bikesh.scorpio.giventake.model.DBHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,49 +86,40 @@ public class ActivityAddGroup extends ActionBarActivity {
         }
 
 
+        if (fromActivity.equals("ActivityLendAndBorrow")) {//((TextView) addGroupView.findViewById(R.id.op)).setText("Add user");
+            backActivityIntent = new Intent(ActivityAddGroup.this, ActivityLendAndBorrow.class);
+            getSupportActionBar().setTitle("Create User");
+
+        } else if (fromActivity.equals("ActivitySplash")) {
+            ((Button) addGroupView.findViewById(R.id.cancelBtn)).setVisibility(View.GONE);
+            getSupportActionBar().setTitle("Register");
+            backActivityIntent = new Intent(ActivityAddGroup.this, ActivityHome.class);
+
+        } else if (fromActivity.equals("ActivityPersonalExpense")) {
+            ((LinearLayout) addGroupView.findViewById(R.id.emailLayer)).setVisibility(View.GONE);
+            ((LinearLayout) addGroupView.findViewById(R.id.phoneLayer)).setVisibility(View.GONE);
+            backActivityIntent = new Intent(ActivityAddGroup.this, ActivityPersonalExpense.class);
+            getSupportActionBar().setTitle("Create Collection");
+
+        } else if (fromActivity.equals("ActivityJointExpense")) {
+            getSupportActionBar().setTitle("Create a Group");
+
+            ((LinearLayout) addGroupView.findViewById(R.id.isOnlineLayer)).setVisibility(View.VISIBLE);
+            ((LinearLayout) addGroupView.findViewById(R.id.groupTypeLayer)).setVisibility(View.VISIBLE);
+            ((LinearLayout) addGroupView.findViewById(R.id.grupMembersLayer)).setVisibility(View.VISIBLE);
 
 
+            ((LinearLayout) addGroupView.findViewById(R.id.emailLayer)).setVisibility(View.GONE);
+            ((LinearLayout) addGroupView.findViewById(R.id.phoneLayer)).setVisibility(View.GONE);
+
+            backActivityIntent = new Intent(ActivityAddGroup.this, ActivityJointExpense.class);
 
 
-        switch (fromActivity) {
-            case "ActivityLendAndBorrow":
-                //((TextView) addGroupView.findViewById(R.id.op)).setText("Add user");
-                backActivityIntent=new Intent(ActivityAddGroup.this, ActivityLendAndBorrow.class);
-                getSupportActionBar().setTitle("Create User");
-                break;
+            Cursor cursor = myDb.getAllUsers();
 
-            case "ActivitySplash":
-                ((Button) addGroupView.findViewById(R.id.cancelBtn)).setVisibility(View.GONE);
-                getSupportActionBar().setTitle("Register");
-                backActivityIntent=new Intent(ActivityAddGroup.this, ActivityHome.class);
-                break;
+            //Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.listview_item_with_checkbox_template, cursor);
 
-            case "ActivityPersonalExpense":
-                ((LinearLayout) addGroupView.findViewById(R.id.emailLayer) ).setVisibility(View.GONE);
-                ((LinearLayout) addGroupView.findViewById(R.id.phoneLayer) ).setVisibility(View.GONE);
-                backActivityIntent=new Intent(ActivityAddGroup.this, ActivityPersonalExpense.class);
-                getSupportActionBar().setTitle("Create Collection");
-                break;
-
-            case "ActivityJointExpense":
-                getSupportActionBar().setTitle("Create a Group");
-
-                ((LinearLayout) addGroupView.findViewById(R.id.isOnlineLayer) ).setVisibility(View.VISIBLE);
-                ((LinearLayout) addGroupView.findViewById(R.id.groupTypeLayer) ).setVisibility(View.VISIBLE);
-                ((LinearLayout) addGroupView.findViewById(R.id.grupMembersLayer) ).setVisibility(View.VISIBLE);
-
-
-                ((LinearLayout) addGroupView.findViewById(R.id.emailLayer) ).setVisibility(View.GONE);
-                ((LinearLayout) addGroupView.findViewById(R.id.phoneLayer) ).setVisibility(View.GONE);
-
-                backActivityIntent=new Intent(ActivityAddGroup.this, ActivityJointExpense.class);
-
-
-                Cursor cursor = myDb.getAllUsers();
-
-                //Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.listview_item_with_checkbox_template, cursor);
-
-                //((ListView) addGroupView.findViewById(R.id.users)).setAdapter(adapter);
+            //((ListView) addGroupView.findViewById(R.id.users)).setAdapter(adapter);
                 /*
                 recyclerView = (RecyclerView) findViewById(R.id.users);
                 recyclerView.setHasFixedSize(true);
@@ -139,16 +127,12 @@ public class ActivityAddGroup extends ActionBarActivity {
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);
                 recyclerView.setLayoutManager(layoutManager);
                 */
-                adapter = new Adapter_RecyclerViewList(cursor, this);
-                recyclerView.setAdapter(adapter);
+            adapter = new Adapter_RecyclerViewList(cursor, this);
+            recyclerView.setAdapter(adapter);
 
 
-                break;
-
-
-
-            default:
-                throw new IllegalArgumentException("Invalid  ");
+        } else {
+            throw new IllegalArgumentException("Invalid  ");
         }
 
 

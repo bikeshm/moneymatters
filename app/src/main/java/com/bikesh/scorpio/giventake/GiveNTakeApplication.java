@@ -60,7 +60,7 @@ public class GiveNTakeApplication extends Application {
 
         activity=currentActivity;
 
-
+/*
 
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
@@ -148,12 +148,12 @@ public class GiveNTakeApplication extends Application {
 
                     }
 
-                    /*
+
                     //for login function execution
-                    if(rv.getChildPosition(child)==0){
-                        return false;
-                    }
-                    */
+                    //if(rv.getChildPosition(child)==0){
+                    //    return false;
+                   // }
+
                     return true;
 
                 }
@@ -167,6 +167,7 @@ public class GiveNTakeApplication extends Application {
             }
         });
 
+        */
 
     }
 
