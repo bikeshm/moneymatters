@@ -1,21 +1,18 @@
-package com.bikesh.scorpio.giventake;
+package com.bikesh.scorpio.giventake.adapters;
 
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.bikesh.scorpio.giventake.R;
+
 import java.util.HashMap;
 import java.util.Map;
 

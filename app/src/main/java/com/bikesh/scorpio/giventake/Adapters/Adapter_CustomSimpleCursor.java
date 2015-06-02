@@ -1,8 +1,7 @@
-package com.bikesh.scorpio.giventake;
+package com.bikesh.scorpio.giventake.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.bikesh.scorpio.giventake.R;
 import com.bikesh.scorpio.giventake.model.DBHelper;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.bikesh.scorpio.giventake;
+package com.bikesh.scorpio.giventake.adapters;
 
 import android.app.DatePickerDialog;
 import android.content.Context;

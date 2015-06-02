@@ -1,29 +1,25 @@
 package com.bikesh.scorpio.giventake;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.provider.ContactsContract;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bikesh.scorpio.giventake.adapters.Adapter_CustomSimpleCursor;
+import com.bikesh.scorpio.giventake.adapters.Adapter_TextRecyclerViewList;
+import com.bikesh.scorpio.giventake.adapters.CustomDatePicker;
 import com.bikesh.scorpio.giventake.model.DBHelper;
 
 import java.text.SimpleDateFormat;

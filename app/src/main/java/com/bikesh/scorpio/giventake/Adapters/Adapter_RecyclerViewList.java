@@ -1,4 +1,4 @@
-package com.bikesh.scorpio.giventake;
+package com.bikesh.scorpio.giventake.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -7,8 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.TextView;
+
+import com.bikesh.scorpio.giventake.R;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ public class Adapter_RecyclerViewList extends RecyclerView.Adapter<Adapter_Recyc
 
     Cursor mCursor;
 
-    ArrayList<String> CheckBoxSelected = new ArrayList<String>();
+    public ArrayList<String> CheckBoxSelected = new ArrayList<String>();
 
 
     public Adapter_RecyclerViewList(Cursor c, Context con) {
