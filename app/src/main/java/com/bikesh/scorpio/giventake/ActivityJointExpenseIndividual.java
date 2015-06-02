@@ -33,9 +33,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ActivityJointExpenseIndividual extends ActionBarActivity {
+public class ActivityJointExpenseIndividual extends ActivityBase {
 
-    View JointExpenseIndividual;
+    //View JointExpenseIndividual;
 
     DBHelper myDb;
     String fromActivity=null;
@@ -46,27 +46,7 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //loading templet xml
-        setContentView(R.layout.main_template);
-
-
-        //setting up toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);
-
-        //setting up navigation drawer
-        GiveNTakeApplication AC = (GiveNTakeApplication)getApplicationContext();
-        View view = getWindow().getDecorView().findViewById(android.R.id.content);
-        AC.setupDrawer(view, ActivityJointExpenseIndividual.this, toolbar);
-
-        //loading home activity templet in to template frame
-        FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
-        frame.removeAllViews();
-        Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
-        LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        JointExpenseIndividual=  inflater.inflate(R.layout.activity_joint_expense_individual, null);
-
-        frame.addView(JointExpenseIndividual);
+        setContentView(R.layout.activity_joint_expense_individual);
 
         myDb = new DBHelper(this);
 
@@ -81,11 +61,11 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
         }
 
 
-        ((ImageButton)JointExpenseIndividual.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+        ((ImageButton)currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
 
         //slide up and down the table
-        ((LinearLayout)JointExpenseIndividual.findViewById(R.id.restore)).setOnClickListener(new restoreTable());
-        ((ImageView)JointExpenseIndividual.findViewById(R.id.restorebtn)).setOnClickListener(new restoreTable());
+        ((LinearLayout)currentView.findViewById(R.id.restore)).setOnClickListener(new restoreTable());
+        ((ImageView)currentView.findViewById(R.id.restorebtn)).setOnClickListener(new restoreTable());
 
 
 
@@ -95,8 +75,8 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
         SimpleDateFormat dbmy = new SimpleDateFormat("yyyy-MM");
         String cdbDate = dbmy.format(new Date());
 
-        TextView dateChanger= (TextView)JointExpenseIndividual.findViewById(R.id.dateChanger);
-        TextView dateChangerForDb= (TextView)JointExpenseIndividual.findViewById(R.id.dateChangerForDb);
+        TextView dateChanger= (TextView)currentView.findViewById(R.id.dateChanger);
+        TextView dateChangerForDb= (TextView)currentView.findViewById(R.id.dateChangerForDb);
         dateChanger.setOnClickListener(new CustomDatePicker(ActivityJointExpenseIndividual.this, dateChanger, dateChangerForDb, true));
 
         dateChanger.setText(cDate);
@@ -146,19 +126,19 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
             data = myDb.getGroupEntryTotalPerHead(groupId + "");
         }
         else {
-            data = myDb.getGroupEntryTotalPerHead(groupId+"", ((TextView)JointExpenseIndividual.findViewById(R.id.dateChanger)).getText().toString()) ;
+            data = myDb.getGroupEntryTotalPerHead(groupId+"", ((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString()) ;
         }
 
 
 
-        ((TextView)JointExpenseIndividual.findViewById(R.id.amtTotal)).setText(data.get("total"));
-        ((TextView)JointExpenseIndividual.findViewById(R.id.amtPerHead)).setText(data.get("perhead"));
+        ((TextView)currentView.findViewById(R.id.amtTotal)).setText(data.get("total"));
+        ((TextView)currentView.findViewById(R.id.amtPerHead)).setText(data.get("perhead"));
 
 
         Cursor cursor = myDb.getJointGroupbyId(groupId+"");
 
         if(cursor.getInt(cursor.getColumnIndex("ismonthlytask"))==0){
-            ((LinearLayout)JointExpenseIndividual.findViewById(R.id.l1)).setVisibility(View.GONE);
+            ((LinearLayout)currentView.findViewById(R.id.l1)).setVisibility(View.GONE);
             isMonthlyRenewing=false;
         }
 
@@ -172,7 +152,7 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
 
     private void generateGroupUsersTable() {
 
-        TableLayout tableLayout = (TableLayout) JointExpenseIndividual.findViewById(R.id.groupUserTableLayout);
+        TableLayout tableLayout = (TableLayout) currentView.findViewById(R.id.groupUserTableLayout);
         TableRow tr, th;
         boolean colorFlag=false;
         TextView tv;
@@ -206,7 +186,7 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
             cursor = myDb.getGroupUsersData(groupId + "");
         }
         else {
-            cursor = myDb.getGroupUsersData(groupId + "", ((TextView)JointExpenseIndividual.findViewById(R.id.dateChanger)).getText().toString()) ;
+            cursor = myDb.getGroupUsersData(groupId + "", ((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString()) ;
         }
 
         while(cursor.isAfterLast() == false){
@@ -254,19 +234,11 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
             tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
         }
 
-
-
     }
-
-
-
-
-
-
 
     private void generateEntryTable() {
 
-        TableLayout tableLayout = (TableLayout) JointExpenseIndividual.findViewById(R.id.groupEntryTableLayout);
+        TableLayout tableLayout = (TableLayout) currentView.findViewById(R.id.groupEntryTableLayout);
         TableRow tr, th;
         boolean colorFlag=false;
         TextView tv;
@@ -278,9 +250,6 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
         th.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
         tr = new TableRow(this);
         tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-
-
-
 
         //Log.i("bm info", "" + colId + " cc " + cursor.getCount());
         //Log.i("bm info", "" + tablehead.length);
@@ -304,7 +273,7 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
             cursor = myDb.getGroupEntrys(groupId + "");
         }
         else {
-            cursor = myDb.getGroupEntrys(groupId + "", ((TextView) JointExpenseIndividual.findViewById(R.id.dateChanger)).getText().toString()) ;
+            cursor = myDb.getGroupEntrys(groupId + "", ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString()) ;
         }
 
 
@@ -355,15 +324,14 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
         @Override
         public void onClick(View v) {
 
-            if(((ScrollView) JointExpenseIndividual.findViewById(R.id.scrollView1) ).getVisibility() == View.VISIBLE){
-                ((ScrollView) JointExpenseIndividual.findViewById(R.id.scrollView1) ).setVisibility(View.GONE);
-                ((ImageView)JointExpenseIndividual.findViewById(R.id.restorebtn)).setImageResource(R.drawable.double_arrow_down);
+            if(((ScrollView) currentView.findViewById(R.id.scrollView1) ).getVisibility() == View.VISIBLE){
+                ((ScrollView) currentView.findViewById(R.id.scrollView1) ).setVisibility(View.GONE);
+                ((ImageView)currentView.findViewById(R.id.restorebtn)).setImageResource(R.drawable.double_arrow_down);
             }
             else{
-                ((ScrollView) JointExpenseIndividual.findViewById(R.id.scrollView1) ).setVisibility(View.VISIBLE);
-                ((ImageView)JointExpenseIndividual.findViewById(R.id.restorebtn)).setImageResource(R.drawable.double_arrow_up);
+                ((ScrollView) currentView.findViewById(R.id.scrollView1) ).setVisibility(View.VISIBLE);
+                ((ImageView)currentView.findViewById(R.id.restorebtn)).setImageResource(R.drawable.double_arrow_up);
             }
-
 
         }
     }
@@ -395,32 +363,6 @@ public class ActivityJointExpenseIndividual extends ActionBarActivity {
         public void onClick(View v) {
             Toast.makeText(getApplicationContext(), "clicked" + rowId, Toast.LENGTH_LONG).show();
         }
-    }
-
-
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_joint_expense_individual, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
 

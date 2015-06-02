@@ -27,11 +27,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ActivityAddGroup extends ActionBarActivity {
+public class ActivityAddGroup extends ActivityBase {
 
     String fromActivity=null;
 
-    View addGroupView;
+    //View addGroupView;
 
     private DBHelper myDb ;
 
@@ -43,28 +43,7 @@ public class ActivityAddGroup extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //loading templet xml
-        setContentView(R.layout.main_template);
-
-
-        //setting up toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);
-
-        //setting up navigation drawer
-        GiveNTakeApplication AC = (GiveNTakeApplication)getApplicationContext();
-        View view = getWindow().getDecorView().findViewById(android.R.id.content);
-        AC.setupDrawer(view, ActivityAddGroup.this, toolbar);
-
-        //loading home activity templet in to template frame
-        FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
-        frame.removeAllViews();
-        Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
-        LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        addGroupView=  inflater.inflate(R.layout.activity_add_group, null);
-
-        frame.addView(addGroupView);
-
+        setContentView(R.layout.activity_add_group);
 
         myDb = new DBHelper(this);
 
@@ -91,26 +70,26 @@ public class ActivityAddGroup extends ActionBarActivity {
             getSupportActionBar().setTitle("Create User");
 
         } else if (fromActivity.equals("ActivitySplash")) {
-            ((Button) addGroupView.findViewById(R.id.cancelBtn)).setVisibility(View.GONE);
+            ((Button) currentView.findViewById(R.id.cancelBtn)).setVisibility(View.GONE);
             getSupportActionBar().setTitle("Register");
             backActivityIntent = new Intent(ActivityAddGroup.this, ActivityHome.class);
 
         } else if (fromActivity.equals("ActivityPersonalExpense")) {
-            ((LinearLayout) addGroupView.findViewById(R.id.emailLayer)).setVisibility(View.GONE);
-            ((LinearLayout) addGroupView.findViewById(R.id.phoneLayer)).setVisibility(View.GONE);
+            ((LinearLayout) currentView.findViewById(R.id.emailLayer)).setVisibility(View.GONE);
+            ((LinearLayout) currentView.findViewById(R.id.phoneLayer)).setVisibility(View.GONE);
             backActivityIntent = new Intent(ActivityAddGroup.this, ActivityPersonalExpense.class);
             getSupportActionBar().setTitle("Create Collection");
 
         } else if (fromActivity.equals("ActivityJointExpense")) {
             getSupportActionBar().setTitle("Create a Group");
 
-            ((LinearLayout) addGroupView.findViewById(R.id.isOnlineLayer)).setVisibility(View.VISIBLE);
-            ((LinearLayout) addGroupView.findViewById(R.id.groupTypeLayer)).setVisibility(View.VISIBLE);
-            ((LinearLayout) addGroupView.findViewById(R.id.grupMembersLayer)).setVisibility(View.VISIBLE);
+            ((LinearLayout) currentView.findViewById(R.id.isOnlineLayer)).setVisibility(View.VISIBLE);
+            ((LinearLayout) currentView.findViewById(R.id.groupTypeLayer)).setVisibility(View.VISIBLE);
+            ((LinearLayout) currentView.findViewById(R.id.grupMembersLayer)).setVisibility(View.VISIBLE);
 
 
-            ((LinearLayout) addGroupView.findViewById(R.id.emailLayer)).setVisibility(View.GONE);
-            ((LinearLayout) addGroupView.findViewById(R.id.phoneLayer)).setVisibility(View.GONE);
+            ((LinearLayout) currentView.findViewById(R.id.emailLayer)).setVisibility(View.GONE);
+            ((LinearLayout) currentView.findViewById(R.id.phoneLayer)).setVisibility(View.GONE);
 
             backActivityIntent = new Intent(ActivityAddGroup.this, ActivityJointExpense.class);
 
@@ -119,7 +98,7 @@ public class ActivityAddGroup extends ActionBarActivity {
 
             //Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.listview_item_with_checkbox_template, cursor);
 
-            //((ListView) addGroupView.findViewById(R.id.users)).setAdapter(adapter);
+            //((ListView) currentView.findViewById(R.id.users)).setAdapter(adapter);
                 /*
                 recyclerView = (RecyclerView) findViewById(R.id.users);
                 recyclerView.setHasFixedSize(true);
@@ -137,8 +116,8 @@ public class ActivityAddGroup extends ActionBarActivity {
 
 
 
-        ((Button) addGroupView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
-        ((Button) addGroupView.findViewById(R.id.cancelBtn)).setOnClickListener(new cancelActivity());
+        ((Button) currentView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
+        ((Button) currentView.findViewById(R.id.cancelBtn)).setOnClickListener(new cancelActivity());
 
 
 
@@ -150,7 +129,7 @@ public class ActivityAddGroup extends ActionBarActivity {
         @Override
         public void onClick(View v) {
 
-            if(((EditText) addGroupView.findViewById(R.id.name) ).getText().toString().trim().equals("")){
+            if(((EditText) currentView.findViewById(R.id.name) ).getText().toString().trim().equals("")){
                 Toast.makeText(getApplicationContext(),"Name required", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -158,15 +137,15 @@ public class ActivityAddGroup extends ActionBarActivity {
             Map<String, String> data = new HashMap<String, String>();
 
             //Todo:- validate and escape incomming data
-            data.put("name",  ((EditText) addGroupView.findViewById(R.id.name) ).getText().toString());
-            data.put("description", ((EditText) addGroupView.findViewById(R.id.description)).getText().toString());
+            data.put("name",  ((EditText) currentView.findViewById(R.id.name) ).getText().toString());
+            data.put("description", ((EditText) currentView.findViewById(R.id.description)).getText().toString());
 
 
             if(fromActivity.equals("ActivityLendAndBorrow") || fromActivity.equals("ActivitySplash") ) {
 
 
-                data.put("email",  ((EditText) addGroupView.findViewById(R.id.email) ).getText().toString() );
-                data.put("phone", ((EditText) addGroupView.findViewById(R.id.phone) ).getText().toString() );
+                data.put("email",  ((EditText) currentView.findViewById(R.id.email) ).getText().toString() );
+                data.put("phone", ((EditText) currentView.findViewById(R.id.phone) ).getText().toString() );
 
 
                 if (myDb.insertUser(data)==1) {
@@ -203,7 +182,7 @@ public class ActivityAddGroup extends ActionBarActivity {
 
                 /*
                 CheckBox cb;
-                ListView mainListView =((ListView) addGroupView.findViewById(R.id.users));
+                ListView mainListView =((ListView) currentView.findViewById(R.id.users));
                 for (int x = 0; x<mainListView.getChildCount();x++){
                     cb = (CheckBox)mainListView.getChildAt(x).findViewById(R.id.item_name);
 
@@ -215,7 +194,7 @@ public class ActivityAddGroup extends ActionBarActivity {
                 */
 
 
-                int id = ((RadioGroup) addGroupView.findViewById(R.id.groupType)).getCheckedRadioButtonId();
+                int id = ((RadioGroup) currentView.findViewById(R.id.groupType)).getCheckedRadioButtonId();
                 if (id == -1){
                     //no item selected
                 }
@@ -225,7 +204,7 @@ public class ActivityAddGroup extends ActionBarActivity {
                     }
                 }
 
-                id = ((RadioGroup) addGroupView.findViewById(R.id.isOnline)).getCheckedRadioButtonId();
+                id = ((RadioGroup) currentView.findViewById(R.id.isOnline)).getCheckedRadioButtonId();
                 if (id == -1){
                     //no item selected
                 }
@@ -284,27 +263,7 @@ public class ActivityAddGroup extends ActionBarActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_add_user, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
 
     private class cancelActivity implements View.OnClickListener {

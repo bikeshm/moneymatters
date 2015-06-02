@@ -29,9 +29,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
+public class ActivityLendAndBorrowIndividual extends ActivityBase {
 
-    View lendAndBorrowPersonalView;
+    //View lendAndBorrowPersonalView;
     DBHelper myDb;
     String fromActivity=null;
     int  userId=0;
@@ -40,34 +40,11 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //loading templet xml
-        setContentView(R.layout.main_template);
-
-
-        //setting up toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);
-
-        //setting up navigation drawer
-        GiveNTakeApplication AC = (GiveNTakeApplication)getApplicationContext();
-        View view = getWindow().getDecorView().findViewById(android.R.id.content);
-        AC.setupDrawer(view, ActivityLendAndBorrowIndividual.this, toolbar);
-
-        //loading home activity templet in to template frame
-        FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
-        frame.removeAllViews();
-        Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
-        LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        lendAndBorrowPersonalView =  inflater.inflate(R.layout.activity_lend_and_borrow_personal, null);
-
-        frame.addView(lendAndBorrowPersonalView);
+        setContentView(R.layout.activity_lend_and_borrow_personal);
 
         myDb = new DBHelper(this);
 
         Bundle extras = getIntent().getExtras();
-
-
-
         if(extras == null) {
             fromActivity= null;
         } else {
@@ -76,9 +53,9 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
             userName = extras.getString("userName");
         }
 
-        ((TextView) lendAndBorrowPersonalView.findViewById(R.id.username)).setText(userName);
+        ((TextView) currentView.findViewById(R.id.username)).setText(userName);
 
-        ((ImageButton) lendAndBorrowPersonalView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+        ((ImageButton) currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
 
 
         SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy");
@@ -87,16 +64,10 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
         SimpleDateFormat dbmy = new SimpleDateFormat("yyyy-MM");
         String cdbDate = dbmy.format(new Date());
 
-
-
-
-
         Cursor entrys =  myDb.getUserEntrys(userId,cDate);
 
-
-
-        TextView dateChanger= (TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger);
-        TextView dateChangerForDb= (TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChangerForDb);
+        TextView dateChanger= (TextView)currentView.findViewById(R.id.dateChanger);
+        TextView dateChangerForDb= (TextView)currentView.findViewById(R.id.dateChangerForDb);
         dateChanger.setOnClickListener(new CustomDatePicker(ActivityLendAndBorrowIndividual.this, dateChanger, dateChangerForDb, true));
 
         dateChanger.setText(cDate);
@@ -119,7 +90,7 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
     public void onResume() {
         super.onResume();
 
-        Cursor entrys =  myDb.getUserEntrys(userId, ((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
+        Cursor entrys =  myDb.getUserEntrys(userId, ((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
         generateTable(entrys);
     }
 
@@ -134,9 +105,9 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
-            Toast.makeText(getApplicationContext(),""+((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChangerForDb)).getText(),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),""+((TextView)currentView.findViewById(R.id.dateChangerForDb)).getText(),Toast.LENGTH_LONG).show();
 
-            Cursor entrys =  myDb.getUserEntrys(userId,((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
+            Cursor entrys =  myDb.getUserEntrys(userId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
 
             generateTable(entrys);
 
@@ -147,7 +118,7 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
 
     private void generateTable(Cursor cursor) {
 
-        TableLayout tableLayout = (TableLayout) lendAndBorrowPersonalView.findViewById(R.id.tableLayout);
+        TableLayout tableLayout = (TableLayout) currentView.findViewById(R.id.tableLayout);
         TableRow tr, th;
         boolean colorFlag=false;
         TextView tv;
@@ -234,44 +205,44 @@ public class ActivityLendAndBorrowIndividual extends ActionBarActivity {
 
 
         float amtHolder;
-        amtHolder = myDb.getMonthTotalOfGive(userId,((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
+        amtHolder = myDb.getMonthTotalOfGive(userId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
 
-        ((TextView)lendAndBorrowPersonalView.findViewById(R.id.monthTotalToGive)).setText(": "+amtHolder);
+        ((TextView)currentView.findViewById(R.id.monthTotalToGive)).setText(": "+amtHolder);
 
-        amtHolder = myDb.getMonthTotalOfGet(userId, ((TextView) lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
-        ((TextView)lendAndBorrowPersonalView.findViewById(R.id.monthTotalToGet)).setText(": " + amtHolder);
+        amtHolder = myDb.getMonthTotalOfGet(userId, ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString() );
+        ((TextView)currentView.findViewById(R.id.monthTotalToGet)).setText(": " + amtHolder);
 
         float balanceAmt=  myDb.getTotalBalance(userId);
 
-        ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmt)).setText(": "+balanceAmt);
+        ((TextView)currentView.findViewById(R.id.balanceAmt)).setText(": "+balanceAmt);
 
         if(balanceAmt<0){
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmtLabel)).setText("Balance amount get from him/her");
+            ((TextView)currentView.findViewById(R.id.balanceAmtLabel)).setText("Balance amount get from him/her");
             balanceAmt=balanceAmt*-1;
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmt)).setText(": "+balanceAmt);
+            ((TextView)currentView.findViewById(R.id.balanceAmt)).setText(": "+balanceAmt);
         }
         else if (balanceAmt>0){
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmtLabel)).setText("Balance amount give to him/her");
+            ((TextView)currentView.findViewById(R.id.balanceAmtLabel)).setText("Balance amount give to him/her");
         }
         else{
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmtLabel)).setText("Balance amount");
+            ((TextView)currentView.findViewById(R.id.balanceAmtLabel)).setText("Balance amount");
         }
 
 
-        amtHolder = myDb.getPrevBalance(userId, ((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
+        amtHolder = myDb.getPrevBalance(userId, ((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
 
         if(amtHolder<0){
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmtLabel)).setText("Previous balance amount get from him/her");
+            ((TextView)currentView.findViewById(R.id.prevBalanceAmtLabel)).setText("Previous balance amount get from him/her");
             amtHolder=amtHolder*-1;
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmt)).setText(": "+amtHolder);
+            ((TextView)currentView.findViewById(R.id.prevBalanceAmt)).setText(": "+amtHolder);
         }
         else if (amtHolder>0){
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmtLabel)).setText("Previous balance amount give to him/her");
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmt)).setText(": "+amtHolder);
+            ((TextView)currentView.findViewById(R.id.prevBalanceAmtLabel)).setText("Previous balance amount give to him/her");
+            ((TextView)currentView.findViewById(R.id.prevBalanceAmt)).setText(": "+amtHolder);
         }
         else{
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmtLabel)).setText("Previous balance amount");
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmt)).setText(": "+amtHolder);
+            ((TextView)currentView.findViewById(R.id.prevBalanceAmtLabel)).setText("Previous balance amount");
+            ((TextView)currentView.findViewById(R.id.prevBalanceAmt)).setText(": "+amtHolder);
         }
 
 

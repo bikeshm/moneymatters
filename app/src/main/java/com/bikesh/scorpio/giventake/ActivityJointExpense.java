@@ -23,9 +23,9 @@ import com.bikesh.scorpio.giventake.model.DBHelper;
 import java.util.Map;
 
 
-public class ActivityJointExpense extends ActionBarActivity {
+public class ActivityJointExpense extends ActivityBase {
 
-    View jointExpenseView;
+    //View currentView;
     ListView listView;
     DBHelper myDb;
 
@@ -33,9 +33,9 @@ public class ActivityJointExpense extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //loading templet xml
-        setContentView(R.layout.main_template);
+        setContentView(R.layout.activity_joint_expense);
 
-
+        /*
         //setting up toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
@@ -53,13 +53,13 @@ public class ActivityJointExpense extends ActionBarActivity {
         jointExpenseView=  inflater.inflate(R.layout.activity_joint_expense, null);
 
         frame.addView(jointExpenseView);
+        */
 
-
-        listView = (ListView) jointExpenseView.findViewById(R.id.listViewFromDB);
+        listView = (ListView) currentView.findViewById(R.id.listViewFromDB);
         listView.setOnItemClickListener(new listItemClicked());
 
-        //((ImageButton)jointExpenseView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
-        ((ImageButton)jointExpenseView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewGroup());
+        //((ImageButton)currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+        ((ImageButton)currentView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewGroup());
 
 
         myDb = new DBHelper(this);
@@ -87,9 +87,9 @@ public class ActivityJointExpense extends ActionBarActivity {
 
         Map<String, String> finalResult = myDb.getAllGroupTotalSpendGiveGet();
 
-        ((TextView)jointExpenseView.findViewById(R.id.totalspend)).setText(": "+finalResult.get("total"));
-        ((TextView)jointExpenseView.findViewById(R.id.amtToGive)).setText(": " + finalResult.get("togive"));
-        ((TextView)jointExpenseView.findViewById(R.id.amtToGet)).setText(": " + finalResult.get("toget"));
+        ((TextView)currentView.findViewById(R.id.totalspend)).setText(": "+finalResult.get("total"));
+        ((TextView)currentView.findViewById(R.id.amtToGive)).setText(": " + finalResult.get("togive"));
+        ((TextView)currentView.findViewById(R.id.amtToGet)).setText(": " + finalResult.get("toget"));
 
 
     }

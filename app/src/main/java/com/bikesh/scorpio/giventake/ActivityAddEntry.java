@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ActivityAddEntry extends ActionBarActivity {
+public class ActivityAddEntry extends ActivityBase {
 
     String fromActivity=null;
     long ID=0;
@@ -40,8 +40,6 @@ public class ActivityAddEntry extends ActionBarActivity {
     DBHelper myDb;
 
     boolean actionFlag=false; //if false giving or borrowing
-
-    View addEntryView;
 
     Intent backActivityIntent=null;
 
@@ -53,27 +51,8 @@ public class ActivityAddEntry extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //loading templet xml
-        setContentView(R.layout.main_template);
+        setContentView(R.layout.activity_add_entry);
 
-
-        //setting up toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);
-
-        //setting up navigation drawer
-        GiveNTakeApplication AC = (GiveNTakeApplication)getApplicationContext();
-        View view = getWindow().getDecorView().findViewById(android.R.id.content);
-        AC.setupDrawer(view, ActivityAddEntry.this, toolbar);
-
-        //loading home activity templet in to template frame
-        FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
-        frame.removeAllViews();
-        Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
-        LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        addEntryView=  inflater.inflate(R.layout.activity_add_entry, null);
-
-        frame.addView(addEntryView);
 
         myDb = new DBHelper(this);
 
@@ -140,9 +119,9 @@ public class ActivityAddEntry extends ActionBarActivity {
 
         //implementing date picker
 
-        EditText datePicker = ((EditText) addEntryView.findViewById(R.id.datePicker));
+        EditText datePicker = ((EditText) currentView.findViewById(R.id.datePicker));
         //created_date is hidden field for serving date to db (YY-mm-dd format)
-        EditText created_date = ((EditText) addEntryView.findViewById(R.id.created_date));
+        EditText created_date = ((EditText) currentView.findViewById(R.id.created_date));
 
         //initial date values
         SimpleDateFormat dmy = new SimpleDateFormat("dd-MM-yyyy");
@@ -158,8 +137,8 @@ public class ActivityAddEntry extends ActionBarActivity {
         //----implementing date picker
 
 
-        ((Button)addEntryView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
-        ((Button) addEntryView.findViewById(R.id.cancelBtn)).setOnClickListener(new cancelActivity());
+        ((Button)currentView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
+        ((Button) currentView.findViewById(R.id.cancelBtn)).setOnClickListener(new cancelActivity());
 
     }
 
@@ -167,20 +146,20 @@ public class ActivityAddEntry extends ActionBarActivity {
 
 
     private void generateDataForJointExpenseIndividual() {
-        ((LinearLayout) addEntryView.findViewById(R.id.l3) ).setVisibility(View.GONE);
+        ((LinearLayout) currentView.findViewById(R.id.l3) ).setVisibility(View.GONE);
 
         //===================face 2
         //((LinearLayout) addEntryView.findViewById(R.id.isSplitLayer) ).setVisibility(View.VISIBLE);
         //((LinearLayout) addEntryView.findViewById(R.id.grupMembersLayer) ).setVisibility(View.VISIBLE);
         //=====================face 2
 
-        ((TextView) addEntryView.findViewById(R.id.selectUserLabel)).setText("Spend By");
+        ((TextView) currentView.findViewById(R.id.selectUserLabel)).setText("Spend By");
         Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, myDb.getAllUsersInGroup(ID + "")  );
-        ((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(adapter);
+        ((Spinner) currentView.findViewById(R.id.fromUser)).setAdapter(adapter);
 
 
 
-        ((RadioGroup) addEntryView.findViewById(R.id.isSplit)).setOnCheckedChangeListener(new isSplitChanged());
+        ((RadioGroup) currentView.findViewById(R.id.isSplit)).setOnCheckedChangeListener(new isSplitChanged());
 
         recyclerView.setOnKeyListener(new recyclerViewKeyListener());
 
@@ -195,8 +174,8 @@ public class ActivityAddEntry extends ActionBarActivity {
 
     private void generateDataForPersonalExpense(){
 
-        ((LinearLayout) addEntryView.findViewById(R.id.l3) ).setVisibility(View.GONE);
-        ((TextView)addEntryView.findViewById(R.id.selectUserLabel)).setText("Select Collection : ");
+        ((LinearLayout) currentView.findViewById(R.id.l3) ).setVisibility(View.GONE);
+        ((TextView)currentView.findViewById(R.id.selectUserLabel)).setText("Select Collection : ");
 
         Cursor cursor = myDb.getAllCollection();
         generate_FromuserSpinner(cursor);
@@ -206,7 +185,7 @@ public class ActivityAddEntry extends ActionBarActivity {
 
         Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, cursor);
 
-        ((Spinner) addEntryView.findViewById(R.id.fromUser)).setAdapter(adapter);
+        ((Spinner) currentView.findViewById(R.id.fromUser)).setAdapter(adapter);
 
         //setting passed/selected user name in spinner
         int cpos = 0;
@@ -218,7 +197,7 @@ public class ActivityAddEntry extends ActionBarActivity {
                 break;
             }
         }
-        ((Spinner) addEntryView.findViewById(R.id.fromUser)).setSelection(cpos);
+        ((Spinner) currentView.findViewById(R.id.fromUser)).setSelection(cpos);
 
     }
 
@@ -248,11 +227,11 @@ public class ActivityAddEntry extends ActionBarActivity {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if(id==0){
-                ((TextView) addEntryView.findViewById (R.id.selectUserLabel)).setText("Give to ");
+                ((TextView) currentView.findViewById (R.id.selectUserLabel)).setText("Give to ");
                 actionFlag=false;
             }
             else{
-                ((TextView) addEntryView.findViewById (R.id.selectUserLabel)).setText("Borrow from ");
+                ((TextView) currentView.findViewById (R.id.selectUserLabel)).setText("Borrow from ");
                 actionFlag=true;
             }
         }
@@ -269,21 +248,21 @@ public class ActivityAddEntry extends ActionBarActivity {
             Map<String, String> data = new HashMap<String, String>();
 
             //common field
-            data.put("created_date",  ((EditText) addEntryView.findViewById(R.id.created_date) ).getText().toString() );
-            data.put("description", ((EditText) addEntryView.findViewById(R.id.description)).getText().toString());
+            data.put("created_date",  ((EditText) currentView.findViewById(R.id.created_date) ).getText().toString() );
+            data.put("description", ((EditText) currentView.findViewById(R.id.description)).getText().toString());
 
 
 
-            data.put("amt", ((EditText) addEntryView.findViewById(R.id.amount)).getText().toString());
+            data.put("amt", ((EditText) currentView.findViewById(R.id.amount)).getText().toString());
 
             if(fromActivity.equals("ActivityLendAndBorrowPersonal") || fromActivity.equals("ActivityLendAndBorrow")  ) {
 
                 if(actionFlag==false) {
                     data.put("from_user", "1" );
-                    data.put("to_user", ((Spinner) addEntryView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
+                    data.put("to_user", ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
                 }
                 else{
-                    data.put("from_user",  ((Spinner) addEntryView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
+                    data.put("from_user",  ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
                     data.put("to_user", "1" );
                 }
 
@@ -300,7 +279,7 @@ public class ActivityAddEntry extends ActionBarActivity {
 
 
             if(fromActivity.equals("ActivityPersonalExpense") || fromActivity.equals("ActivityPersonalExpenseIndividual") ){
-                data.put("collection_id",  ((Spinner) addEntryView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
+                data.put("collection_id",  ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
 
                 if (myDb.insertPersonalExpense(data)==1) {
                     Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
@@ -317,9 +296,9 @@ public class ActivityAddEntry extends ActionBarActivity {
                 int is_split=0;
 
                 data.put("joint_group_id",  ID+"" );
-                data.put("user_id",  ((Spinner) addEntryView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
+                data.put("user_id",  ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
 
-                int id = ((RadioGroup) addEntryView.findViewById(R.id.isSplit)).getCheckedRadioButtonId();
+                int id = ((RadioGroup) currentView.findViewById(R.id.isSplit)).getCheckedRadioButtonId();
                 if (id == -1){ /*no item selected*/ }
                 else {
                     if (id == R.id.isSplitradioYes) {
@@ -342,11 +321,6 @@ public class ActivityAddEntry extends ActionBarActivity {
                 }
 
             }
-
-
-
-
-
 
         }
     }
@@ -379,12 +353,12 @@ public class ActivityAddEntry extends ActionBarActivity {
             Toast.makeText( getApplicationContext(),""+ checkedId,Toast.LENGTH_LONG).show();
 
             if(checkedId==R.id.isSplitradioYes){
-                ((LinearLayout) addEntryView.findViewById(R.id.grupMembersLayer) ).setVisibility(View.VISIBLE);
-                ((EditText)addEntryView.findViewById(R.id.amount)).setEnabled(false);
+                ((LinearLayout) currentView.findViewById(R.id.grupMembersLayer) ).setVisibility(View.VISIBLE);
+                ((EditText)currentView.findViewById(R.id.amount)).setEnabled(false);
             }
             else{
-                ((LinearLayout) addEntryView.findViewById(R.id.grupMembersLayer) ).setVisibility(View.GONE);
-                ((EditText)addEntryView.findViewById(R.id.amount)).setEnabled(true);
+                ((LinearLayout) currentView.findViewById(R.id.grupMembersLayer) ).setVisibility(View.GONE);
+                ((EditText)currentView.findViewById(R.id.amount)).setEnabled(true);
             }
         }
     }

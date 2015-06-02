@@ -28,10 +28,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ActivityPersonalExpense extends ActionBarActivity {
+public class ActivityPersonalExpense extends ActivityBase {
 
     DBHelper myDb;
-    View ActivityPersonalExpenseView;
+    //View ActivityPersonalExpenseView;
 
     ListView listView;
 
@@ -39,29 +39,11 @@ public class ActivityPersonalExpense extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //loading templet xml
-        setContentView(R.layout.main_template);
+        setContentView(R.layout.activity_personal_expense);
 
 
-        //setting up toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);
 
-        //setting up navigation drawer
-        GiveNTakeApplication AC = (GiveNTakeApplication)getApplicationContext();
-        View view = getWindow().getDecorView().findViewById(android.R.id.content);
-        AC.setupDrawer(view, ActivityPersonalExpense.this, toolbar);
-
-        //loading home activity templet in to template frame
-        FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
-        frame.removeAllViews();
-        Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
-        LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ActivityPersonalExpenseView=  inflater.inflate(R.layout.activity_personal_expense, null);
-        frame.addView(ActivityPersonalExpenseView);
-
-
-        listView = (ListView) ActivityPersonalExpenseView.findViewById(R.id.listViewFromDB);
+        listView = (ListView) currentView.findViewById(R.id.listViewFromDB);
 
 
         SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy");
@@ -70,8 +52,8 @@ public class ActivityPersonalExpense extends ActionBarActivity {
         SimpleDateFormat dbmy = new SimpleDateFormat("yyyy-MM");
         String cdbDate = dbmy.format(new Date());
 
-        TextView dateChanger= (TextView)ActivityPersonalExpenseView.findViewById(R.id.dateChanger);
-        TextView dateChangerForDb= (TextView)ActivityPersonalExpenseView.findViewById(R.id.dateChangerForDb);
+        TextView dateChanger= (TextView)currentView.findViewById(R.id.dateChanger);
+        TextView dateChangerForDb= (TextView)currentView.findViewById(R.id.dateChangerForDb);
 
         dateChanger.setOnClickListener(new CustomDatePicker(ActivityPersonalExpense.this, dateChanger, dateChangerForDb, true));
 
@@ -85,8 +67,8 @@ public class ActivityPersonalExpense extends ActionBarActivity {
         populateListViewFromDB();
 
 
-        ((ImageButton)ActivityPersonalExpenseView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
-        ((ImageButton)ActivityPersonalExpenseView.findViewById(R.id.addExpenseGroup)).setOnClickListener(new openAddnewGroup());
+        ((ImageButton)currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+        ((ImageButton)currentView.findViewById(R.id.addExpenseGroup)).setOnClickListener(new openAddnewGroup());
 
     }
 
@@ -100,7 +82,7 @@ public class ActivityPersonalExpense extends ActionBarActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
-            Toast.makeText(getApplicationContext(), "" + ((TextView) ActivityPersonalExpenseView.findViewById(R.id.dateChangerForDb)).getText(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "" + ((TextView) currentView.findViewById(R.id.dateChangerForDb)).getText(), Toast.LENGTH_LONG).show();
 
 
             populateListViewFromDB();
@@ -126,11 +108,11 @@ public class ActivityPersonalExpense extends ActionBarActivity {
         //Todo :- 1. insted of listing all category just list the category which is having entry
         //Todo :- need to implement pagination
         //Todo : - implement search option
-        Cursor cursor = myDb.getAllCollectionByMonth( ((TextView) ActivityPersonalExpenseView.findViewById(R.id.dateChanger)).getText().toString() );
+        Cursor cursor = myDb.getAllCollectionByMonth( ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString() );
 
         Map<String, String> dataExtra = new HashMap<String, String>();
 
-        dataExtra.put("selectedDate",  ((TextView) ActivityPersonalExpenseView.findViewById(R.id.dateChanger)).getText().toString() );
+        dataExtra.put("selectedDate",  ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString() );
 
         listView.setAdapter(new Adapter_CustomSimpleCursor(this,		// Context
                 R.layout.listview_item_template,	// Row layout template
@@ -142,8 +124,8 @@ public class ActivityPersonalExpense extends ActionBarActivity {
 
 
         float amtHolder;
-        amtHolder = myDb.getMonthTotalOfPersonalExpense(((TextView) ActivityPersonalExpenseView.findViewById(R.id.dateChanger)).getText().toString());
-        ((TextView)ActivityPersonalExpenseView.findViewById(R.id.monthlyTotal)).setText(": " + amtHolder);
+        amtHolder = myDb.getMonthTotalOfPersonalExpense(((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString());
+        ((TextView)currentView.findViewById(R.id.monthlyTotal)).setText(": " + amtHolder);
 
     }
 

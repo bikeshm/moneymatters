@@ -30,10 +30,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class ActivityPersonalExpenseIndividual extends ActionBarActivity {
+public class ActivityPersonalExpenseIndividual extends ActivityBase {
 
 
-    View personalExpenseIndividualView;
+    //View personalExpenseIndividualView;
     DBHelper myDb;
     String fromActivity=null;
     int  colId=0;
@@ -42,29 +42,7 @@ public class ActivityPersonalExpenseIndividual extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //loading templet xml
-        setContentView(R.layout.main_template);
-
-
-        //setting up toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);
-
-        //setting up navigation drawer
-        GiveNTakeApplication AC = (GiveNTakeApplication)getApplicationContext();
-        View view = getWindow().getDecorView().findViewById(android.R.id.content);
-        AC.setupDrawer(view, ActivityPersonalExpenseIndividual.this, toolbar);
-
-        //loading home activity templet in to template frame
-        FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
-        frame.removeAllViews();
-        Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
-        LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        personalExpenseIndividualView=  inflater.inflate(R.layout.activity_personal_expense_individual, null);
-
-        frame.addView(personalExpenseIndividualView);
-
+        setContentView(R.layout.activity_personal_expense_individual);
 
         myDb = new DBHelper(this);
 
@@ -85,8 +63,8 @@ public class ActivityPersonalExpenseIndividual extends ActionBarActivity {
         SimpleDateFormat dbmy = new SimpleDateFormat("yyyy-MM");
         String cdbDate = dbmy.format(new Date());
 
-        TextView dateChanger= (TextView)personalExpenseIndividualView.findViewById(R.id.dateChanger);
-        TextView dateChangerForDb= (TextView)personalExpenseIndividualView.findViewById(R.id.dateChangerForDb);
+        TextView dateChanger= (TextView)currentView.findViewById(R.id.dateChanger);
+        TextView dateChangerForDb= (TextView)currentView.findViewById(R.id.dateChangerForDb);
 
         dateChanger.setOnClickListener(new CustomDatePicker(ActivityPersonalExpenseIndividual.this, dateChanger, dateChangerForDb, true));
 
@@ -99,7 +77,7 @@ public class ActivityPersonalExpenseIndividual extends ActionBarActivity {
         Cursor entrys =  myDb.getPersonalExpense(colId, cDate);
         generateTable(entrys);
 
-        ((ImageButton)personalExpenseIndividualView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+        ((ImageButton)currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
     }
 
 
@@ -114,13 +92,13 @@ public class ActivityPersonalExpenseIndividual extends ActionBarActivity {
     public void onResume() {
         super.onResume();
 
-        //Cursor entrys =  myDb.getPersonalExpense(colId, ((TextView) personalExpenseIndividualView.findViewById(R.id.dateChanger)).getText().toString());
+        //Cursor entrys =  myDb.getPersonalExpense(colId, ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString());
         //generateTable(entrys);
     }
 
     private void generateTable(Cursor cursor) {
 
-        TableLayout tableLayout = (TableLayout) personalExpenseIndividualView.findViewById(R.id.tableLayout);
+        TableLayout tableLayout = (TableLayout) currentView.findViewById(R.id.tableLayout);
         TableRow tr, th;
         boolean colorFlag=false;
         TextView tv;
@@ -197,52 +175,9 @@ public class ActivityPersonalExpenseIndividual extends ActionBarActivity {
             tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
         }
 
-
-
-
-
         float amtHolder;
-        amtHolder = myDb.getMonthTotalOfPersonalExpenseIndividual(colId, ((TextView) personalExpenseIndividualView.findViewById(R.id.dateChanger)).getText().toString());
-        ((TextView)personalExpenseIndividualView.findViewById(R.id.monthlyTotal)).setText(": "+amtHolder);
-
-        /*
-        amtHolder = myDb.getMonthTotalOfGet(userId, ((TextView) lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
-        ((TextView)lendAndBorrowPersonalView.findViewById(R.id.monthTotalToGet)).setText(": " + amtHolder);
-
-        float balanceAmt=  myDb.getTotalBalance(userId);
-
-        ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmt)).setText(": "+balanceAmt);
-
-        if(balanceAmt<0){
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmtLabel)).setText("Balance amount get from him/her");
-            balanceAmt=balanceAmt*-1;
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmt)).setText(": "+balanceAmt);
-        }
-        else if (balanceAmt>0){
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmtLabel)).setText("Balance amount give to him/her");
-        }
-        else{
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.balanceAmtLabel)).setText("Balance amount");
-        }
-
-
-        amtHolder = myDb.getPrevBalance(userId, ((TextView)lendAndBorrowPersonalView.findViewById(R.id.dateChanger)).getText().toString() );
-
-        if(amtHolder<0){
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmtLabel)).setText("Previous balance amount get from him/her");
-            amtHolder=amtHolder*-1;
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmt)).setText(": "+amtHolder);
-        }
-        else if (amtHolder>0){
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmtLabel)).setText("Previous balance amount give to him/her");
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmt)).setText(": "+amtHolder);
-        }
-        else{
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmtLabel)).setText("Previous balance amount");
-            ((TextView)lendAndBorrowPersonalView.findViewById(R.id.prevBalanceAmt)).setText(": "+amtHolder);
-        }
-        */
-
+        amtHolder = myDb.getMonthTotalOfPersonalExpenseIndividual(colId, ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString());
+        ((TextView)currentView.findViewById(R.id.monthlyTotal)).setText(": "+amtHolder);
 
     }
 
@@ -278,9 +213,9 @@ public class ActivityPersonalExpenseIndividual extends ActionBarActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
-            Toast.makeText(getApplicationContext(),""+((TextView)personalExpenseIndividualView.findViewById(R.id.dateChangerForDb)).getText(),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),""+((TextView)currentView.findViewById(R.id.dateChangerForDb)).getText(),Toast.LENGTH_LONG).show();
 
-            Cursor entrys =  myDb.getPersonalExpense(colId, ((TextView) personalExpenseIndividualView.findViewById(R.id.dateChanger)).getText().toString() );
+            Cursor entrys =  myDb.getPersonalExpense(colId, ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString() );
 
             generateTable(entrys);
 

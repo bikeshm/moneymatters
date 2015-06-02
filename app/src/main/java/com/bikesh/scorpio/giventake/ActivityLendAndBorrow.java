@@ -20,52 +20,31 @@ import com.bikesh.scorpio.giventake.model.DBHelper;
 import java.util.Map;
 
 
-public class ActivityLendAndBorrow extends ActionBarActivity {
+public class ActivityLendAndBorrow extends ActivityBase {
 
     DBHelper myDb;
-    View lendAndBorrowView;
+    //View lendAndBorrowView;
 
     ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_lend_and_borrow);
-
         super.onCreate(savedInstanceState);
-        //loading templet xml
-        setContentView(R.layout.main_template);
-
+        setContentView(R.layout.activity_lend_and_borrow);
 
         //setting up toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        //setSupportActionBar(toolbar);
 
-        //setting up navigation drawer
-        GiveNTakeApplication AC = (GiveNTakeApplication)getApplicationContext();
-        View view = getWindow().getDecorView().findViewById(android.R.id.content);
-        AC.setupDrawer(view, ActivityLendAndBorrow.this, toolbar);
-
-        //loading lendAndBorrow activity templet in to template frame
-        FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
-        frame.removeAllViews();
-        Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
-        LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        lendAndBorrowView=  inflater.inflate(R.layout.activity_lend_and_borrow, null);
-
-        frame.addView(lendAndBorrowView);
-
-        listView = (ListView) lendAndBorrowView.findViewById(R.id.listViewFromDB);
+        listView = (ListView) currentView.findViewById(R.id.listViewFromDB);
 
         listView.setOnItemClickListener(new listItemClicked());
 
         myDb = new DBHelper(this);
         populateListViewFromDB();
 
-        ((ImageButton)lendAndBorrowView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
-        ((ImageButton)lendAndBorrowView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewGroup());
-
-
+        ((ImageButton)currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+        ((ImageButton)currentView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewGroup());
 
     }
 
@@ -138,8 +117,8 @@ public class ActivityLendAndBorrow extends ActionBarActivity {
 
         Map<String, String> finalResult = myDb.getFinalResult();
 
-        ((TextView)lendAndBorrowView.findViewById(R.id.amt_togive)).setText(": "+finalResult.get("amt_toGive"));
-        ((TextView)lendAndBorrowView.findViewById(R.id.amt_toget)).setText(": " + finalResult.get("amt_toGet"));
+        ((TextView)currentView.findViewById(R.id.amt_togive)).setText(": "+finalResult.get("amt_toGive"));
+        ((TextView)currentView.findViewById(R.id.amt_toget)).setText(": " + finalResult.get("amt_toGet"));
 
 
     }
