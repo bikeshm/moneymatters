@@ -33,6 +33,7 @@ public class ActivityHome extends ActivityBase {
         //setContentView(R.layout.main_template);
 
 
+
         setContentView(R.layout.activity_home);
 
 

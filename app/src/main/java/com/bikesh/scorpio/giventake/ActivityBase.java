@@ -54,7 +54,7 @@ public class ActivityBase extends ActionBarActivity {
 
 
     Toolbar toolbar;
-
+    View currentView;
     @Override
     public void setContentView(int layoutResID) {
         //super.setContentView(view);
@@ -68,9 +68,9 @@ public class ActivityBase extends ActionBarActivity {
         frame.removeAllViews();
         Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
         LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v=  inflater.inflate(layoutResID, null);
+        currentView=  inflater.inflate(layoutResID, null);
 
-        frame.addView(v);
+        frame.addView(currentView);
 
         //setting up toolbar
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
@@ -173,179 +173,13 @@ public class ActivityBase extends ActionBarActivity {
             }
         });
 
-
-
-
-
-
-
-
-
-
-
-
-
     }
-
-
-
-
-
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //setContentView(R.layout.main_template);
-
-        /*
-
-
-
-        //setting up toolbar
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        //setSupportActionBar(toolbar);
-
-        //setting up navigation drawer
-
-
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
-        mRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
-        mAdapter = new DrawerDataAdapter(TITLES,ICONS,NAME,EMAIL,PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
-        // And passing the titles,icons,header view name, header view email,
-        // and header view profile picture
-        mRecyclerView.setAdapter(mAdapter);                              // Setting the adapter to RecyclerView
-
-        mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager
-        mRecyclerView.setLayoutManager(mLayoutManager);                 // Setting the layout Manager
-
-        Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);        // Drawer object Assigned to the view
-
-
-        mDrawerToggle = new ActionBarDrawerToggle(activity,Drawer,toolbar,R.string.openDrawer,R.string.closeDrawer){
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
-                // open I am not going to put anything here)
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                // Code here will execute once drawer is closed
-            }
-
-        }; // Drawer Toggle Object Made
-
-        Drawer.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
-
-        mDrawerToggle.syncState();               // Finally we set the drawer toggle sync State
-
-
-        final GestureDetector mGestureDetector = new GestureDetector(activity, new GestureDetector.SimpleOnGestureListener() {
-
-            @Override public boolean onSingleTapUp(MotionEvent e) {
-                return true;
-            }
-        });
-
-
-        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                View child = rv.findChildViewUnder(e.getX(),e.getY());
-
-                if(child!=null && mGestureDetector.onTouchEvent(e)){
-                    Drawer.closeDrawers();
-                    Toast.makeText(activity, "The Item Clicked is: " + rv.getChildPosition(child), Toast.LENGTH_SHORT).show();
-
-                    Intent i;
-                    switch(rv.getChildPosition(child)){
-                        case 0:
-                            //for login function execution
-                            return false;
-                        case 1:
-                            Toast.makeText(activity,"Dashboard: "+rv.getChildPosition(child),Toast.LENGTH_SHORT).show();
-                            i = new Intent(getApplicationContext(), ActivityHome.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(i);
-                            break;
-                        case 2:
-                            Toast.makeText(activity,"FragmentLendsAndBorrow: "+rv.getChildPosition(child),Toast.LENGTH_SHORT).show();
-                            i = new Intent(getApplicationContext(), ActivityLendAndBorrow.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(i);
-
-                            break;
-
-                    }
-
-
-                    //for login function execution
-                    //if(rv.getChildPosition(child)==0){
-                    //    return false;
-                    //}
-
-                    return true;
-
-                }
-
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-            }
-        });
-
-        */
-
     }
-
-
-
-
-
-
-
-    /*
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_joint_expense_individual, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-    */
-
-
-
-
-
-
-
-
 
 
     @Override
