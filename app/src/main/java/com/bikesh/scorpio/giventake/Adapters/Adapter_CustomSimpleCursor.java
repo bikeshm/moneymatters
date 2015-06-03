@@ -2,6 +2,7 @@ package com.bikesh.scorpio.giventake.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,8 @@ import com.bikesh.scorpio.giventake.model.DBHelper;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
+
 /**
  * Created by bikesh on 5/15/2015.
  * thia adapter userd to generate fist level listview (eg:- ActivityLendandBorrow, ActivityPersonalExpense, etc)
@@ -30,7 +33,6 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
     Context cContext;
 
     Map<String, String> dataExtra;
-
 
     ArrayList<String> CheckBoxSelected = new ArrayList<String>();
 
@@ -117,11 +119,17 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
         }
         else if(cContext.getResources().getResourceEntryName(layout).equals("custom_spinner_item_template")){
 
+            ((TextView) view.findViewById(R.id.item_id)).setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID)));
 
-            //((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+            ((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
 
-            //((TextView) view.findViewById(R.id.item_phone)).setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)) );
+            int phoneNumberType = (int)cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+            String label = ContactsContract.CommonDataKinds.Phone.getTypeLabel(context.getResources(), phoneNumberType, "").toString();
 
+            ((TextView) view.findViewById(R.id.item_phone)).setText(parsePhone(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))));
+            ((TextView) view.findViewById(R.id.item_phonetype)).setText(" "+  label);
+
+            /*
             // this usess loading user and collection
             ((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")));
 
@@ -132,6 +140,7 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
             else{
                 ((TextView) view.findViewById(R.id.item_phone)).setVisibility(View.GONE);
             }
+            */
         }
         else if(cContext.getResources().getResourceEntryName(layout).equals("listview_item_with_checkbox_template")){
 

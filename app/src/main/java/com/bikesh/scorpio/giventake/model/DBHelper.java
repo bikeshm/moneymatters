@@ -5,19 +5,26 @@ package com.bikesh.scorpio.giventake.model;
  */
 
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.EditText;
+
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -157,12 +164,18 @@ public class DBHelper extends SQLiteOpenHelper {
     public Cursor getUserByEmail(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery("select * from usertable where email='" + email.trim() + "'", null);
+        if (res != null) {
+            res.moveToFirst();
+        }
         return res;
     }
 
     public Cursor getUserByPhone(String phone) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select * from usertable where phone='"+phone.trim()+"'", null );
+        if (res != null) {
+            res.moveToFirst();
+        }
         return res;
     }
 
@@ -215,6 +228,17 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[] { Integer.toString(id) });
     }
 
+    //----------------------------------
+    // todo :- need to work on this
+    public Cursor getLendAndBorrowList() {
+        /*SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from usertable where _id != 1", null );
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;*/
+        return null;
+    }
 
     //------------------------------------------------------------------------------------------------------------
 
@@ -827,10 +851,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
         return data;
     }
-
-
-
-
 
 
 

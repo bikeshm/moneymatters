@@ -1,10 +1,13 @@
 package com.bikesh.scorpio.giventake;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -183,7 +186,9 @@ public class ActivityAddEntry extends ActivityBase {
 
         ((Spinner) currentView.findViewById(R.id.fromUser)).setAdapter(adapter);
 
+        //// TODO: 6/3/2015 :-
         //setting passed/selected user name in spinner
+
         int cpos = 0;
         for(int i = 0; i < adapter.getCount(); i++){
             cursor.moveToPosition(i);
@@ -206,10 +211,11 @@ public class ActivityAddEntry extends ActivityBase {
         ((Spinner)findViewById(R.id.actionSpinner)).setOnItemSelectedListener(new selectedAction());
 
 
-        Cursor cursor = myDb.getAllUsers();
+        //Cursor cursor = myDb.getAllUsers();
 
         //getting user from contact
         //Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+        Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
         generate_FromuserSpinner(cursor);
 
@@ -237,9 +243,13 @@ public class ActivityAddEntry extends ActivityBase {
     }
 
 
+    //todo :- insert user to local db from contact while saving the data
+
     private class saveData implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+
+
 
             Map<String, String> data = new HashMap<String, String>();
 
@@ -248,17 +258,39 @@ public class ActivityAddEntry extends ActivityBase {
             data.put("description", ((EditText) currentView.findViewById(R.id.description)).getText().toString());
 
 
+            try{
+                data.put("amt", Float.parseFloat(((EditText) currentView.findViewById(R.id.amount)).getText().toString()) + "");
+            }
+            catch (Exception e){
+                data.put("amt", "0");
+            }
 
-            data.put("amt", ((EditText) currentView.findViewById(R.id.amount)).getText().toString());
+
+
+
 
             if(fromActivity.equals("ActivityLendAndBorrowPersonal") || fromActivity.equals("ActivityLendAndBorrow")  ) {
 
+
+                ContentResolver cr = getContentResolver();
+                View spinnerView = (((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedView());
+
+                //Log.i("Phone", ((TextView) spinnerView.findViewById(R.id.item_phone)).getText().toString());
+                //Log.i("Phone", ((TextView) spinnerView.findViewById(R.id.item_id)).getText().toString());
+
+                String userId = registreUserFromContact(
+                        ((TextView) spinnerView.findViewById(R.id.item_phone)).getText().toString(),
+                        ((TextView) spinnerView.findViewById(R.id.item_name)).getText().toString()
+                );
+
+                Log.i("Phone id",userId);
+
                 if(actionFlag==false) {
                     data.put("from_user", "1" );
-                    data.put("to_user", ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
+                    data.put("to_user", userId );
                 }
                 else{
-                    data.put("from_user",  ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
+                    data.put("from_user",  userId );
                     data.put("to_user", "1" );
                 }
 
@@ -271,6 +303,7 @@ public class ActivityAddEntry extends ActivityBase {
                 } else {
                     Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
                 }
+
             }
 
 

@@ -30,8 +30,21 @@
         android:layout_below="@+id/item_name"
         android:layout_marginLeft="5dip"
         android:padding="2px"
-        android:text="beyond the expectations..."
+        android:text="phone"
         android:textColor="#777777" />
+
+    <TextView
+        android:id="@+id/item_phonetype"
+        android:textSize="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="2px"
+        android:text="beyond the expectations"
+        android:textColor="#777777"
+        android:layout_below="@+id/item_name"
+        android:layout_toRightOf="@+id/item_phone"
+        android:layout_toEndOf="@+id/item_phone"
+        />
 
 </RelativeLayout>
 

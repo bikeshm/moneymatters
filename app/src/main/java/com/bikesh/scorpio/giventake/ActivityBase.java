@@ -1,14 +1,18 @@
 package com.bikesh.scorpio.giventake;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -16,10 +20,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.bikesh.scorpio.giventake.adapters.DrawerDataAdapter;
+import com.bikesh.scorpio.giventake.model.DBHelper;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
 
 /**
  * Created by bikesh on 5/29/2015.
@@ -56,6 +71,9 @@ public class ActivityBase extends ActionBarActivity {
 
     Toolbar toolbar;
     View currentView;
+
+    DBHelper myDb;
+
     @Override
     public void setContentView(int layoutResID) {
         //super.setContentView(view);
@@ -180,6 +198,7 @@ public class ActivityBase extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        myDb = new DBHelper(this);
     }
 
 
@@ -206,5 +225,54 @@ public class ActivityBase extends ActionBarActivity {
     }
 
 
+
+
+    public String registreUserFromContact(String phone, String name) {
+
+        //Locale.getDefault().getCountry()
+        String user_id=null;
+
+        phone=parsePhone(phone);
+
+        Log.i("Phone n", phone);
+
+        Cursor cursorDbuser = myDb.getUserByPhone(phone);
+
+        Log.i("Phone is exsist", cursorDbuser.getCount() + "");
+
+        if(cursorDbuser.getCount()==0){
+
+            Map<String, String> data = new HashMap<String, String>();
+            data.put("name",  name );
+            data.put("phone", phone );
+
+
+            if (myDb.insertUser(data)==1) {
+                cursorDbuser = myDb.getUserByPhone(phone);
+                user_id= cursorDbuser.getString(cursorDbuser.getColumnIndex("_id"));
+            }
+        }
+        else{
+            //return user id
+            user_id= cursorDbuser.getString(cursorDbuser.getColumnIndex("_id"));
+        }
+
+        return user_id;
+    }
+
+
+
+
+
+
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myDb != null) {
+            myDb.close();
+        }
+    }
 
 }

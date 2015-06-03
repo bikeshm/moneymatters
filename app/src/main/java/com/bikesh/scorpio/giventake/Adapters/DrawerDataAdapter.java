@@ -77,7 +77,7 @@ public class DrawerDataAdapter extends RecyclerView.Adapter<DrawerDataAdapter.Vi
 
 
 
-    DrawerDataAdapter(String Titles[],int Icons[],String Name,String Email, int Profile){ // DrawerDataAdapter Constructor with titles and icons parameter
+    public DrawerDataAdapter(String Titles[],int Icons[],String Name,String Email, int Profile){ // DrawerDataAdapter Constructor with titles and icons parameter
         // titles, icons, name, email, profile pic are passed from the main activity as we
         mNavTitles = Titles;                //have seen earlier
         mIcons = Icons;
