@@ -119,15 +119,28 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
         }
         else if(cContext.getResources().getResourceEntryName(layout).equals("custom_spinner_item_template")){
 
-            ((TextView) view.findViewById(R.id.item_id)).setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID)));
+            Log.i("ppppp" , dataExtra.get("dataFrom") );
 
-            ((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+            if(dataExtra.get("dataFrom").equals("contact") ) {
 
-            int phoneNumberType = (int)cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-            String label = ContactsContract.CommonDataKinds.Phone.getTypeLabel(context.getResources(), phoneNumberType, "").toString();
+                ((TextView) view.findViewById(R.id.item_id)).setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID)));
 
-            ((TextView) view.findViewById(R.id.item_phone)).setText(parsePhone(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))));
-            ((TextView) view.findViewById(R.id.item_phonetype)).setText(" "+  label);
+                ((TextView) view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+
+                int phoneNumberType = (int) cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                String label = ContactsContract.CommonDataKinds.Phone.getTypeLabel(context.getResources(), phoneNumberType, "").toString();
+
+                ((TextView) view.findViewById(R.id.item_phone)).setText(parsePhone(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))));
+                ((TextView) view.findViewById(R.id.item_phonetype)).setText(" " + label);
+            }
+            else if(dataExtra.get("dataFrom").equals("db") ) {
+
+                ((TextView) view.findViewById(R.id.item_id)).setText(cursor.getString(cursor.getColumnIndex("_id")));
+                ((TextView)view.findViewById(R.id.item_name)).setText(cursor.getString(cursor.getColumnIndex("name")));
+                ((TextView) view.findViewById(R.id.item_phone)).setVisibility(View.GONE);
+                ((TextView) view.findViewById(R.id.item_phonetype)).setVisibility(View.GONE);
+            }
+
 
             /*
             // this usess loading user and collection

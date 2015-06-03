@@ -177,12 +177,16 @@ public class ActivityAddEntry extends ActivityBase {
         ((TextView)currentView.findViewById(R.id.selectUserLabel)).setText("Select Collection : ");
 
         Cursor cursor = myDb.getAllCollection();
-        generate_FromuserSpinner(cursor);
+        generate_FromuserSpinner(cursor, "db");
     }
 
-    private void generate_FromuserSpinner(Cursor cursor) {
+    private void generate_FromuserSpinner(Cursor cursor, String dataFrom) {
 
-        Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, cursor);
+        Map<String, String> data = new HashMap<String, String>();
+
+        data.put("dataFrom",dataFrom  );
+
+        Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, cursor,data);
 
         ((Spinner) currentView.findViewById(R.id.fromUser)).setAdapter(adapter);
 
@@ -217,7 +221,7 @@ public class ActivityAddEntry extends ActivityBase {
         //Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
         Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
-        generate_FromuserSpinner(cursor);
+        generate_FromuserSpinner(cursor,"contact");
 
     }
 

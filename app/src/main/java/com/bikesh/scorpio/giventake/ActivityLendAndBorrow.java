@@ -39,7 +39,7 @@ public class ActivityLendAndBorrow extends ActivityBase {
         populateListViewFromDB();
 
         ((ImageButton)currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
-        ((ImageButton)currentView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewGroup());
+        //((ImageButton)currentView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewGroup());
 
     }
 
