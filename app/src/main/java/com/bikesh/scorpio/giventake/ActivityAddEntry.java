@@ -151,9 +151,10 @@ public class ActivityAddEntry extends ActivityBase {
         //((LinearLayout) addEntryView.findViewById(R.id.isSplitLayer) ).setVisibility(View.VISIBLE);
         //((LinearLayout) addEntryView.findViewById(R.id.grupMembersLayer) ).setVisibility(View.VISIBLE);
         //=====================face 2
-
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("dataFrom","db"  );
         ((TextView) currentView.findViewById(R.id.selectUserLabel)).setText("Spend By");
-        Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, myDb.getAllUsersInGroup(ID + "")  );
+        Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, myDb.getAllUsersInGroup(ID + "") , data );
         ((Spinner) currentView.findViewById(R.id.fromUser)).setAdapter(adapter);
 
 
@@ -161,13 +162,6 @@ public class ActivityAddEntry extends ActivityBase {
         ((RadioGroup) currentView.findViewById(R.id.isSplit)).setOnCheckedChangeListener(new isSplitChanged());
 
         recyclerView.setOnKeyListener(new recyclerViewKeyListener());
-
-
-
-
-
-
-
 
     }
 
@@ -277,10 +271,16 @@ public class ActivityAddEntry extends ActivityBase {
 
 
                 ContentResolver cr = getContentResolver();
+
                 View spinnerView = (((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedView());
 
                 //Log.i("Phone", ((TextView) spinnerView.findViewById(R.id.item_phone)).getText().toString());
                 //Log.i("Phone", ((TextView) spinnerView.findViewById(R.id.item_id)).getText().toString());
+
+                if(spinnerView==null){
+                    Toast.makeText(getApplicationContext(), "Select a User", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 String userId = registreUserFromContact(
                         ((TextView) spinnerView.findViewById(R.id.item_phone)).getText().toString(),

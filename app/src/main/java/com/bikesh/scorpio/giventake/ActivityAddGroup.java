@@ -3,8 +3,10 @@ package com.bikesh.scorpio.giventake;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -86,8 +88,11 @@ public class ActivityAddGroup extends ActivityBase {
 
             backActivityIntent = new Intent(ActivityAddGroup.this, ActivityJointExpense.class);
 
+            //getting all user from db
+            //Cursor cursor = myDb.getAllUsers();
 
-            Cursor cursor = myDb.getAllUsers();
+            //getting all user from contact
+            Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
             //Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.listview_item_with_checkbox_template, cursor);
 
@@ -170,6 +175,7 @@ public class ActivityAddGroup extends ActivityBase {
 
                 ArrayList<String> members =new ArrayList<String>(adapter.CheckBoxSelected);
 
+                HashMap<String, Map<String, String>> members1 = new HashMap<String,  Map<String, String>>(adapter.selectedUsers1);
 
 
 
@@ -198,15 +204,37 @@ public class ActivityAddGroup extends ActivityBase {
                 }
 
                 id = ((RadioGroup) currentView.findViewById(R.id.isOnline)).getCheckedRadioButtonId();
-                if (id == -1){
+                if (members1.size() == 0){
                     //no item selected
+                    Toast.makeText(getApplicationContext(), "Select Group members", Toast.LENGTH_SHORT).show();
                 }
-                else{
+                else {
 
                     members.add("1"); // adding root user id
 
-                    data.put("members_count", "" + members.size());
+                    data.put("members_count", "" + members1.size());
                     data.put("ismonthlytask",""+ismonthlytask);
+
+
+                    //for(int i=0;i<members1.size();i++) {
+
+                        //CheckBoxSelected.remove(rid);
+                        //getUserFromContactId
+                        //members.get(i);
+                    //}
+
+                    for (Map.Entry<String, Map<String, String>> entry : members1.entrySet())
+                    {
+                        Log.i("kv pair", "Key -> " + entry.getKey() + " value -> " + entry.getValue().get("name"));
+
+                        members.add( ""+registreUserFromContact(entry.getValue().get("phone"),entry.getValue().get("name")) );
+                    }
+
+
+
+
+
+
 
                     if (id == R.id.radioNo){  //selected offline save to local db
 
@@ -219,6 +247,8 @@ public class ActivityAddGroup extends ActivityBase {
 
 
                             result=myDb.getJointGroup(data);
+
+
 
 
 

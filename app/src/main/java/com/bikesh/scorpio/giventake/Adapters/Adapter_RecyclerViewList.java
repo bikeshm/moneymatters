@@ -2,15 +2,21 @@ package com.bikesh.scorpio.giventake.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.bikesh.scorpio.giventake.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
 
 /**
  * Created by bikesh on 5/22/2015.
@@ -23,6 +29,10 @@ public class Adapter_RecyclerViewList extends RecyclerView.Adapter<Adapter_Recyc
 
     public ArrayList<String> CheckBoxSelected = new ArrayList<String>();
 
+    Map<String, String> selectedUsers = new HashMap<String, String>();
+    //map.put("name", "demo");
+
+    public HashMap<String, Map<String, String>> selectedUsers1 = new HashMap<String,  Map<String, String>>();
 
     public Adapter_RecyclerViewList(Cursor c, Context con) {
         this.context = con;
@@ -42,6 +52,36 @@ public class Adapter_RecyclerViewList extends RecyclerView.Adapter<Adapter_Recyc
             throw new IllegalStateException("couldn't move cursor to position " + position);
         } else {
 
+            //((TextView) view.findViewById(R.id.item_id)).setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID)));
+            String name = mCursor.getString(mCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            holder.item_name.setText(name );
+            String phoneNumber = parsePhone( mCursor.getString(mCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)) );
+
+            String contact_id = mCursor.getString(mCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID));
+
+
+
+
+            if ( selectedUsers.containsKey(contact_id)) {
+                holder.item_name.setChecked(true);
+            } else {
+                holder.item_name.setChecked(false);
+            }
+                    /*
+            if (CheckBoxSelected.contains(   contact_id     )) {
+                holder.item_name.setChecked(true);
+            } else {
+                holder.item_name.setChecked(false);
+            }
+            */
+
+            //holder.item_name.setOnClickListener(new checkboxClicked(   contact_id  ) );
+
+            holder.item_name.setOnClickListener(new checkboxClicked(   contact_id, name, phoneNumber  ) );
+            holder.item_name.clearFocus();
+            holder.item_name.setFocusable(false);
+
+            /*
            //holder.imageMedicineType.setImageResource(R.drawable.ic_launcher);
             holder.item_name.setText(mCursor.getString(mCursor.getColumnIndex("name")));
 
@@ -50,9 +90,11 @@ public class Adapter_RecyclerViewList extends RecyclerView.Adapter<Adapter_Recyc
             } else {
                 holder.item_name.setChecked(false);
             }
+
             holder.item_name.setOnClickListener(new checkboxClicked(mCursor.getString(mCursor.getColumnIndex("_id"))));
             holder.item_name.clearFocus();
             holder.item_name.setFocusable(false);
+            */
         }
 
     }
@@ -63,20 +105,39 @@ public class Adapter_RecyclerViewList extends RecyclerView.Adapter<Adapter_Recyc
     }
 
     private class checkboxClicked implements View.OnClickListener {
-        String rid;
-        public checkboxClicked(String id) {
-            rid=id;
+        String rid,name,number;
+
+
+        public checkboxClicked(String contact_id, String name, String phone) {
+
+            rid=contact_id;
+            this.name= name;
+            number=phone;
         }
         @Override
         public void onClick(View v) {
             CheckBox cb = (CheckBox) v;
             if(cb.isChecked()){
+
+                //map.put("name", "demo");
+
+                if (!selectedUsers.containsKey(rid) ) {
+
+                    Map<String, String> temp = new HashMap<String, String>();
+                    temp.put("name", name);
+                    temp.put("phone", number);
+
+                    selectedUsers1.put(rid, temp);
+                }
+
+                /*
                 if (!CheckBoxSelected.contains(rid) ) {
                     CheckBoxSelected.add(rid);
-                }
+                }*/
             }
             else{
-                CheckBoxSelected.remove(rid);
+                //CheckBoxSelected.remove(rid);
+                selectedUsers1.remove(rid);
             }
         }
     }

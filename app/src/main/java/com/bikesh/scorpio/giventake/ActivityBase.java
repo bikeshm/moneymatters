@@ -267,6 +267,8 @@ public class ActivityBase extends ActionBarActivity {
 
 
 
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
