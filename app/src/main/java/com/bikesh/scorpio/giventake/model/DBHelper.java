@@ -61,7 +61,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(
-                "create table "+USER_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid INTEGER, name text, email text, phone text, description text, photo BLOB )"
+                "create table "+USER_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid INTEGER, name text, email text, phone text,password text, description text, photo BLOB )"
         );
 
         db.execSQL(
@@ -80,7 +80,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         db.execSQL(
-                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, name text,  members_count INTEGER,ismonthlytask INTEGER , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB )"
+                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, online_id text, name text,  members_count INTEGER,ismonthlytask INTEGER , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB )"
         );
         db.execSQL(
                 "create table "+JOINTENTRY_TABLE_NAME+"  (_id INTEGER primary key autoincrement, joint_group_id INTEGER, created_date DATE, description text, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0)"
@@ -95,9 +95,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         //table for storing online shard joint groups for offine use (backup database)
         //online_id:- this is the row id in parse, after inseting to parse this field will update
-        db.execSQL(
-                "create table " + ONLINEJOINTGROUP_TABLE_NAME + "  (_id INTEGER primary key autoincrement, online_id text, name text, member_count INTEGER, owner text, description text, totalamt FLOAT DEFAULT 0, photo BLOB )"
-        );
+        //db.execSQL(
+        //      "create table " + ONLINEJOINTGROUP_TABLE_NAME + "  (_id INTEGER primary key autoincrement, online_id text, name text, member_count INTEGER, owner text, description text, totalamt FLOAT DEFAULT 0, photo BLOB )"
+        //);
 
     }
 

@@ -15,11 +15,14 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.bikesh.scorpio.giventake.adapters.Adapter_RecyclerViewList;
+import com.bikesh.scorpio.giventake.libraries.functions;
 import com.bikesh.scorpio.giventake.model.DBHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.bikesh.scorpio.giventake.libraries.functions.md5;
 
 
 public class ActivityAddGroup extends ActivityBase {
@@ -66,6 +69,8 @@ public class ActivityAddGroup extends ActivityBase {
 
         } else if (fromActivity.equals("ActivitySplash")) {
             ((Button) currentView.findViewById(R.id.cancelBtn)).setVisibility(View.GONE);
+            ((LinearLayout) currentView.findViewById(R.id.passwordLayer)).setVisibility(View.VISIBLE);
+
             getSupportActionBar().setTitle("Register");
             backActivityIntent = new Intent(ActivityAddGroup.this, ActivityHome.class);
 
@@ -145,6 +150,9 @@ public class ActivityAddGroup extends ActivityBase {
                 data.put("email",  ((EditText) currentView.findViewById(R.id.email) ).getText().toString() );
                 data.put("phone", ((EditText) currentView.findViewById(R.id.phone) ).getText().toString() );
 
+                if (((LinearLayout) currentView.findViewById(R.id.passwordLayer)).getVisibility()==View.VISIBLE){
+                    data.put("password", md5(((EditText) currentView.findViewById(R.id.phone)).getText().toString()) );
+                }
 
                 if (myDb.insertUser(data)==1) {
                     Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
@@ -210,12 +218,6 @@ public class ActivityAddGroup extends ActivityBase {
                 }
                 else {
 
-                    members.add("1"); // adding root user id
-
-                    data.put("members_count", "" + members1.size());
-                    data.put("ismonthlytask",""+ismonthlytask);
-
-
                     //for(int i=0;i<members1.size();i++) {
 
                         //CheckBoxSelected.remove(rid);
@@ -230,11 +232,10 @@ public class ActivityAddGroup extends ActivityBase {
                         members.add( ""+registreUserFromContact(entry.getValue().get("phone"),entry.getValue().get("name")) );
                     }
 
+                    members.add("1"); // adding root user id
 
-
-
-
-
+                    data.put("members_count", "" + members.size());
+                    data.put("ismonthlytask",""+ismonthlytask);
 
                     if (id == R.id.radioNo){  //selected offline save to local db
 
