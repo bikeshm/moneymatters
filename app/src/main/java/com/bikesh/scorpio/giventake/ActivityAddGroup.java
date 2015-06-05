@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.bikesh.scorpio.giventake.libraries.functions.md5;
+import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
 
 
 public class ActivityAddGroup extends ActivityBase {
@@ -148,7 +149,7 @@ public class ActivityAddGroup extends ActivityBase {
 
 
                 data.put("email",  ((EditText) currentView.findViewById(R.id.email) ).getText().toString() );
-                data.put("phone", ((EditText) currentView.findViewById(R.id.phone) ).getText().toString() );
+                data.put("phone", parsePhone(((EditText) currentView.findViewById(R.id.phone)).getText().toString()) );
 
                 if (((LinearLayout) currentView.findViewById(R.id.passwordLayer)).getVisibility()==View.VISIBLE){
                     data.put("password", md5(((EditText) currentView.findViewById(R.id.phone)).getText().toString()) );

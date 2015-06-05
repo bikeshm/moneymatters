@@ -152,6 +152,7 @@ public class DBHelper extends SQLiteOpenHelper {
             //Log.i("DB", res.getString(res.getColumnIndex("name")) );
             data.put("_id",  res.getString(res.getColumnIndex("_id")) );
             data.put("name",  res.getString(res.getColumnIndex("name")) );
+            data.put("password", res.getString(res.getColumnIndex("password")) );
             data.put("email",  res.getString(res.getColumnIndex("email")) );
             data.put("phone", res.getString(res.getColumnIndex("phone")) );
             data.put("description", res.getString(res.getColumnIndex("description")));
