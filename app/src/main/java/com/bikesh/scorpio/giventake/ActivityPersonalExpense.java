@@ -1,5 +1,7 @@
 package com.bikesh.scorpio.giventake;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -117,6 +119,7 @@ public class ActivityPersonalExpense extends ActivityBase {
         ));
 
         listView.setOnItemClickListener(new listItemClicked());
+        listView.setOnItemLongClickListener(new listItemLongClicked());
 
 
         float amtHolder;
@@ -134,6 +137,57 @@ public class ActivityPersonalExpense extends ActivityBase {
             i.putExtra("colName", "" + ((TextView) view.findViewById(R.id.item_name)).getText().toString() );
             startActivity(i);
         }
+    }
+
+
+    private class listItemLongClicked implements AdapterView.OnItemLongClickListener {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+            generatePopupmenu(id+"");
+
+            return true;
+        }
+    }
+
+
+    public void generatePopupmenu(String rowId) {
+
+        final CharSequence[] options = { "Edit","Delete"};
+        final String dbrowId = rowId+"";
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityPersonalExpense.this);
+        //builder.setTitle("Add Photo!");
+
+
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+
+                if (options[item].equals("Delete")) {
+
+                    //myDb.deleteEntry(dbrowId);
+
+                   // Cursor entrys =  myDb.getUserEntrys(userId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
+                    //generateTable(entrys);
+
+                }
+                else if (options[item].equals("Edit")) {
+                    //dialog.dismiss();
+
+                    Toast.makeText(ActivityPersonalExpense.this,"id"+dbrowId, Toast.LENGTH_LONG).show();
+
+                    Intent i = new Intent(ActivityPersonalExpense.this, ActivityAddGroup.class);
+                    i.putExtra("fromActivity", "ActivityPersonalExpense");
+                    i.putExtra("groupId", dbrowId);
+                    startActivity(i);
+
+                }
+            }
+        });
+
+        builder.show();
     }
 
 
@@ -194,6 +248,7 @@ public class ActivityPersonalExpense extends ActivityBase {
             myDb.close();
         }
     }
+
 
 
 }

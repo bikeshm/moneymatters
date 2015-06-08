@@ -426,6 +426,35 @@ public class DBHelper extends SQLiteOpenHelper {
         return 1;
     }
 
+
+    public Cursor getCollectionById(String entryId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery("select * from collectiontable where _id = " + entryId, null);
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
+    }
+
+    public int updateCollection (Map<String, String> data)
+    {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        for (Map.Entry<String, String> entry : data.entrySet())
+        {
+            if( !entry.getKey().equals("_id") ) {
+                contentValues.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        db.update("collectiontable", contentValues, "_id = ? ", new String[] { data.get("_id") } );
+
+        return 1;
+    }
+
+
     public Cursor getAllCollection() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery("select * from collectiontable", null);

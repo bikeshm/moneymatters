@@ -39,6 +39,8 @@ public class ActivityAddGroup extends ActivityBase {
     RecyclerView recyclerView;
     Adapter_RecyclerViewList adapter;
 
+    String groupId=null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,10 +63,13 @@ public class ActivityAddGroup extends ActivityBase {
         } else {
             fromActivity= extras.getString("fromActivity");
 
+            groupId = extras.getString("groupId",null);
+
         }
 
 
         if (fromActivity.equals("ActivityLendAndBorrow")) {//((TextView) addGroupView.findViewById(R.id.op)).setText("Add user");
+            //removed
             backActivityIntent = new Intent(ActivityAddGroup.this, ActivityLendAndBorrow.class);
             getSupportActionBar().setTitle("Create User");
 
@@ -80,6 +85,19 @@ public class ActivityAddGroup extends ActivityBase {
             ((LinearLayout) currentView.findViewById(R.id.phoneLayer)).setVisibility(View.GONE);
             backActivityIntent = new Intent(ActivityAddGroup.this, ActivityPersonalExpense.class);
             getSupportActionBar().setTitle("Create Collection");
+
+            if(groupId!=null){
+
+                Cursor currentGroup = myDb.getCollectionById(groupId);
+
+                ((EditText) currentView.findViewById(R.id.name)).setText( currentGroup.getString(currentGroup.getColumnIndex("name")) );
+                ((EditText) currentView.findViewById(R.id.description)).setText( currentGroup.getString(currentGroup.getColumnIndex("description")) );
+                ((EditText) currentView.findViewById(R.id.id)).setText(groupId );
+
+
+            }
+
+
 
         } else if (fromActivity.equals("ActivityJointExpense")) {
             getSupportActionBar().setTitle("Create a Group");
@@ -166,13 +184,31 @@ public class ActivityAddGroup extends ActivityBase {
             }
             else  if(fromActivity.equals("ActivityPersonalExpense")) {
 
-                if (myDb.insertCollection(data)==1) {
-                    Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+                String currentGroupId = ((EditText) currentView.findViewById(R.id.id)).getText().toString();
 
-                    goBack();
+                if(currentGroupId.equals("0")) {
 
-                } else {
-                    Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                    if (myDb.insertCollection(data) == 1) {
+                        Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+
+                        goBack();
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    data.put("_id",  currentGroupId );
+
+                    if (myDb.updateCollection(data) == 1) {
+                        Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+
+                        goBack();
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
 
 
