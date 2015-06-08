@@ -4,6 +4,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+
+    <!-- dot change the order of addEntryActionarray -->
     <string-array name="addEntryAction">
         <item>Giving to</item>
         <item>Borrow from</item>

@@ -25,17 +25,22 @@ import com.bikesh.scorpio.giventake.adapters.Adapter_TextRecyclerViewList;
 import com.bikesh.scorpio.giventake.adapters.CustomDatePicker;
 import com.bikesh.scorpio.giventake.model.DBHelper;
 
+import java.text.Format;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
 
 
 public class ActivityAddEntry extends ActivityBase {
 
     String fromActivity=null;
     long ID=0;
-    String Name="";
+    String Name="",rowId=null;
+
     DBHelper myDb;
 
     boolean actionFlag=false; //if false giving or borrowing
@@ -46,6 +51,8 @@ public class ActivityAddEntry extends ActivityBase {
 
     Adapter_TextRecyclerViewList adapter;
 
+
+    EditText datePicker,created_date_forDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +80,31 @@ public class ActivityAddEntry extends ActivityBase {
             if(extras.getString("ID")!=null)
                 ID = Long.parseLong(extras.getString("ID"));
 
+            rowId = extras.getString("rowId",null);
             Name = extras.getString("Name");
         }
+
+
+        //implementing date picker
+
+        datePicker = ((EditText) currentView.findViewById(R.id.datePicker));
+        //created_date is hidden field for serving date to db (YY-mm-dd format)
+        created_date_forDB = ((EditText) currentView.findViewById(R.id.created_date));
+
+        //initial date values
+        SimpleDateFormat dmy = new SimpleDateFormat("dd-MM-yyyy");
+        String dmyDate = dmy.format(new Date());
+        datePicker.setText(dmyDate);
+
+        SimpleDateFormat tmpdmy = new SimpleDateFormat("yyyy-MM-dd");
+        String tmpdmyDate = tmpdmy.format(new Date());
+        created_date_forDB.setText(tmpdmyDate);
+
+        //setting datepicker adapter
+        datePicker.setOnClickListener(new CustomDatePicker(ActivityAddEntry.this, datePicker, created_date_forDB, false));
+        //----implementing date picker
+
+
 
 
         if (fromActivity.equals("ActivityLendAndBorrow")) {
@@ -116,24 +146,7 @@ public class ActivityAddEntry extends ActivityBase {
         }
 
 
-        //implementing date picker
 
-        EditText datePicker = ((EditText) currentView.findViewById(R.id.datePicker));
-        //created_date is hidden field for serving date to db (YY-mm-dd format)
-        EditText created_date = ((EditText) currentView.findViewById(R.id.created_date));
-
-        //initial date values
-        SimpleDateFormat dmy = new SimpleDateFormat("dd-MM-yyyy");
-        String dmyDate = dmy.format(new Date());
-        datePicker.setText(dmyDate);
-
-        SimpleDateFormat tmpdmy = new SimpleDateFormat("yyyy-MM-dd");
-        String tmpdmyDate = tmpdmy.format(new Date());
-        created_date.setText(tmpdmyDate);
-
-        //setting datepicker adapter
-        datePicker.setOnClickListener(new CustomDatePicker(ActivityAddEntry.this, datePicker, created_date, false));
-        //----implementing date picker
 
 
         ((Button)currentView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
@@ -188,20 +201,46 @@ public class ActivityAddEntry extends ActivityBase {
         //setting passed/selected user name in spinner
 
         int cpos = 0;
-        for(int i = 0; i < adapter.getCount(); i++){
-            cursor.moveToPosition(i);
-            Double temp = Double.parseDouble( cursor.getString(cursor.getColumnIndex("_id")) );
-            if ( temp == ID ){
-                cpos = i;
-                break;
+
+
+
+        if(dataFrom.equals("contact")) {
+
+            String phone = myDb.getUserPhone(ID + "");
+
+            for (int i = 0; i < adapter.getCount(); i++) {
+                cursor.moveToPosition(i);
+                String temp = (parsePhone(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))));//cursor.getString(cursor.getColumnIndex("phone"));
+                if (temp.equals(phone)) {
+                    cpos = i;
+                    break;
+                }
             }
         }
+        else{
+
+            for(int i = 0; i < adapter.getCount(); i++){
+                cursor.moveToPosition(i);
+                Double temp = Double.parseDouble(cursor.getString(cursor.getColumnIndex("_id")));
+                if ( temp == ID ){
+                    cpos = i;
+                    break;
+                }
+            }
+
+        }
+
         ((Spinner) currentView.findViewById(R.id.fromUser)).setSelection(cpos);
 
     }
 
 
+
+
+
     private void generateDataForLendNBorrow(){
+
+
 
         // getting options from xml string array
         ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.addEntryAction));
@@ -216,6 +255,30 @@ public class ActivityAddEntry extends ActivityBase {
         Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
         generate_FromuserSpinner(cursor,"contact");
+
+
+        //clicked on the table row
+        if(rowId!=null){
+            Cursor currentEntry = myDb.getEntryById(rowId);
+
+            //created_date DATE, description text, from_user INTEGER, to_user INTEGER,
+
+            ((EditText) currentView.findViewById(R.id.id)).setText( rowId );
+            datePicker.setText( formatDate(currentEntry.getString(currentEntry.getColumnIndex("created_date")), "ddmmyy") );
+            created_date_forDB.setText(currentEntry.getString(currentEntry.getColumnIndex("created_date")));
+
+            ((EditText) currentView.findViewById(R.id.description)).setText( currentEntry.getString(currentEntry.getColumnIndex("description")) );
+            ((EditText) currentView.findViewById(R.id.amount)).setText( currentEntry.getString(currentEntry.getColumnIndex("amt")) );
+
+
+            if( currentEntry.getInt(currentEntry.getColumnIndex("from_user")) ==1 ){
+                ((Spinner) currentView.findViewById(R.id.actionSpinner)).setSelection(0);
+            }
+            else {
+                ((Spinner) currentView.findViewById(R.id.actionSpinner)).setSelection(1);
+            }
+
+        }
 
     }
 
@@ -298,14 +361,31 @@ public class ActivityAddEntry extends ActivityBase {
                     data.put("to_user", "1" );
                 }
 
+                String recodId=((EditText) currentView.findViewById(R.id.id)).getText().toString();
 
-                if (myDb.insertEntry(data)==1) {
-                    Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+                if(recodId.equals("0")) {
+                    if (myDb.insertEntry(data) == 1) {
+                        Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
 
-                    goBack();
+                        goBack();
 
-                } else {
-                    Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else { //update
+                    data.put("_id", recodId );
+
+                    if (myDb.updateEntry(data) == 1) {
+                        Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+
+                        goBack();
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                    }
+
+
                 }
 
             }
@@ -328,8 +408,8 @@ public class ActivityAddEntry extends ActivityBase {
             if(fromActivity.equals("ActivityJointExpenseIndividual")  ){
                 int is_split=0;
 
-                data.put("joint_group_id",  ID+"" );
-                data.put("user_id",  ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
+                data.put("joint_group_id",  ID+"");
+                data.put("user_id", ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId() + "");
 
                 int id = ((RadioGroup) currentView.findViewById(R.id.isSplit)).getCheckedRadioButtonId();
                 if (id == -1){ /*no item selected*/ }

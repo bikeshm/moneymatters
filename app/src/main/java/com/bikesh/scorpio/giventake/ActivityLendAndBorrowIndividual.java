@@ -143,6 +143,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
 
             tr.setClickable(true);
             tr.setOnClickListener(new tableRowClicked( Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id"))) ));
+            tr.setOnLongClickListener(new tableRowLongClicked ( Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id"))) ));
 
             for (int i=0 ;i<4; i++) {
 
@@ -261,8 +262,29 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
         @Override
         public void onClick(View v) {
             Toast.makeText(getApplicationContext(),"clicked"+rowId, Toast.LENGTH_LONG).show();
+
+            Intent i = new Intent(ActivityLendAndBorrowIndividual.this, ActivityAddEntry.class);
+            i.putExtra("fromActivity", "ActivityLendAndBorrowPersonal");
+            i.putExtra("ID", ""+userId);
+            i.putExtra("Name",  userName );
+            i.putExtra("rowId",  rowId+"" );
+            startActivity(i);
+
+
         }
     }
+
+
+    private class tableRowLongClicked implements View.OnLongClickListener {
+        public tableRowLongClicked(int id) {
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            return false;
+        }
+    }
+
 
 
 

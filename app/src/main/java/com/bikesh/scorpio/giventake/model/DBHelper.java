@@ -61,7 +61,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(
-                "create table "+USER_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid INTEGER, name text, email text, phone text,password text, description text, photo BLOB )"
+                "create table "+USER_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text, name text, email text, phone text,password text, description text, photo BLOB )"
         );
 
         db.execSQL(
@@ -171,6 +171,17 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public String getUserPhone(String userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from usertable where _id='"+userId+"'", null );
+        if (res != null) {
+            res.moveToFirst();
+
+            return res.getString(res.getColumnIndex("phone"));
+        }
+        return null;
+    }
+
     public Cursor getUserByPhone(String phone) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select * from usertable where phone='"+phone.trim()+"'", null );
@@ -256,6 +267,34 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert("lendandborrowtable", null, contentValues);
         return 1;
     }
+
+    public int updateEntry (Map<String, String> data)
+    {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        for (Map.Entry<String, String> entry : data.entrySet())
+        {
+            if( !entry.getKey().equals("_id") ) {
+                contentValues.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        db.update("lendandborrowtable", contentValues, "_id = ? ", new String[] { data.get("_id") } );
+
+        return 1;
+    }
+
+    public Cursor getEntryById(String entryId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery("select * from lendandborrowtable where _id = " + entryId, null);
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
+    }
+
 
     //createdDate = > "Month-Year" eg:- 5-2015
     public Cursor getUserEntrys(long userId, String createdDate) {

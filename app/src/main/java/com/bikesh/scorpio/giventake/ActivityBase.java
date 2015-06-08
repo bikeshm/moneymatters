@@ -32,6 +32,9 @@ import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -265,7 +268,43 @@ public class ActivityBase extends ActionBarActivity {
 
 
 
+    //// TODO: 6/8/2015  make format working
+    public String formatDate(String dateString,String format){
+        String dmy=null;
+        try {
 
+            Date myDate = new Date();
+            System.out.println(myDate);
+
+            SimpleDateFormat mdyFormat = new SimpleDateFormat("MM-dd-yyyy");
+            SimpleDateFormat ymdFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dmyFormat = new SimpleDateFormat("dd-MM-yyyy");
+
+            //SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+            //String dateInString = "7-Jun-2013";
+            Date date = ymdFormat.parse(dateString);
+
+            // Format the date to Strings
+            String mdy = mdyFormat.format(date);
+            String ymd = ymdFormat.format(date);
+            dmy = dmyFormat.format(date);
+
+            // Results...
+            //Log.i("daat n", "" + mdy);
+            //Log.i("daat n", "" + ymd);
+            //Log.i("daat n", "" + dmy);
+
+            // Parse the Strings back to dates
+            // Note, the formats don't "stick" with the Date value
+            //Log.i("daat n", "" + mdyFormat.parse(mdy));
+            //Log.i("daat n", "" + ymdFormat.parse(ymd));
+            //Log.i("daat n", "" + ymdFormat.parse(dmy));
+        } catch (ParseException exp) {
+            exp.printStackTrace();
+        }
+
+        return dmy;
+    }
 
 
 

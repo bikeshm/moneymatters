@@ -92,7 +92,10 @@ public class CustomDatePicker implements View.OnClickListener {
         mDatePicker.setTitle("Select date");
 
         if(removeDay) {
-            ((ViewGroup) mDatePicker.getDatePicker()).findViewById(Resources.getSystem().getIdentifier("day", "id", "android")).setVisibility(View.GONE);
+            try {
+                ((ViewGroup) mDatePicker.getDatePicker()).findViewById(Resources.getSystem().getIdentifier("day", "id", "android")).setVisibility(View.GONE);
+            }
+            catch (Exception e){}
         }
 
         mDatePicker.show();
