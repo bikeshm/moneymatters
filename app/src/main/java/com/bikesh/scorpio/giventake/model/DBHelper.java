@@ -454,6 +454,21 @@ public class DBHelper extends SQLiteOpenHelper {
         return 1;
     }
 
+    public Integer deleteCollection (String id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("collectiontable",
+                "_id = ? ",
+                new String[] { id });
+    }
+
+    public Integer deleteCollectionEntrys (String id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("personaltable",
+                "collection_id = ? ",
+                new String[] { id });
+    }
 
     public Cursor getAllCollection() {
         SQLiteDatabase db = this.getReadableDatabase();

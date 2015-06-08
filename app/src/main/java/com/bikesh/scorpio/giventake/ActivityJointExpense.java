@@ -54,6 +54,8 @@ public class ActivityJointExpense extends ActivityBase {
 
         parseHelper=new ParseHelper();
 
+        pUser = ParseUser.getCurrentUser();
+
         ParseUser.logOut();
         populateListViewFromDB();
 
@@ -65,12 +67,13 @@ public class ActivityJointExpense extends ActivityBase {
 
     private void populateListViewFromDB() {
 
+        populateListViewFromDB_populate();
 
-
+        /*
         //chk inter net available
         if (!getInternetType(getApplicationContext()).equals("?")) {
 
-            pUser = ParseUser.getCurrentUser();
+            //pUser = ParseUser.getCurrentUser();
 
             Log.i("track", "online");
 
@@ -80,7 +83,7 @@ public class ActivityJointExpense extends ActivityBase {
                 Map rootuser = myDb.getUser(1);
 
                 Log.i("track", "user not signed in ");
-                Log.i("track login", rootuser.get("phone").toString() + " " +  rootuser.get("password").toString());
+                Log.i("track login", rootuser.get("phone").toString() + " " + "GNT" + rootuser.get("password").toString());
 
 
                 //loginin user
@@ -109,7 +112,7 @@ public class ActivityJointExpense extends ActivityBase {
                             newuser.put("name", DBUser.get("name").toString());
                             newuser.setUsername(DBUser.get("phone").toString());
                             newuser.setPassword("GNT" + DBUser.get("password").toString()); // simly adding GNT
-                            newuser.setEmail(DBUser.get("email").toString());
+                            //newuser.setEmail(DBUser.get("email").toString()); //email should be unique other wise getting error
 
                             Log.i("track registring", DBUser.get("phone").toString() + " " +  DBUser.get("password").toString());
 
@@ -153,6 +156,9 @@ public class ActivityJointExpense extends ActivityBase {
             Toast.makeText(getApplicationContext(), "Internet not available", Toast.LENGTH_LONG).show();
             populateListViewFromDB_populate();
         }
+        */
+
+
 
     }
 

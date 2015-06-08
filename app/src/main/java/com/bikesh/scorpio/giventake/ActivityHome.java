@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -62,7 +63,7 @@ public class ActivityHome extends ActivityBase {
         ((TextView)currentView.findViewById(R.id.personalExpenseTotal)).setText(": " + amtHolder);
 
 
-        //((TextView)homeView.findViewById(R.id.overviewHead)).setText( getDatabasePath("GivnTake.db").getAbsolutePath() );
+        Log.i("dbpath", getDatabasePath("GivnTake.db").getAbsolutePath());
 
 
     }

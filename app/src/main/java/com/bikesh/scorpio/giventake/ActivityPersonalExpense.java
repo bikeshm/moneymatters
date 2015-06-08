@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -171,6 +172,38 @@ public class ActivityPersonalExpense extends ActivityBase {
 
                    // Cursor entrys =  myDb.getUserEntrys(userId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
                     //generateTable(entrys);
+
+                    new AlertDialog.Builder(ActivityPersonalExpense.this)
+                            .setTitle("Delete")
+                            .setMessage("Do you really want to delete?")
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int whichButton) {
+
+                                    Toast.makeText(ActivityPersonalExpense.this,"id"+dbrowId, Toast.LENGTH_LONG).show();
+
+                                    //delete collection
+                                    if( myDb.deleteCollection(dbrowId) ==1){
+                                        Log.i("delete collection","collection deleted");
+
+                                        //delete all the entrys in that collection
+                                        if( myDb.deleteCollectionEntrys(dbrowId) ==1){
+                                            Log.i("delete collection","deleted all the collection entrys");
+                                        }
+                                        else{
+                                            Log.i("delete collection","Not deleted collection entrys");
+                                        }
+                                    }
+                                    else{
+                                        Log.i("delete collection","collection Not deleted ");
+                                    }
+
+                                    populateListViewFromDB();
+
+                                }})
+                            .setNegativeButton(android.R.string.no, null).show();
+
 
                 }
                 else if (options[item].equals("Edit")) {
