@@ -367,6 +367,11 @@ public class ActivityAddEntry extends ActivityBase {
                     if (myDb.insertEntry(data) == 1) {
                         Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
 
+                        backActivityIntent = new Intent(ActivityAddEntry.this, ActivityLendAndBorrowIndividual.class);
+                        backActivityIntent.putExtra("fromActivity", "ActivityLendAndBorrow");
+                        backActivityIntent.putExtra("userId", "" + userId);
+                        backActivityIntent.putExtra("userName", ((TextView) spinnerView.findViewById(R.id.item_name)).getText().toString() );
+
                         goBack();
 
                     } else {

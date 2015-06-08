@@ -1,5 +1,7 @@
 package com.bikesh.scorpio.giventake;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -276,15 +278,51 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
 
 
     private class tableRowLongClicked implements View.OnLongClickListener {
-        public tableRowLongClicked(int id) {
+        int rowId=0;
+        public tableRowLongClicked(int id)  {
+            rowId=id;
         }
 
         @Override
         public boolean onLongClick(View v) {
-            return false;
+
+            Toast.makeText(getApplicationContext(),"Long pressed ", Toast.LENGTH_LONG).show();
+            generatePopupmenu(rowId);
+            return true;
         }
     }
 
+
+    public void generatePopupmenu(int rowId) {
+
+        final CharSequence[] options = { "Delete","Cancel" };
+        final String dbrowId = rowId+"";
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityLendAndBorrowIndividual.this);
+        //builder.setTitle("Add Photo!");
+
+
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+
+                if (options[item].equals("Delete")) {
+
+                    myDb.deleteEntry(dbrowId);
+
+                    Cursor entrys =  myDb.getUserEntrys(userId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
+                    generateTable(entrys);
+
+                }
+                else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        builder.show();
+    }
 
 
 

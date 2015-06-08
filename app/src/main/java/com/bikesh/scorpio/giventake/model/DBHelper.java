@@ -177,7 +177,9 @@ public class DBHelper extends SQLiteOpenHelper {
         if (res != null) {
             res.moveToFirst();
 
-            return res.getString(res.getColumnIndex("phone"));
+            if(res.getCount()>0) {
+                return res.getString(res.getColumnIndex("phone"));
+            }
         }
         return null;
     }
@@ -284,6 +286,14 @@ public class DBHelper extends SQLiteOpenHelper {
         db.update("lendandborrowtable", contentValues, "_id = ? ", new String[] { data.get("_id") } );
 
         return 1;
+    }
+
+    public Integer deleteEntry (String id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("lendandborrowtable",
+                "_id = ? ",
+                new String[] { id });
     }
 
     public Cursor getEntryById(String entryId) {
