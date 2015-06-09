@@ -62,7 +62,7 @@ public class ActivityPersonalExpense extends ActivityBase {
         dateChangerForDb.addTextChangedListener(new dateChange());
 
 
-        myDb = new DBHelper(this);
+        //myDb = new DBHelper(this);
         populateListViewFromDB();
 
 
@@ -199,7 +199,7 @@ public class ActivityPersonalExpense extends ActivityBase {
                                         Log.i("delete collection","collection Not deleted ");
                                     }
 
-                                    populateListViewFromDB();
+
 
                                 }})
                             .setNegativeButton(android.R.string.no, null).show();
@@ -273,8 +273,7 @@ public class ActivityPersonalExpense extends ActivityBase {
     }
 
 
-    /*
-
+/*
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -282,7 +281,7 @@ public class ActivityPersonalExpense extends ActivityBase {
             myDb.close();
         }
     }
-    */
+*/
 
 
 

@@ -108,9 +108,35 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    //common or global function
+
+    // insert
+    public int commonInsert  (Map<String, String> data, String table) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        for (Map.Entry<String, String> entry : data.entrySet())
+        {
+            contentValues.put(entry.getKey(), entry.getValue() );
+
+            Log.i("saving colection", entry.getKey() + " = "+ entry.getValue());
+        }
+
+        db.insert(table, null, contentValues);
+
+        db.close();
+
+        return 1;
+    }
+
+
+
+    //-------------------------------------------------------------------------------------------------------
+
     //Map<String, String> map = new HashMap<String, String>();
     //map.put("name", "demo");
     public int insertUser  (Map<String, String> data) {
+        /*
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -127,6 +153,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.close();
         return 1;
+        */
+
+        return commonInsert(data, "usertable");
     }
 
     public Map getUser(long id) {
@@ -258,6 +287,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public int insertEntry  (Map<String, String> data) {
+        /*
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -268,6 +298,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.insert("lendandborrowtable", null, contentValues);
         return 1;
+        */
+
+        return commonInsert(data, "lendandborrowtable");
     }
 
     public int updateEntry (Map<String, String> data)
@@ -413,6 +446,8 @@ public class DBHelper extends SQLiteOpenHelper {
     //===========================================================================================================================
 
     public int insertCollection (Map<String, String> data) {
+
+        /*
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -424,6 +459,13 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert("collectiontable", null, contentValues);
         db.close();
         return 1;
+        */
+
+        Log.i("saving colection", "currentGroupId M ");
+
+        return commonInsert(data,"collectiontable");
+
+
     }
 
 
@@ -504,6 +546,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //===========================================================================================================================
 
     public int insertPersonalExpense (Map<String, String> data) {
+        /*
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -515,6 +558,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert("personaltable", null, contentValues);
         db.close();
         return 1;
+        */
+        return commonInsert(data, "personaltable");
     }
 
     public Cursor getPersonalExpense(String entryId) {
@@ -604,6 +649,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public int insertJointGroup (Map<String, String> data) {
+        /*
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -615,6 +661,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert(JOINTGROUP_TABLE_NAME, null, contentValues);
         db.close();
         return 1;
+        */
+        return commonInsert(data, JOINTGROUP_TABLE_NAME);
     }
 
     public Cursor getJointGroupbyId(String groupId) {
@@ -796,6 +844,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //=======================================================
     public int insertGroupEntry(Map<String, String> data) {
+
+        /*
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -806,6 +856,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.insert(JOINTENTRY_TABLE_NAME, null, contentValues);
         db.close();
+        */
+        commonInsert(data, JOINTENTRY_TABLE_NAME);
 
         updateGroupTotalAndBalance(data.get("joint_group_id"));
         return 1;

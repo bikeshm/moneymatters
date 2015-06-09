@@ -184,9 +184,14 @@ public class ActivityAddGroup extends ActivityBase {
             }
             else  if(fromActivity.equals("ActivityPersonalExpense")) {
 
+                Log.i("saving colection", "in");
                 String currentGroupId = ((EditText) currentView.findViewById(R.id.id)).getText().toString();
 
+                Log.i("saving colection", "currentGroupId "+currentGroupId);
+
                 if(currentGroupId.equals("0")) {
+
+
 
                     if (myDb.insertCollection(data) == 1) {
                         Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
