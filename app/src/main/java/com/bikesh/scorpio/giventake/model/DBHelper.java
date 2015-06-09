@@ -108,6 +108,9 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+
+    //-------------------------------------------------------------------------------------------------------
+    //=======================================================================================================
     //common or global function
 
     // insert
@@ -136,25 +139,6 @@ public class DBHelper extends SQLiteOpenHelper {
     //Map<String, String> map = new HashMap<String, String>();
     //map.put("name", "demo");
     public int insertUser  (Map<String, String> data) {
-        /*
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        //if(getUserByEmail(data.get("email")).getCount()>0 || getUserByPhone(data.get("phone")).getCount()>0 ){
-        //    return 2; //user already exsist
-        //}
-
-        for (Map.Entry<String, String> entry : data.entrySet())
-        {
-            contentValues.put(entry.getKey(), entry.getValue() );
-        }
-
-        db.insert("usertable", null, contentValues);
-
-        db.close();
-        return 1;
-        */
-
         return commonInsert(data, "usertable");
     }
 
@@ -287,19 +271,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public int insertEntry  (Map<String, String> data) {
-        /*
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        for (Map.Entry<String, String> entry : data.entrySet())
-        {
-            contentValues.put(entry.getKey(), entry.getValue() );
-        }
-
-        db.insert("lendandborrowtable", null, contentValues);
-        return 1;
-        */
-
         return commonInsert(data, "lendandborrowtable");
     }
 
@@ -446,26 +417,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //===========================================================================================================================
 
     public int insertCollection (Map<String, String> data) {
-
-        /*
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        for (Map.Entry<String, String> entry : data.entrySet())
-        {
-            contentValues.put(entry.getKey(), entry.getValue() );
-        }
-
-        db.insert("collectiontable", null, contentValues);
-        db.close();
-        return 1;
-        */
-
-        Log.i("saving colection", "currentGroupId M ");
-
         return commonInsert(data,"collectiontable");
-
-
     }
 
 
@@ -546,19 +498,6 @@ public class DBHelper extends SQLiteOpenHelper {
     //===========================================================================================================================
 
     public int insertPersonalExpense (Map<String, String> data) {
-        /*
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        for (Map.Entry<String, String> entry : data.entrySet())
-        {
-            contentValues.put(entry.getKey(), entry.getValue() );
-        }
-
-        db.insert("personaltable", null, contentValues);
-        db.close();
-        return 1;
-        */
         return commonInsert(data, "personaltable");
     }
 
@@ -649,19 +588,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public int insertJointGroup (Map<String, String> data) {
-        /*
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        for (Map.Entry<String, String> entry : data.entrySet())
-        {
-            contentValues.put(entry.getKey(), entry.getValue() );
-        }
-
-        db.insert(JOINTGROUP_TABLE_NAME, null, contentValues);
-        db.close();
-        return 1;
-        */
         return commonInsert(data, JOINTGROUP_TABLE_NAME);
     }
 
@@ -844,21 +770,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //=======================================================
     public int insertGroupEntry(Map<String, String> data) {
-
-        /*
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        for (Map.Entry<String, String> entry : data.entrySet())
-        {
-            contentValues.put(entry.getKey(), entry.getValue() );
-        }
-
-        db.insert(JOINTENTRY_TABLE_NAME, null, contentValues);
-        db.close();
-        */
         commonInsert(data, JOINTENTRY_TABLE_NAME);
-
+        //calculating total balance
         updateGroupTotalAndBalance(data.get("joint_group_id"));
         return 1;
     }
