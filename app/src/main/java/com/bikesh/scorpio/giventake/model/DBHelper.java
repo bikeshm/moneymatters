@@ -5,26 +5,18 @@ package com.bikesh.scorpio.giventake.model;
  */
 
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.ContactsContract;
 import android.util.Log;
-import android.widget.EditText;
-
-import com.google.i18n.phonenumbers.NumberParseException;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -282,15 +274,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Integer deleteEntry (String id)
     {
-        /*
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete("lendandborrowtable",
-                "_id = ? ",
-                new String[] { id });
-                */
-
         return commonDelete(id, "lendandborrowtable");
-
     }
 
     public Cursor getEntryById(String entryId) {
@@ -430,12 +414,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Integer deleteCollection (String id)
     {
-        /*
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete("collectiontable",
-                "_id = ? ",
-                new String[] { id });
-                */
         return commonDelete(id, "collectiontable");
     }
 
@@ -502,12 +480,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Integer deletePersonalExpense (String id)
     {
-        /*
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete("personaltable",
-                "_id = ? ",
-                new String[] { id });
-                */
         return commonDelete(id, "personaltable");
     }
 
