@@ -194,6 +194,15 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
         @Override
         public void onClick(View v) {
             Toast.makeText(getApplicationContext(), "clicked" + rowId, Toast.LENGTH_LONG).show();
+
+            Intent i = new Intent(ActivityPersonalExpenseIndividual.this, ActivityAddEntry.class);
+            i.putExtra("fromActivity", "ActivityPersonalExpenseIndividual");
+            i.putExtra("ID", ""+colId );
+            i.putExtra("Name",  colName );
+            i.putExtra("rowId",  rowId+"" );
+            startActivity(i);
+
+
         }
     }
 

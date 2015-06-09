@@ -517,6 +517,34 @@ public class DBHelper extends SQLiteOpenHelper {
         return 1;
     }
 
+    public Cursor getPersonalExpense(String entryId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery("select * from personaltable where _id = " + entryId, null);
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
+    }
+
+    public int updatePersonalExpense (Map<String, String> data)
+    {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        for (Map.Entry<String, String> entry : data.entrySet())
+        {
+            if( !entry.getKey().equals("_id") ) {
+                contentValues.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        db.update("personaltable", contentValues, "_id = ? ", new String[] { data.get("_id") } );
+
+        return 1;
+    }
+
+
     public Cursor getPersonalExpense(long collectionId, String month) {
         SQLiteDatabase db = this.getReadableDatabase();
         Log.i("bm info", "select * from personaltable where collection_id = " + collectionId + "  and STRFTIME('%m-%Y', created_date) = '" + month + "'");

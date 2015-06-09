@@ -185,6 +185,14 @@ public class ActivityAddEntry extends ActivityBase {
 
         Cursor cursor = myDb.getAllCollection();
         generate_FromuserSpinner(cursor, "db");
+
+
+        if(rowId!=null){
+            generateEditData(myDb.getPersonalExpense(rowId));
+        }
+
+
+
     }
 
     private void generate_FromuserSpinner(Cursor cursor, String dataFrom) {
@@ -259,29 +267,34 @@ public class ActivityAddEntry extends ActivityBase {
 
         //clicked on the table row
         if(rowId!=null){
-            Cursor currentEntry = myDb.getEntryById(rowId);
-
-            //created_date DATE, description text, from_user INTEGER, to_user INTEGER,
-
-            ((EditText) currentView.findViewById(R.id.id)).setText( rowId );
-            datePicker.setText( formatDate(currentEntry.getString(currentEntry.getColumnIndex("created_date")), "ddmmyy") );
-            created_date_forDB.setText(currentEntry.getString(currentEntry.getColumnIndex("created_date")));
-
-            ((EditText) currentView.findViewById(R.id.description)).setText( currentEntry.getString(currentEntry.getColumnIndex("description")) );
-            ((EditText) currentView.findViewById(R.id.amount)).setText( currentEntry.getString(currentEntry.getColumnIndex("amt")) );
-
-
-            if( currentEntry.getInt(currentEntry.getColumnIndex("from_user")) ==1 ){
-                ((Spinner) currentView.findViewById(R.id.actionSpinner)).setSelection(0);
-            }
-            else {
-                ((Spinner) currentView.findViewById(R.id.actionSpinner)).setSelection(1);
-            }
-
+            generateEditData(myDb.getEntryById(rowId));
         }
 
     }
 
+
+
+    private void generateEditData(Cursor currentEntry){
+        //created_date DATE, description text, from_user INTEGER, to_user INTEGER,
+
+        ((EditText) currentView.findViewById(R.id.id)).setText( rowId );
+        datePicker.setText( formatDate(currentEntry.getString(currentEntry.getColumnIndex("created_date")), "ddmmyy") );
+        created_date_forDB.setText(currentEntry.getString(currentEntry.getColumnIndex("created_date")));
+
+        ((EditText) currentView.findViewById(R.id.description)).setText( currentEntry.getString(currentEntry.getColumnIndex("description")) );
+        ((EditText) currentView.findViewById(R.id.amount)).setText( currentEntry.getString(currentEntry.getColumnIndex("amt")) );
+
+
+        //for lennd and borrow
+        if(currentEntry.getColumnIndex("from_user")>0) {
+            if (currentEntry.getInt(currentEntry.getColumnIndex("from_user")) == 1) {
+                ((Spinner) currentView.findViewById(R.id.actionSpinner)).setSelection(0);
+            } else {
+                ((Spinner) currentView.findViewById(R.id.actionSpinner)).setSelection(1);
+            }
+        }
+
+    }
 
 
 
@@ -399,13 +412,27 @@ public class ActivityAddEntry extends ActivityBase {
             if(fromActivity.equals("ActivityPersonalExpense") || fromActivity.equals("ActivityPersonalExpenseIndividual") ){
                 data.put("collection_id",  ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
 
-                if (myDb.insertPersonalExpense(data)==1) {
-                    Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+                if(rowId == null) {
+                    if (myDb.insertPersonalExpense(data) == 1) {
+                        Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
 
-                    goBack();
+                        goBack();
 
-                } else {
-                    Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    data.put("_id", rowId );
+                    if (myDb.updatePersonalExpense(data) == 1) {
+                        Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+
+                        goBack();
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
 
             }
