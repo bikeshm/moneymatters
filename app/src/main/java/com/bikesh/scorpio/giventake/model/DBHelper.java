@@ -141,8 +141,20 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         db.update(table, contentValues, "_id = ? ", new String[] { data.get("_id") } );
-
+        db.close();
         return 1;
+    }
+
+    public Integer commonDelete (String id, String table)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(table,
+                "_id = ? ",
+                new String[]{id});
+
+        db.close();
+        return result;
+
     }
 
     //-------------------------------------------------------------------------------------------------------
@@ -270,10 +282,15 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Integer deleteEntry (String id)
     {
+        /*
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("lendandborrowtable",
                 "_id = ? ",
                 new String[] { id });
+                */
+
+        return commonDelete(id, "lendandborrowtable");
+
     }
 
     public Cursor getEntryById(String entryId) {
@@ -413,18 +430,23 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Integer deleteCollection (String id)
     {
+        /*
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("collectiontable",
                 "_id = ? ",
                 new String[] { id });
+                */
+        return commonDelete(id, "collectiontable");
     }
 
     public Integer deleteCollectionEntrys (String id)
     {
+
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("personaltable",
                 "collection_id = ? ",
                 new String[] { id });
+
     }
 
     public Cursor getAllCollection() {
@@ -480,10 +502,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Integer deletePersonalExpense (String id)
     {
+        /*
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("personaltable",
                 "_id = ? ",
                 new String[] { id });
+                */
+        return commonDelete(id, "personaltable");
     }
 
     public Cursor getPersonalExpense(long collectionId, String month) {

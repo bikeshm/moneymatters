@@ -194,6 +194,10 @@ public class ActivityPersonalExpense extends ActivityBase {
                                         else{
                                             Log.i("delete collection","Not deleted collection entrys");
                                         }
+
+                                        //reloading the data
+                                        populateListViewFromDB();
+
                                     }
                                     else{
                                         Log.i("delete collection","collection Not deleted ");
