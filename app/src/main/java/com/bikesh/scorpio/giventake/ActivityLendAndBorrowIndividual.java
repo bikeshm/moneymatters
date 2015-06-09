@@ -29,7 +29,7 @@ import java.util.Date;
 public class ActivityLendAndBorrowIndividual extends ActivityBase {
 
     //View lendAndBorrowPersonalView;
-    DBHelper myDb;
+    //DBHelper myDb;
     String fromActivity=null;
     int  userId=0;
     String userName="";
@@ -39,7 +39,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lend_and_borrow_personal);
 
-        myDb = new DBHelper(this);
+       // myDb = new DBHelper(this);
 
         Bundle extras = getIntent().getExtras();
         if(extras == null) {
@@ -326,6 +326,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
 
 
 
+    /*
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -333,6 +334,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
             myDb.close();
         }
     }
+    */
 
 
     @Override

@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class ActivityPersonalExpense extends ActivityBase {
 
-    DBHelper myDb;
+    //DBHelper myDb;
     //View ActivityPersonalExpenseView;
 
     ListView listView;
@@ -273,6 +273,7 @@ public class ActivityPersonalExpense extends ActivityBase {
     }
 
 
+    /*
 
     @Override
     protected void onDestroy() {
@@ -281,6 +282,7 @@ public class ActivityPersonalExpense extends ActivityBase {
             myDb.close();
         }
     }
+    */
 
 
 

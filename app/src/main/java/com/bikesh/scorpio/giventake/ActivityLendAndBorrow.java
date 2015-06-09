@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class ActivityLendAndBorrow extends ActivityBase {
 
-    DBHelper myDb;
+    //DBHelper myDb;
     //View lendAndBorrowView;
 
     ListView listView;
@@ -35,7 +35,7 @@ public class ActivityLendAndBorrow extends ActivityBase {
 
         listView.setOnItemClickListener(new listItemClicked());
 
-        myDb = new DBHelper(this);
+        //myDb = new DBHelper(this);
         populateListViewFromDB();
 
         ((ImageButton)currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
@@ -119,6 +119,7 @@ public class ActivityLendAndBorrow extends ActivityBase {
     }
 
 
+    /*
 
     @Override
     protected void onDestroy() {
@@ -127,5 +128,6 @@ public class ActivityLendAndBorrow extends ActivityBase {
             myDb.close();
         }
     }
+    */
 
 }

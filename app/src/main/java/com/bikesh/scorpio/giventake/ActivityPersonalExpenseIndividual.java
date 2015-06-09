@@ -31,7 +31,7 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
 
 
     //View personalExpenseIndividualView;
-    DBHelper myDb;
+    //DBHelper myDb;
     String fromActivity=null;
     int  colId=0;
     String colName="";
@@ -41,7 +41,7 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_expense_individual);
 
-        myDb = new DBHelper(this);
+        //myDb = new DBHelper(this);
 
         Bundle extras = getIntent().getExtras();
 

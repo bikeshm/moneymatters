@@ -41,7 +41,7 @@ public class ActivityAddEntry extends ActivityBase {
     long ID=0;
     String Name="",rowId=null;
 
-    DBHelper myDb;
+    //DBHelper myDb;
 
     boolean actionFlag=false; //if false giving or borrowing
 
@@ -60,7 +60,7 @@ public class ActivityAddEntry extends ActivityBase {
         setContentView(R.layout.activity_add_entry);
 
 
-        myDb = new DBHelper(this);
+        //myDb = new DBHelper(this);
 
         //--- initialising RecyclerView otherwise it is throwing null pointer exception
         recyclerView = (RecyclerView) findViewById(R.id.recycler_Users);
@@ -484,6 +484,7 @@ public class ActivityAddEntry extends ActivityBase {
     }
 
 
+    /*
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -491,6 +492,7 @@ public class ActivityAddEntry extends ActivityBase {
             myDb.close();
         }
     }
+    */
 
     private class isSplitChanged implements RadioGroup.OnCheckedChangeListener {
         @Override

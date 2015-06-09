@@ -30,7 +30,7 @@ public class ActivityJointExpense extends ActivityBase {
 
     //View currentView;
     ListView listView;
-    DBHelper myDb;
+    //DBHelper myDb;
 
     ParseUser pUser;
 
@@ -50,7 +50,7 @@ public class ActivityJointExpense extends ActivityBase {
         ((ImageButton)currentView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewGroup());
 
 
-        myDb = new DBHelper(this);
+        //myDb = new DBHelper(this);
 
         parseHelper=new ParseHelper();
 

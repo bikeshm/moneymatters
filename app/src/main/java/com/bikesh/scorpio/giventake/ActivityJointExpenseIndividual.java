@@ -30,7 +30,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
     //View JointExpenseIndividual;
 
-    DBHelper myDb;
+    //DBHelper myDb;
     String fromActivity=null;
     int  groupId=0;
     //String groupName="";
@@ -41,7 +41,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joint_expense_individual);
 
-        myDb = new DBHelper(this);
+        //myDb = new DBHelper(this);
 
         Bundle extras = getIntent().getExtras();
 

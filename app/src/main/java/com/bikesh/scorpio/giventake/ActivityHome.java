@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class ActivityHome extends ActivityBase {
 
-    DBHelper myDb;
+    //DBHelper myDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class ActivityHome extends ActivityBase {
         //setSupportActionBar(toolbar);
 
 
-        myDb = new DBHelper(this);
+        //myDb = new DBHelper(this);
 
         ((LinearLayout) currentView.findViewById(R.id.lendAndBorrow)).setOnClickListener(new linkClicked(1));
         ((LinearLayout) currentView.findViewById(R.id.personalExpense)).setOnClickListener(new linkClicked(2));
@@ -116,6 +116,7 @@ public class ActivityHome extends ActivityBase {
     }
 
 
+    /*
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -123,6 +124,7 @@ public class ActivityHome extends ActivityBase {
             myDb.close();
         }
     }
+    */
 
 
 

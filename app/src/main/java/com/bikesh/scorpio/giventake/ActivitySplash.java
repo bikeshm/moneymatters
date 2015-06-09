@@ -83,7 +83,13 @@ public class ActivitySplash extends ActionBarActivity {
     } // onreate end
 
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myDb != null) {
+            myDb.close();
+        }
+    }
 
 }
 

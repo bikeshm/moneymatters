@@ -32,7 +32,7 @@ public class ActivityAddGroup extends ActivityBase {
 
     //View addGroupView;
 
-    private DBHelper myDb ;
+    //private DBHelper myDb ;
 
     Intent backActivityIntent=null;
 
@@ -46,7 +46,7 @@ public class ActivityAddGroup extends ActivityBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_group);
 
-        myDb = new DBHelper(this);
+        //myDb = new DBHelper(this);
 
         //--- initialising RecyclerView otherwise it is throwing null pointer exception
         recyclerView = (RecyclerView) findViewById(R.id.recycler_Users);
@@ -341,6 +341,7 @@ public class ActivityAddGroup extends ActivityBase {
 
 
 
+    /*
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -348,5 +349,6 @@ public class ActivityAddGroup extends ActivityBase {
             myDb.close();
         }
     }
+    */
 
 }
