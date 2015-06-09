@@ -544,6 +544,13 @@ public class DBHelper extends SQLiteOpenHelper {
         return 1;
     }
 
+    public Integer deletePersonalExpense (String id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("personaltable",
+                "_id = ? ",
+                new String[] { id });
+    }
 
     public Cursor getPersonalExpense(long collectionId, String month) {
         SQLiteDatabase db = this.getReadableDatabase();
