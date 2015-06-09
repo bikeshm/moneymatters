@@ -265,23 +265,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public int updateEntry (Map<String, String> data)
     {
-
-        /*
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        for (Map.Entry<String, String> entry : data.entrySet())
-        {
-            if( !entry.getKey().equals("_id") ) {
-                contentValues.put(entry.getKey(), entry.getValue());
-            }
-        }
-
-        db.update("lendandborrowtable", contentValues, "_id = ? ", new String[] { data.get("_id") } );
-
-        return 1;
-        */
-
         return commonUpdate(data,"lendandborrowtable");
     }
 
@@ -425,21 +408,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public int updateCollection (Map<String, String> data)
     {
-        /*
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        for (Map.Entry<String, String> entry : data.entrySet())
-        {
-            if( !entry.getKey().equals("_id") ) {
-                contentValues.put(entry.getKey(), entry.getValue());
-            }
-        }
-
-        db.update("collectiontable", contentValues, "_id = ? ", new String[] { data.get("_id") } );
-
-        return 1;
-        */
         return commonUpdate(data,"collectiontable");
     }
 
@@ -507,21 +475,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public int updatePersonalExpense (Map<String, String> data)
     {
-        /*
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        for (Map.Entry<String, String> entry : data.entrySet())
-        {
-            if( !entry.getKey().equals("_id") ) {
-                contentValues.put(entry.getKey(), entry.getValue());
-            }
-        }
-
-        db.update("personaltable", contentValues, "_id = ? ", new String[] { data.get("_id") } );
-
-        return 1;
-        */
         return commonUpdate(data,"personaltable");
     }
 
