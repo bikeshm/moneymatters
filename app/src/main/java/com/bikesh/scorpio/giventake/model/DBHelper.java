@@ -121,18 +121,29 @@ public class DBHelper extends SQLiteOpenHelper {
         for (Map.Entry<String, String> entry : data.entrySet())
         {
             contentValues.put(entry.getKey(), entry.getValue() );
-
-            Log.i("saving colection", entry.getKey() + " = "+ entry.getValue());
         }
 
         db.insert(table, null, contentValues);
-
         db.close();
-
         return 1;
     }
 
+    public int commonUpdate (Map<String, String> data, String table) {
 
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        for (Map.Entry<String, String> entry : data.entrySet())
+        {
+            if( !entry.getKey().equals("_id") ) {
+                contentValues.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        db.update(table, contentValues, "_id = ? ", new String[] { data.get("_id") } );
+
+        return 1;
+    }
 
     //-------------------------------------------------------------------------------------------------------
 
@@ -232,28 +243,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public boolean updateContact (Integer id, String name, String phone, String email, String street,String place)
-    {
-        /*
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("name", name);
-        contentValues.put("phone", phone);
-        contentValues.put("email", email);
-        contentValues.put("street", street);
-        contentValues.put("place", place);
-        db.update("contacts", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
-        */
-        return true;
-    }
-
-    public Integer deleteContact (Integer id)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete("contacts",
-                "id = ? ",
-                new String[] { Integer.toString(id) });
-    }
 
     //----------------------------------
     // todo :- need to work on this
@@ -277,6 +266,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public int updateEntry (Map<String, String> data)
     {
 
+        /*
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -290,6 +280,9 @@ public class DBHelper extends SQLiteOpenHelper {
         db.update("lendandborrowtable", contentValues, "_id = ? ", new String[] { data.get("_id") } );
 
         return 1;
+        */
+
+        return commonUpdate(data,"lendandborrowtable");
     }
 
     public Integer deleteEntry (String id)
@@ -432,7 +425,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public int updateCollection (Map<String, String> data)
     {
-
+        /*
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -446,6 +439,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.update("collectiontable", contentValues, "_id = ? ", new String[] { data.get("_id") } );
 
         return 1;
+        */
+        return commonUpdate(data,"collectiontable");
     }
 
     public Integer deleteCollection (String id)
@@ -512,7 +507,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public int updatePersonalExpense (Map<String, String> data)
     {
-
+        /*
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -526,6 +521,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.update("personaltable", contentValues, "_id = ? ", new String[] { data.get("_id") } );
 
         return 1;
+        */
+        return commonUpdate(data,"personaltable");
     }
 
     public Integer deletePersonalExpense (String id)
