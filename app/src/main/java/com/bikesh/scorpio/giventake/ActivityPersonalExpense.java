@@ -107,7 +107,8 @@ public class ActivityPersonalExpense extends ActivityBase {
         //Todo :- 1. insted of listing all category just list the category which is having entry
         //Todo :- need to implement pagination
         //Todo : - implement search option
-        Cursor cursor = myDb.getAllCollectionByMonth( ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString() );
+        //Cursor cursor = myDb.getAllCollectionByMonth( ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString() );
+        Cursor cursor = myDb.getAllCollection();
 
         Map<String, String> dataExtra = new HashMap<String, String>();
 
