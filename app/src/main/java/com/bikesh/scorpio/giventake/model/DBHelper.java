@@ -53,7 +53,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(
-                "create table "+USER_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text, name text, email text, phone text,password text, description text, photo BLOB )"
+                "create table "+USER_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text DEFAULT null, name text, email text, phone text,password text, description text, photo BLOB )"
         );
 
         db.execSQL(

@@ -2,6 +2,7 @@ package com.bikesh.scorpio.giventake;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -13,14 +14,23 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.bikesh.scorpio.giventake.adapters.Adapter_CustomSimpleCursor;
-import com.bikesh.scorpio.giventake.model.DBHelper;
-import com.bikesh.scorpio.giventake.model.ParseHelper;
-import com.parse.LogInCallback;
-import com.parse.ParseException;
-import com.parse.ParseUser;
-import com.parse.SignUpCallback;
+import com.bikesh.scorpio.giventake.libraries.CustomRequest;
 
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.bikesh.scorpio.giventake.libraries.functions.getInternetType;
@@ -30,11 +40,19 @@ public class ActivityJointExpense extends ActivityBase {
 
     //View currentView;
     ListView listView;
-    //DBHelper myDb;
 
-    ParseUser pUser;
 
-    ParseHelper parseHelper;
+    Map<String, String> dbUser = new HashMap<String, String>();
+
+    RequestQueue Rqueue;
+
+    //Api
+    String apiUrl_GetByPhone = "http://givntake.workassis.com/api/user/getbyphone/" ;
+    String apiUrl_RegisterUser = "http://givntake.workassis.com/api/user/register" ;
+    String apiUrl_LoginUser = "http://givntake.workassis.com/api/user/login" ;
+
+
+
 
     boolean registerUserFlag= false;
     @Override
@@ -52,111 +70,126 @@ public class ActivityJointExpense extends ActivityBase {
 
         //myDb = new DBHelper(this);
 
-        parseHelper=new ParseHelper();
-
-        pUser = ParseUser.getCurrentUser();
-
-        ParseUser.logOut();
-        populateListViewFromDB();
 
 
-
-
+        //populateListViewFromDB();
 
     }
 
+
+
+
+
+    private void  registerUserOnline(){
+
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, apiUrl_RegisterUser, dbUser, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.i("api call reg", response.toString() + "" );
+
+                //// TODO: 6/11/2015  add to local db
+
+                populateListViewFromDB_populate();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                Log.i("api call Error", ""+error.getMessage());
+                populateListViewFromDB_populate();
+            }
+        });
+
+        Rqueue.add(jsObjRequest);
+
+    }
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
     private void populateListViewFromDB() {
 
-        populateListViewFromDB_populate();
 
-        /*
-        //chk inter net available
-        if (!getInternetType(getApplicationContext()).equals("?")) {
+        dbUser=myDb.getUser(1);
 
-            //pUser = ParseUser.getCurrentUser();
+        //chking user updated in db with online user id
+        if(dbUser.get("onlineid")==null) {
 
-            Log.i("track", "online");
+            //checking is internet is available
+            if (!getInternetType(getApplicationContext()).equals("?")) {
 
-            //check parse user loeged in
-            if (pUser == null) { //user not loged in
-
-                Map rootuser = myDb.getUser(1);
-
-                Log.i("track", "user not signed in ");
-                Log.i("track login", rootuser.get("phone").toString() + " " + "GNT" + rootuser.get("password").toString());
+                Log.i("api call", apiUrl_LoginUser +Uri.encode(dbUser.get("phone")) );
 
 
-                //loginin user
-                ParseUser.logInInBackground(rootuser.get("phone").toString(),"GNT" + rootuser.get("password").toString(), new LogInCallback() {
-                    public void done(ParseUser user, ParseException e) {
-                        if (user != null) {
+                //final Map<String, String> finalDbUser = dbUser;
 
-                            //todo :- update local usder online id
-                            if(registerUserFlag==true){
+                Rqueue = Volley.newRequestQueue(this);
+
+                //check user phone number already registered
+                //// TODO: 6/11/2015 Use login functionality here (check with phonenumber and passeord)
+                //JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                //(Request.Method.GET, apiUrl_LoginUser +Uri.encode(dbUser.get("phone")) , new Response.Listener<JSONObject>() {
+
+                CustomRequest jsObjRequest =   new CustomRequest
+                        (Request.Method.POST, apiUrl_LoginUser, dbUser, new Response.Listener<JSONObject>() {
+
+                            @Override
+                            public void onResponse(JSONObject response) {
+
+                                Log.i("api call", response.toString() + "" + response.optString("status"));
+                                Log.i("api call", response.optJSONObject("data") + "");
+
+                                // phoneumber not exist then create user
+                                if(response.optString("msg").equals("Invalid Phone")){
+                                    registerUserOnline();
+                                }
+                                else if(response.optString("msg").equals("Invalid Password")){
+
+                                    Toast.makeText(getApplicationContext(),"Invalid password please Update from settings", Toast.LENGTH_LONG).show();
+                                    populateListViewFromDB_populate();
+                                }
+                                else if(response.optString("status").equals("success")){
+                                    //TODO: 6/11/2015 update to local db
+                                    populateListViewFromDB_populate();
+                                }
 
                             }
+                        }, new Response.ErrorListener() {
 
-
-                            Log.i("track", "user loged in" + user.getObjectId());
-                            // Hooray! The user is logged in.
-                            populateListViewFromDB(); //recrussive for insert datata to local dm
-
-                        } else {
-                            // Signup failed. Look at the ParseException to see what happened.
-
-                            Log.i("track", "user not exsist registring");
-                            //create user and login
-                            //parseHelper.createParseUserfromDB(myDb.getUser(1));
-                            Map DBUser = myDb.getUser(1);
-                            ParseUser newuser = new ParseUser();
-                            newuser.put("name", DBUser.get("name").toString());
-                            newuser.setUsername(DBUser.get("phone").toString());
-                            newuser.setPassword("GNT" + DBUser.get("password").toString()); // simly adding GNT
-                            //newuser.setEmail(DBUser.get("email").toString()); //email should be unique other wise getting error
-
-                            Log.i("track registring", DBUser.get("phone").toString() + " " +  DBUser.get("password").toString());
-
-                            //creating user in bg
-                            newuser.signUpInBackground(new SignUpCallback() {
-                                public void done(ParseException e) {
-                                    if (e == null) {
-                                        // Hooray! Let them use the app now.
-                                        Log.i("track", "user registerd" );
-
-
-                                        //todo :- update local usder online id
-                                        registerUserFlag=true;
-
-                                        populateListViewFromDB(); //recrussive for sign in
-
-
-                                    } else {
-                                        Log.i("track", "error while registring user" + e.toString());
-                                        // Sign up didn't succeed. Look at the ParseException
-                                        // to figure out what went wrong
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
-
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.i("api call", error.toString());
+                            }
+                        });
+                Rqueue.add(jsObjRequest);
             }
             else{
-                //user loged in
-                Log.i("track", "user signed in  :)");
-                // insert data to local db
-
-                //then
+                Toast.makeText(getApplicationContext(), "No internet connection to update Online Groups", Toast.LENGTH_LONG).show();
                 populateListViewFromDB_populate();
             }
 
 
-        } else {
-            Toast.makeText(getApplicationContext(), "Internet not available", Toast.LENGTH_LONG).show();
+        }
+        else{
+
             populateListViewFromDB_populate();
         }
-        */
+
+
+
+
+
 
 
 
