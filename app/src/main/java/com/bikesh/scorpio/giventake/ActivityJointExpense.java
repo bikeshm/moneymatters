@@ -156,30 +156,34 @@ public class ActivityJointExpense extends ActivityBase {
                                     populateListViewFromDB_populate();
                                 }
                                 else if(response.optString("status").equals("success")){
+
                                     Toast.makeText(getApplicationContext(),response.optString("msg"), Toast.LENGTH_LONG).show();
 
-                                    Log.i("api call", response.optString("msg"));
+                                    Log.i("api call", response+"" );
 
-                                    Log.i("api call", response.optJSONObject("data").optString("id") + "");
+                                    //Log.i("api call", response.optJSONObject("data").optString("id") + "");
 
 
                                     //updating local user onlineid
-                                    Map<String, String> updateData = new HashMap<String, String>();
-                                    updateData.put("_id", dbUser.get("_id") );
-                                    updateData.put("onlineid", response.optJSONObject("data").optString("id") );
-                                    myDb.updateUser(updateData);
+                                    if(dbUser.get("onlineid").equals("0")) {
 
-                                    dbUser.put("onlineid",  response.optJSONObject("data").optString("id") );
+                                        Map<String, String> updateData = new HashMap<String, String>();
+                                        updateData.put("_id", dbUser.get("_id"));
+                                        updateData.put("onlineid", response.optJSONObject("data").optString("id"));
+                                        myDb.updateUser(updateData);
+
+                                        dbUser.put("onlineid", response.optJSONObject("data").optString("id"));
+                                    }
 
                                     //insert group to local db
 
-                                    JSONArray preferencesJSON = response.optJSONObject("data").optJSONArray("requested_data");
+                                    JSONArray requested_dataJSON = response.optJSONObject("data").optJSONArray("requested_data");
                                     Map<String, String> incommingGroup = new HashMap<String, String>();
 
                                     try {
-                                        for(int i = 0 ; i < preferencesJSON.length(); i++){
+                                        for(int i = 0 ; i < requested_dataJSON.length(); i++){
 
-                                            JSONObject jsonObj = preferencesJSON.getJSONObject(i);
+                                            JSONObject jsonObj = requested_dataJSON.getJSONObject(i);
                                             Iterator<String> keysIterator = jsonObj.keys();
                                             while (keysIterator.hasNext())
                                             {
