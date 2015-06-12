@@ -101,7 +101,7 @@ public class ActivityJointExpense extends ActivityBase {
     */
 
 
-    private void  fetchOnlineGroup(){
+    private void  fetchOnlineGroupToLocalDB(){
 
     }
 
@@ -121,7 +121,7 @@ public class ActivityJointExpense extends ActivityBase {
 
         dbUser=myDb.getUser(1);
 
-        //Map<String, String> tempDbUser = dbUser;
+
 
         //chking user updated in db with online user id
         if(dbUser.get("onlineid")==null) {
@@ -133,14 +133,16 @@ public class ActivityJointExpense extends ActivityBase {
 
                 Rqueue = Volley.newRequestQueue(this);
 
+                dbUser.put("required_data","group_info");
+
                 CustomRequest jsObjRequest =   new CustomRequest
                         (Request.Method.POST, apiUrl_LoginRegisterUser, dbUser, new Response.Listener<JSONObject>() {
 
                             @Override
                             public void onResponse(JSONObject response) {
 
-                                Log.i("api call", response.toString() + "" + response.optString("status"));
-                                Log.i("api call", response.optJSONObject("data") + "");
+                                Log.i("api call 1", response.toString() + "" + response.optString("status"));
+                                Log.i("api call 2", response.optJSONObject("data") + "");
 
 
 
@@ -163,16 +165,18 @@ public class ActivityJointExpense extends ActivityBase {
 
                                     dbUser.put("onlineid",  response.optJSONObject("data").optString("id") );
 
-                                    fetchOnlineGroup();
+                                    fetchOnlineGroupToLocalDB();
                                     //populateListViewFromDB_populate();
                                 }
+
+
 
                             }
                         }, new Response.ErrorListener() {
 
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Log.i("api call", error.toString());
+                                Log.i("api call", "ERROR "+error.getMessage());
                             }
                         });
                 Rqueue.add(jsObjRequest);

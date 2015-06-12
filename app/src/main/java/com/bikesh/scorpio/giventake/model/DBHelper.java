@@ -53,7 +53,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(
-                "create table "+USER_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text DEFAULT null, name text, email text, phone text,password text, description text, photo BLOB )"
+                "create table "+USER_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', name text, email text, phone text,password text, description text, photo BLOB )"
         );
 
         db.execSQL(
@@ -185,7 +185,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             //Log.i("DB", res.getString(res.getColumnIndex("name")) );
             data.put("_id",  res.getString(res.getColumnIndex("_id")) );
-            data.put("onlineid",  res.getString(res.getColumnIndex("onlineid")) );
+            //data.put("onlineid",  res.getString(res.getColumnIndex("onlineid")) );
 
             data.put("name",  res.getString(res.getColumnIndex("name")) );
             data.put("password", res.getString(res.getColumnIndex("password")) );
