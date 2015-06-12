@@ -14,22 +14,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bikesh.scorpio.giventake.adapters.Adapter_CustomSimpleCursor;
 import com.bikesh.scorpio.giventake.libraries.CustomRequest;
 
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,8 +42,8 @@ public class ActivityJointExpense extends ActivityBase {
 
     //Api
     String apiUrl_GetByPhone = "http://givntake.workassis.com/api/user/getbyphone/" ;
-    String apiUrl_RegisterUser = "http://givntake.workassis.com/api/user/register" ;
-    String apiUrl_LoginUser = "http://givntake.workassis.com/api/user/login" ;
+    //String apiUrl_RegisterUser = "http://givntake.workassis.com/api/user/register" ;
+    String apiUrl_LoginRegisterUser = "http://givntake.workassis.com/api/user/login_register" ;
 
 
 
@@ -80,6 +74,7 @@ public class ActivityJointExpense extends ActivityBase {
 
 
 
+    /*
     private void  registerUserOnline(){
 
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, apiUrl_RegisterUser, dbUser, new Response.Listener<JSONObject>() {
@@ -103,9 +98,12 @@ public class ActivityJointExpense extends ActivityBase {
         Rqueue.add(jsObjRequest);
 
     }
+    */
 
 
+    private void  fetchOnlineGroup(){
 
+    }
 
 
 
@@ -123,26 +121,20 @@ public class ActivityJointExpense extends ActivityBase {
 
         dbUser=myDb.getUser(1);
 
+        //Map<String, String> tempDbUser = dbUser;
+
         //chking user updated in db with online user id
         if(dbUser.get("onlineid")==null) {
 
             //checking is internet is available
             if (!getInternetType(getApplicationContext()).equals("?")) {
 
-                Log.i("api call", apiUrl_LoginUser +Uri.encode(dbUser.get("phone")) );
-
-
-                //final Map<String, String> finalDbUser = dbUser;
+                Log.i("api call", apiUrl_LoginRegisterUser +Uri.encode(dbUser.get("phone")) );
 
                 Rqueue = Volley.newRequestQueue(this);
 
-                //check user phone number already registered
-                //// TODO: 6/11/2015 Use login functionality here (check with phonenumber and passeord)
-                //JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                //(Request.Method.GET, apiUrl_LoginUser +Uri.encode(dbUser.get("phone")) , new Response.Listener<JSONObject>() {
-
                 CustomRequest jsObjRequest =   new CustomRequest
-                        (Request.Method.POST, apiUrl_LoginUser, dbUser, new Response.Listener<JSONObject>() {
+                        (Request.Method.POST, apiUrl_LoginRegisterUser, dbUser, new Response.Listener<JSONObject>() {
 
                             @Override
                             public void onResponse(JSONObject response) {
@@ -150,18 +142,29 @@ public class ActivityJointExpense extends ActivityBase {
                                 Log.i("api call", response.toString() + "" + response.optString("status"));
                                 Log.i("api call", response.optJSONObject("data") + "");
 
-                                // phoneumber not exist then create user
-                                if(response.optString("msg").equals("Invalid Phone")){
-                                    registerUserOnline();
-                                }
-                                else if(response.optString("msg").equals("Invalid Password")){
+
+
+                                if(response.optString("msg").equals("Invalid Password")){
 
                                     Toast.makeText(getApplicationContext(),"Invalid password please Update from settings", Toast.LENGTH_LONG).show();
                                     populateListViewFromDB_populate();
                                 }
                                 else if(response.optString("status").equals("success")){
-                                    //TODO: 6/11/2015 update to local db
-                                    populateListViewFromDB_populate();
+                                    Toast.makeText(getApplicationContext(),response.optString("msg"), Toast.LENGTH_LONG).show();
+
+                                    Log.i("api call", response.optJSONObject("data").optString("id") + "");
+
+
+                                    //updating local user onlineid
+                                    Map<String, String> updateData = new HashMap<String, String>();
+                                    updateData.put("_id", dbUser.get("_id") );
+                                    updateData.put("onlineid", response.optJSONObject("data").optString("id") );
+                                    myDb.updateUser(updateData);
+
+                                    dbUser.put("onlineid",  response.optJSONObject("data").optString("id") );
+
+                                    fetchOnlineGroup();
+                                    //populateListViewFromDB_populate();
                                 }
 
                             }

@@ -154,7 +154,13 @@ public class DBHelper extends SQLiteOpenHelper {
     //Map<String, String> map = new HashMap<String, String>();
     //map.put("name", "demo");
     public int insertUser  (Map<String, String> data) {
+
         return commonInsert(data, "usertable");
+    }
+
+    public int updateUser(Map<String, String> data)
+    {
+        return commonUpdate(data,"usertable");
     }
 
     public Map getUser(long id) {
@@ -179,6 +185,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
             //Log.i("DB", res.getString(res.getColumnIndex("name")) );
             data.put("_id",  res.getString(res.getColumnIndex("_id")) );
+            data.put("onlineid",  res.getString(res.getColumnIndex("onlineid")) );
+
             data.put("name",  res.getString(res.getColumnIndex("name")) );
             data.put("password", res.getString(res.getColumnIndex("password")) );
             data.put("email",  res.getString(res.getColumnIndex("email")) );
