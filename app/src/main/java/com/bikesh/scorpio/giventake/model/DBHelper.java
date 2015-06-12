@@ -33,10 +33,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static final String COLLECTION_TABLE_NAME = "collectiontable";
 
-    public static final String JOINTENTRY_TABLE_NAME = "joint_entrytable";
     public static final String JOINTGROUP_TABLE_NAME = "joint_grouptable";
-    public static final String JOINTSPLITE_TABLE_NAME = "joint_splittable";
     public static final String JOINT_USER_GROUP_RELATION_TABLE_NAME="joint_usergrouprelationtable";
+    public static final String JOINTENTRY_TABLE_NAME = "joint_entrytable";
+
+    public static final String JOINTSPLITE_TABLE_NAME = "joint_splittable"; //face 2
+
 
     public static final String ONLINEJOINTGROUP_TABLE_NAME = "onlinejoint_grouptable";
 
@@ -72,7 +74,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         db.execSQL(
-                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, online_id text, owner text, name text,  members_count INTEGER,ismonthlytask INTEGER , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB )"
+                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text, owner text, name text,  members_count INTEGER,ismonthlytask INTEGER , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB )"
         );
         db.execSQL(
                 "create table "+JOINTENTRY_TABLE_NAME+"  (_id INTEGER primary key autoincrement, joint_group_id INTEGER, created_date DATE, description text, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0)"
@@ -179,20 +181,21 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if(res!=null) {
             res.moveToFirst();
-        }
 
-        while(res.isAfterLast() == false){
 
-            //Log.i("DB", res.getString(res.getColumnIndex("name")) );
-            data.put("_id",  res.getString(res.getColumnIndex("_id")) );
-            //data.put("onlineid",  res.getString(res.getColumnIndex("onlineid")) );
+            while (res.isAfterLast() == false) {
 
-            data.put("name",  res.getString(res.getColumnIndex("name")) );
-            data.put("password", res.getString(res.getColumnIndex("password")) );
-            data.put("email",  res.getString(res.getColumnIndex("email")) );
-            data.put("phone", res.getString(res.getColumnIndex("phone")) );
-            data.put("description", res.getString(res.getColumnIndex("description")));
-            res.moveToNext();
+                //Log.i("DB", res.getString(res.getColumnIndex("name")) );
+                data.put("_id", res.getString(res.getColumnIndex("_id")));
+                data.put("onlineid",  res.getString(res.getColumnIndex("onlineid")) );
+
+                data.put("name", res.getString(res.getColumnIndex("name")));
+                data.put("password", res.getString(res.getColumnIndex("password")));
+                data.put("email", res.getString(res.getColumnIndex("email")));
+                data.put("phone", res.getString(res.getColumnIndex("phone")));
+                data.put("description", res.getString(res.getColumnIndex("description")));
+                res.moveToNext();
+            }
         }
 
         return data;
@@ -899,6 +902,79 @@ public class DBHelper extends SQLiteOpenHelper {
         res.close();
         db.close();
         return data;
+    }
+
+
+    //===========================Online Group===============================
+
+    public int insertOnlineGroup(Map<String, String> data) {
+
+        Map existingGroup = getOnlineGroup(data.get("group_id"));
+
+        if( existingGroup.size()>0){
+            //update
+            Log.i("api call db","updating data");
+            data.put("_id",existingGroup.get("_id").toString());
+            data.remove("group_id");
+
+
+            commonUpdate(data, JOINTGROUP_TABLE_NAME);
+        }
+        else {
+            Log.i("api call db","inserting data");
+            data.remove("group_id");
+            data.remove("_id");
+            commonInsert(data, JOINTGROUP_TABLE_NAME);
+        }
+
+        isOnlineGroupExist(data.get("group_id"));
+
+        return 1;
+    }
+
+    public Map getOnlineGroup(String online_id) {
+        Map<String, String> data = new HashMap<String, String>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from "+JOINTGROUP_TABLE_NAME+" where onlineid='"+online_id+"'", null );
+
+        if(res!=null) {
+            res.moveToFirst();
+
+            while (res.isAfterLast() == false) {
+
+                //Log.i("DB", res.getString(res.getColumnIndex("name")) );
+                data.put("_id", res.getString(res.getColumnIndex("_id")));
+                data.put("onlineid",  res.getString(res.getColumnIndex("onlineid")) );
+                data.put("owner", res.getString(res.getColumnIndex("owner")));
+                data.put("name", res.getString(res.getColumnIndex("name")));
+                data.put("members_count", res.getString(res.getColumnIndex("members_count")));
+                data.put("ismonthlytask", res.getString(res.getColumnIndex("ismonthlytask")));
+                data.put("description", res.getString(res.getColumnIndex("description")));
+                data.put("totalamt", res.getString(res.getColumnIndex("totalamt")));
+                data.put("balanceamt", res.getString(res.getColumnIndex("balanceamt")));
+                res.moveToNext();
+                break;
+            }
+        }
+
+        res.close();
+        return data;
+    }
+
+    public Boolean isOnlineGroupExist(String online_id) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select _id from "+JOINTGROUP_TABLE_NAME+" where onlineid="+online_id+"", null );
+
+        if(res!=null) {
+            res.moveToFirst();
+            if(res.getCount()>0){
+                return true;
+            }
+        }
+
+        res.close();
+        return false;
     }
 
 

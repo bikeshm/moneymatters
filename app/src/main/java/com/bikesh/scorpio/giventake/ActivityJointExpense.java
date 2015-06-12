@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -125,7 +126,7 @@ public class ActivityJointExpense extends ActivityBase {
 
 
         //chking user updated in db with online user id
-        if(dbUser.get("onlineid")==null) {
+        //if(dbUser.get("onlineid").equals("0")) {
 
             //checking is internet is available
             if (!getInternetType(getApplicationContext()).equals("?")) {
@@ -150,10 +151,14 @@ public class ActivityJointExpense extends ActivityBase {
                                 if(response.optString("msg").equals("Invalid Password")){
 
                                     Toast.makeText(getApplicationContext(),"Invalid password please Update from settings", Toast.LENGTH_LONG).show();
+                                    Log.i("api call", "Invalid password please Update from settings");
+
                                     populateListViewFromDB_populate();
                                 }
                                 else if(response.optString("status").equals("success")){
                                     Toast.makeText(getApplicationContext(),response.optString("msg"), Toast.LENGTH_LONG).show();
+
+                                    Log.i("api call", response.optString("msg"));
 
                                     Log.i("api call", response.optJSONObject("data").optString("id") + "");
 
@@ -169,30 +174,41 @@ public class ActivityJointExpense extends ActivityBase {
                                     //insert group to local db
 
                                     JSONArray preferencesJSON = response.optJSONObject("data").optJSONArray("requested_data");
+                                    Map<String, String> incommingGroup = new HashMap<String, String>();
 
                                     try {
                                         for(int i = 0 ; i < preferencesJSON.length(); i++){
 
-
                                             JSONObject jsonObj = preferencesJSON.getJSONObject(i);
-
                                             Iterator<String> keysIterator = jsonObj.keys();
                                             while (keysIterator.hasNext())
                                             {
                                                 String keyStr = (String)keysIterator.next();
                                                 String valueStr = jsonObj.getString(keyStr);
 
-                                                Log.i("api call r", keyStr + " - "+ valueStr);
+                                                String[] requiredKeys = new String[] {"group_id","owner","name","members_count","ismonthlytask","description","totalamt","balanceamt"}; //,"created_date","photo"
+
+                                               if( Arrays.asList(requiredKeys).contains(keyStr) ){
+
+                                                   Log.i("api call r", keyStr + " - "+ valueStr);
+
+                                                   incommingGroup.put(keyStr,valueStr );
+                                               }
                                             }
 
+                                            incommingGroup.put("onlineid",incommingGroup.get("group_id") );
+                                            //insert to db
+                                            myDb.insertOnlineGroup(incommingGroup);
+
                                         }
+
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
 
 
 
-                                    //populateListViewFromDB_populate();
+                                    populateListViewFromDB_populate();
                                 }
 
 
@@ -213,11 +229,11 @@ public class ActivityJointExpense extends ActivityBase {
             }
 
 
-        }
-        else{
-
-            populateListViewFromDB_populate();
-        }
+        //}
+        //else{
+//
+         //   populateListViewFromDB_populate();
+        //}
 
 
 
