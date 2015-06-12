@@ -22,9 +22,12 @@ import com.android.volley.toolbox.Volley;
 import com.bikesh.scorpio.giventake.adapters.Adapter_CustomSimpleCursor;
 import com.bikesh.scorpio.giventake.libraries.CustomRequest;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import static com.bikesh.scorpio.giventake.libraries.functions.getInternetType;
@@ -101,9 +104,7 @@ public class ActivityJointExpense extends ActivityBase {
     */
 
 
-    private void  fetchOnlineGroupToLocalDB(){
 
-    }
 
 
 
@@ -165,7 +166,32 @@ public class ActivityJointExpense extends ActivityBase {
 
                                     dbUser.put("onlineid",  response.optJSONObject("data").optString("id") );
 
-                                    fetchOnlineGroupToLocalDB();
+                                    //insert group to local db
+
+                                    JSONArray preferencesJSON = response.optJSONObject("data").optJSONArray("requested_data");
+
+                                    try {
+                                        for(int i = 0 ; i < preferencesJSON.length(); i++){
+
+
+                                            JSONObject jsonObj = preferencesJSON.getJSONObject(i);
+
+                                            Iterator<String> keysIterator = jsonObj.keys();
+                                            while (keysIterator.hasNext())
+                                            {
+                                                String keyStr = (String)keysIterator.next();
+                                                String valueStr = jsonObj.getString(keyStr);
+
+                                                Log.i("api call r", keyStr + " - "+ valueStr);
+                                            }
+
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+
+
                                     //populateListViewFromDB_populate();
                                 }
 
