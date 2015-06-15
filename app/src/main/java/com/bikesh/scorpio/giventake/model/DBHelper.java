@@ -74,10 +74,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         db.execSQL(
-                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text, owner text, name text,  members_count INTEGER,ismonthlytask INTEGER , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB )"
+                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', isonline INTEGER DEFAULT 0, owner text, name text,  members_count INTEGER,ismonthlytask INTEGER , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB, last_updated DATE )"
         );
         db.execSQL(
-                "create table "+JOINTENTRY_TABLE_NAME+"  (_id INTEGER primary key autoincrement, joint_group_id INTEGER, created_date DATE, description text, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0)"
+                "create table "+JOINTENTRY_TABLE_NAME+"  (_id INTEGER primary key autoincrement, joint_group_id INTEGER, created_date DATE, description text, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0, last_updated DATE)"
         );
         db.execSQL(
                 "create table "+JOINT_USER_GROUP_RELATION_TABLE_NAME+"  (_id INTEGER primary key autoincrement, user_id INTEGER, joint_group_id INTEGER  )"
@@ -135,6 +135,23 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         db.update(table, contentValues, "_id = ? ", new String[] { data.get("_id") } );
+        db.close();
+        return 1;
+    }
+
+    public int commonUpdateWhere (Map<String, String> data, String where,  String table) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        for (Map.Entry<String, String> entry : data.entrySet())
+        {
+            if( !entry.getKey().equals("_id") ) {
+                contentValues.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        db.update(table, contentValues, where+" = ? ", new String[] { data.get(where) } );
         db.close();
         return 1;
     }
@@ -282,6 +299,8 @@ public class DBHelper extends SQLiteOpenHelper {
     {
         return commonUpdate(data,"lendandborrowtable");
     }
+
+
 
     public Integer deleteEntry (String id)
     {
@@ -556,6 +575,36 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToFirst();
         }
         return res;
+    }
+
+    public Map fetchJointGroupbyId(String groupId){
+
+        Cursor res = getJointGroupbyId(groupId);
+
+        Map<String, String> data = new HashMap<String, String>();
+
+        if(res!=null) {
+            res.moveToFirst();
+
+            while (res.isAfterLast() == false) {
+
+                //Log.i("DB", res.getString(res.getColumnIndex("name")) );
+                data.put("_id", res.getString(res.getColumnIndex("_id")));
+                data.put("onlineid",  res.getString(res.getColumnIndex("onlineid")) );
+                data.put("isonline",  res.getString(res.getColumnIndex("isonline")) );
+                data.put("owner",  res.getString(res.getColumnIndex("owner")) );
+                data.put("name", res.getString(res.getColumnIndex("name")));
+                data.put("members_count", res.getString(res.getColumnIndex("members_count")));
+                data.put("ismonthlytask", res.getString(res.getColumnIndex("ismonthlytask")));
+                data.put("description", res.getString(res.getColumnIndex("description")));
+
+                data.put("totalamt", res.getString(res.getColumnIndex("totalamt")));
+                data.put("balanceamt", res.getString(res.getColumnIndex("balanceamt")));
+                res.moveToNext();
+            }
+        }
+
+        return data;
     }
 
     public Cursor getAllJointGroups() {
@@ -979,4 +1028,51 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
 
+    public int updateOnlineEntrys (Map<String, String> dataCollection) {
+
+        /*
+        Map<String, String> data = new HashMap<String, String>();
+
+        commonUpdateWhere (Map<String, String> data, String where,  String table)
+        */
+
+        return 1;
+    }
+
+
+    public void updateOnlineGroupRelation(Map<String, String> onlineUserdata, String group_id) {
+
+        //if(check phone already in user table){
+        //get the user  _id
+        //}
+        //else{
+        //  if(check user exsist in contact){
+        //      get the data
+        //      insert to user table
+        //      get the user _id
+        //  }
+        //  else{
+        //      inser data to user table
+        //      get the user _id
+        //  }
+        //
+        // }
+
+        //  if(check same relation not exsist in relatoin)
+        //      {
+        //          update relation
+        //      }
+
+        // if(check anyone deleted from the grop from server)
+        // update in local db
+
+
+        Cursor userdata = getUserByPhone(onlineUserdata.get("phone").toString());
+        if(userdata!=null){
+            //user already in user table
+
+
+        }
+
+    }
 }

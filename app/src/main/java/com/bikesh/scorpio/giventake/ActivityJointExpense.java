@@ -145,9 +145,6 @@ public class ActivityJointExpense extends ActivityBase {
 
                                 Log.i("api call 1", response.toString() + "" + response.optString("status"));
                                 Log.i("api call 2", response.optJSONObject("data") + "");
-
-
-
                                 if(response.optString("msg").equals("Invalid Password")){
 
                                     Toast.makeText(getApplicationContext(),"Invalid password please Update from settings", Toast.LENGTH_LONG).show();
@@ -160,19 +157,15 @@ public class ActivityJointExpense extends ActivityBase {
                                     Toast.makeText(getApplicationContext(),response.optString("msg"), Toast.LENGTH_LONG).show();
 
                                     Log.i("api call", response+"" );
-
-                                    //Log.i("api call", response.optJSONObject("data").optString("id") + "");
-
-
                                     //updating local user onlineid
-                                    if(dbUser.get("onlineid").equals("0")) {
+                                    if(dbUser.get("onlineid").toString().equals("") || dbUser.get("onlineid").toString().equals("0")) {
 
                                         Map<String, String> updateData = new HashMap<String, String>();
                                         updateData.put("_id", dbUser.get("_id"));
-                                        updateData.put("onlineid", response.optJSONObject("data").optString("id"));
+                                        updateData.put("onlineid", response.optJSONObject("data").optString("user_id"));
                                         myDb.updateUser(updateData);
 
-                                        dbUser.put("onlineid", response.optJSONObject("data").optString("id"));
+                                        dbUser.put("onlineid", response.optJSONObject("data").optString("user_id"));
                                     }
 
                                     //insert group to local db
@@ -193,30 +186,22 @@ public class ActivityJointExpense extends ActivityBase {
                                                 String[] requiredKeys = new String[] {"group_id","owner","name","members_count","ismonthlytask","description","totalamt","balanceamt"}; //,"created_date","photo"
 
                                                if( Arrays.asList(requiredKeys).contains(keyStr) ){
-
                                                    Log.i("api call r", keyStr + " - "+ valueStr);
-
                                                    incommingGroup.put(keyStr,valueStr );
                                                }
                                             }
 
                                             incommingGroup.put("onlineid",incommingGroup.get("group_id") );
+                                            incommingGroup.put("isonline","1" );
                                             //insert to db
                                             myDb.insertOnlineGroup(incommingGroup);
-
                                         }
 
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-
-
-
                                     populateListViewFromDB_populate();
                                 }
-
-
-
                             }
                         }, new Response.ErrorListener() {
 
@@ -231,21 +216,6 @@ public class ActivityJointExpense extends ActivityBase {
                 Toast.makeText(getApplicationContext(), "No internet connection to update Online Groups", Toast.LENGTH_LONG).show();
                 populateListViewFromDB_populate();
             }
-
-
-        //}
-        //else{
-//
-         //   populateListViewFromDB_populate();
-        //}
-
-
-
-
-
-
-
-
     }
 
     private void populateListViewFromDB_populate() {

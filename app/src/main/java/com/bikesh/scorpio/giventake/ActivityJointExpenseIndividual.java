@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -17,13 +19,28 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.bikesh.scorpio.giventake.adapters.CustomDatePicker;
+import com.bikesh.scorpio.giventake.libraries.CustomRequest;
 import com.bikesh.scorpio.giventake.model.DBHelper;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+
+import static com.bikesh.scorpio.giventake.libraries.functions.getInternetType;
 
 
 public class ActivityJointExpenseIndividual extends ActivityBase {
@@ -35,6 +52,14 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
     int  groupId=0;
     //String groupName="";
     boolean isMonthlyRenewing=true;
+
+    String apiUrl_GroupDetails = "http://givntake.workassis.com/api/group/get/" ;
+    String apiUrl_LoginRegisterUser = "http://givntake.workassis.com/api/user/login_register" ;
+    RequestQueue Rqueue;
+
+    Map<String, String> dbUser = new HashMap<String, String>();
+    Map<String, String> JointGroup = new HashMap<String, String>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,14 +104,16 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
 
 
-        generateTables();
+        Rqueue = Volley.newRequestQueue(this);
+        //generateTables();
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        generateTables();
+        //generateTables();
+        apiAccess();
     }
 
     @Override
@@ -94,6 +121,55 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
         startActivity(new Intent(ActivityJointExpenseIndividual.this,ActivityJointExpense.class));
     }
 
+
+    private void apiAccess() {
+
+        JointGroup=myDb.fetchJointGroupbyId(groupId + "");
+        dbUser=myDb.getUser(1);
+
+        //chking offline or online
+        if(JointGroup.get("isonline").equals("0")) {
+            Log.i("api call","it is not an online group ");
+            generateTables();
+            return;
+        }
+        else{
+            //it is an online group
+
+            if (!getInternetType(getApplicationContext()).equals("?")) {
+
+                //checking user registerd online
+                if (dbUser.get("onlineid").toString().equals("") || dbUser.get("onlineid").toString().equals("0")) {
+                    //user not registered
+                    //so register user
+                    Log.i("api call","user not registered ");
+                    registerUser();
+
+                } else {
+                    //user already registered
+                    Log.i("api call","user already registered");
+                    getGroupData();
+                }
+
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "No internet connection to update Online Groups", Toast.LENGTH_LONG).show();
+                generateTables();
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+    }
 
     private class dateChange implements TextWatcher {
         @Override
@@ -366,5 +442,159 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
         tv.setClickable(false);
         return tv;
     }
+
+
+    private void registerUser() {
+
+        Log.i("api call", "register url "+apiUrl_LoginRegisterUser  );
+
+
+
+        //dbUser.put("required_data","group_info");
+
+        CustomRequest jsObjRequest =   new CustomRequest
+
+                (Request.Method.POST, apiUrl_LoginRegisterUser, dbUser, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Log.i("api call 1", response.toString()+ "");
+
+                        if(response.optString("msg").equals("Invalid Password")){
+
+                            Toast.makeText(getApplicationContext(),"Invalid password please Update from settings", Toast.LENGTH_LONG).show();
+                            Log.i("api call", "Invalid password please Update from settings");
+
+                            generateTables();
+                        }
+                        else if(response.optString("status").equals("success")){
+
+                            Toast.makeText(getApplicationContext(),response.optString("msg"), Toast.LENGTH_LONG).show();
+
+                            Log.i("api call", response+"" );
+                            //updating local user onlineid
+                            if(dbUser.get("onlineid").equals("0")) {
+
+                                Map<String, String> updateData = new HashMap<String, String>();
+                                updateData.put("_id", dbUser.get("_id"));
+                                updateData.put("onlineid", response.optJSONObject("data").optString("user_id"));
+                                myDb.updateUser(updateData);
+
+                                dbUser.put("onlineid", response.optJSONObject("data").optString("user_id"));
+                            }
+
+                            //get group information
+                            getGroupData();
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("api call", "ERROR "+error.getMessage());
+                    }
+                });
+        Rqueue.add(jsObjRequest);
+    }
+
+
+
+    //this will retreve data from server if it exist otherwise it will create group
+    private void getGroupData() {
+
+        if(JointGroup.get("onlineid").toString().equals("") || JointGroup.get("onlineid").toString().equals("0")){
+            //not registerd
+            Log.i("api call","not registred group ");
+        }
+        else{
+            //registred group
+            Log.i("api call","calling get group ");
+            getGroup();
+
+        }
+
+
+    }
+
+
+    private void getGroup(){
+
+
+        Log.i("api call","inside get group url : "+ apiUrl_GroupDetails+JointGroup.get("onlineid").toString() );
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, apiUrl_GroupDetails+JointGroup.get("onlineid").toString(), new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Log.i("api call","get group "+response.toString());
+
+                        JSONObject group_dataJSON = response.optJSONObject("data").optJSONObject("group");
+                        JSONArray members_dataJSON = response.optJSONObject("data").optJSONArray("members");
+                        JSONArray entrys_dataJSON = response.optJSONObject("data").optJSONArray("entrys");
+
+                        Log.i("api call","group_dataJSON "+ group_dataJSON );
+                        Log.i("api call","members_dataJSON "+ members_dataJSON );
+                        Log.i("api call","entrys_dataJSON "+ entrys_dataJSON );
+
+
+                        //JSONArray members_dataJSONArray = response.optJSONObject("data").optJSONArray("group");
+                        Map<String, String> tempStorage = new HashMap<String, String>();
+
+                        try {
+                            for(int i = 0 ; i < members_dataJSON.length(); i++){
+
+                                tempStorage = new HashMap<String, String>();
+
+                                JSONObject jsonObj = members_dataJSON.getJSONObject(i);
+                                Iterator<String> keysIterator = jsonObj.keys();
+                                while (keysIterator.hasNext())
+                                {
+                                    String keyStr = (String)keysIterator.next();
+                                    String valueStr = jsonObj.getString(keyStr);
+
+                                    Log.i("api call","members_data "+ keyStr + " => " + valueStr );
+
+                                    String[] requiredKeys = new String[] {"user_id","name","phone"}; //,"created_date","photo"
+
+                                    if( Arrays.asList(requiredKeys).contains(keyStr) ){
+                                        Log.i("api call r", keyStr + " - "+ valueStr);
+                                        tempStorage.put(keyStr,valueStr );
+                                    }
+
+                                }
+
+                                tempStorage.put("onlineid",tempStorage.get("user_id") );
+                                tempStorage.remove("user_id");
+
+                                //insert to db
+                                myDb.updateOnlineGroupRelation(tempStorage, JointGroup.get("_id").toString());
+
+
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        /*
+                        //update local db
+                        myDb.updateOnlineEntrys();
+                        */
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("api call", "ERROR "+error.getMessage());
+                    }
+                });
+
+        Rqueue.add(jsObjRequest);
+    }
+
 
 }
