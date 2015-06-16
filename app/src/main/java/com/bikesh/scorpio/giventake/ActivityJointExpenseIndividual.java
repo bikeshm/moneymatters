@@ -1,5 +1,6 @@
 package com.bikesh.scorpio.giventake;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -34,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -543,6 +545,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
                         //JSONArray members_dataJSONArray = response.optJSONObject("data").optJSONArray("group");
                         Map<String, String> tempStorage = new HashMap<String, String>();
+                        ArrayList onlineGroupExistingUsers = new ArrayList();
 
                         try {
                             for(int i = 0 ; i < members_dataJSON.length(); i++){
@@ -571,10 +574,16 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
                                 tempStorage.remove("user_id");
 
                                 //insert to db
-                                myDb.updateOnlineGroupRelation(tempStorage, JointGroup.get("_id").toString());
+                                myDb.updateOnlineUserGroupRelation(tempStorage, JointGroup.get("_id").toString(),getContentResolver());
 
-
+                                Map user = myDb.getUserbyOnlineId(tempStorage.get("onlineid"));
+                                onlineGroupExistingUsers.add(user.get("_id"));
                             }
+
+                            myDb.cleanupOnlineGroupRelation(onlineGroupExistingUsers, JointGroup.get("_id").toString() );
+
+
+                            generateTables();
 
                         } catch (JSONException e) {
                             e.printStackTrace();

@@ -1,8 +1,11 @@
 package com.bikesh.scorpio.giventake.libraries;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -10,6 +13,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
+
+import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhoneGetAll;
 
 /**
  * Created by bikesh on 6/5/2015.
@@ -155,6 +161,32 @@ public class functions {
 
 
 
+    public static String getContactbyphone(String phone,ContentResolver ContentResolver ) {
+
+
+        Map<String, String> parsedPhone = parsePhoneGetAll(phone);
+
+        if(parsedPhone.size()>0) {
+
+            Cursor cursorPhone = ContentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME},
+
+                    ContactsContract.CommonDataKinds.Phone.NUMBER + " = ? OR "+
+                    ContactsContract.CommonDataKinds.Phone.NUMBER + " = ? OR "+
+                    ContactsContract.CommonDataKinds.Phone.NUMBER + " = ? OR "+
+                    ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
+
+                    new String[]{parsedPhone.get("E164").toString(), parsedPhone.get("NATIONAL").toString(),parsedPhone.get("INTERNATIONAL").toString(),parsedPhone.get("TENDIGIT").toString(),    },
+                    null);
+
+            if (cursorPhone.moveToFirst()) {
+                return cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            }
+        }
+
+        return null;
+
+    }
 
 
 

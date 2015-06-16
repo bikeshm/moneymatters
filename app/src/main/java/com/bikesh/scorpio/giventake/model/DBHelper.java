@@ -5,6 +5,7 @@ package com.bikesh.scorpio.giventake.model;
  */
 
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.bikesh.scorpio.giventake.libraries.functions.getContactbyphone;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -225,6 +228,19 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToFirst();
         }
         return res;
+    }
+
+
+    public Map getUserbyOnlineId(String onlineId){
+
+        Map<String, String> data = new HashMap<String, String>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from usertable where onlineid="+onlineId+"", null );
+
+        data = fetchUserData(res );
+
+        res.close();
+        return data;
     }
 
     public String getUserPhone(String userId) {
@@ -723,6 +739,42 @@ public class DBHelper extends SQLiteOpenHelper {
         return 1;
     }
 
+    public int insertRelation (String userId,  String groupId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues;
+
+
+        contentValues = new ContentValues();
+        contentValues.put("joint_group_id",groupId );
+        contentValues.put("user_id",userId );
+
+        db.insert(JOINT_USER_GROUP_RELATION_TABLE_NAME, null, contentValues);
+
+
+
+        db.close();
+        return 1;
+    }
+
+    public int isRelationExist(String userId, String groupId){
+
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from "+JOINT_USER_GROUP_RELATION_TABLE_NAME+" where user_id='"+userId+"' and joint_group_id = '"+groupId+"'", null );
+
+        if (res != null) {
+            res.moveToFirst();
+
+            return res.getCount();
+        }
+
+
+        res.close();
+
+
+        return 0;
+    }
+
 
 
     public Cursor getAllUsersInGroup(String groupId) {
@@ -1040,7 +1092,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public void updateOnlineGroupRelation(Map<String, String> onlineUserdata, String group_id) {
+    public void updateOnlineUserGroupRelation(Map<String, String> onlineUserdata, String group_id, ContentResolver ContentResolver) {
 
         //if(check phone already in user table){
         //get the user  _id
@@ -1066,13 +1118,50 @@ public class DBHelper extends SQLiteOpenHelper {
         // if(check anyone deleted from the grop from server)
         // update in local db
 
-
+        String userId="0";
         Cursor userdata = getUserByPhone(onlineUserdata.get("phone").toString());
-        if(userdata!=null){
+        if(userdata.getCount()>0){
             //user already in user table
-
-
+            userId = userdata.getString(userdata.getColumnIndex("_id"));
         }
+        else{
+            Map<String, String> newUser = new HashMap<String, String>();
+
+            Log.i("api call", "checking contact "+ onlineUserdata.get("phone").toString());
+
+            String name = getContactbyphone(onlineUserdata.get("phone").toString(), ContentResolver);
+            if(name!=null) {
+                newUser.put("name", name );
+                Log.i("api call", "exist in contact ");
+            }
+            else{
+                newUser.put("name", onlineUserdata.get("name").toString() );
+                Log.i("api call", "Not exist in contact ");
+            }
+
+            newUser.put("onlineid", onlineUserdata.get("onlineid").toString());
+            newUser.put("phone", onlineUserdata.get("phone").toString());
+
+            Log.i("api call", "inserting user in db ");
+            insertUser(newUser);
+
+            Log.i("api call", "recursion ");
+            updateOnlineUserGroupRelation(onlineUserdata, group_id, ContentResolver);
+        }
+
+
+        if(isRelationExist(userId, group_id )==0){
+            insertRelation(userId,group_id);
+        }
+
+    }
+
+    public void cleanupOnlineGroupRelation(ArrayList onlineGroupExistingUsers, String groupId) {
+        /*
+        * get all the users from relation who all are not existing in  onlineGroupExistingUsers
+        * delete user from relation
+        * delete user from entry
+        * */
 
     }
 }
