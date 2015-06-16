@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -77,10 +78,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         db.execSQL(
-                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', isonline INTEGER DEFAULT 0, owner text, name text,  members_count INTEGER,ismonthlytask INTEGER , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB, last_updated DATE )"
+                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', isonline INTEGER DEFAULT 0, owner text, name text,  members_count INTEGER,ismonthlytask INTEGER , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB, last_updated DATE ,status text DEFAULT 'new')"  /* status=>new,udated (for knowing local changes)    */
         );
         db.execSQL(
-                "create table "+JOINTENTRY_TABLE_NAME+"  (_id INTEGER primary key autoincrement, joint_group_id INTEGER, created_date DATE, description text, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0, last_updated DATE)"
+                "create table "+JOINTENTRY_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', joint_group_id INTEGER, created_date DATE, description text, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0, last_updated DATE, status text DEFAULT 'new' )"  /* status=>new,udated  (for knowing local changes)   */
         );
         db.execSQL(
                 "create table "+JOINT_USER_GROUP_RELATION_TABLE_NAME+"  (_id INTEGER primary key autoincrement, user_id INTEGER, joint_group_id INTEGER  )"
@@ -1115,8 +1116,7 @@ public class DBHelper extends SQLiteOpenHelper {
         //          update relation
         //      }
 
-        // if(check anyone deleted from the grop from server)
-        // update in local db
+
 
         String userId="0";
         Cursor userdata = getUserByPhone(onlineUserdata.get("phone").toString());
@@ -1127,25 +1127,25 @@ public class DBHelper extends SQLiteOpenHelper {
         else{
             Map<String, String> newUser = new HashMap<String, String>();
 
-            Log.i("api call", "checking contact "+ onlineUserdata.get("phone").toString());
+            //Log.i("api call", "checking contact "+ onlineUserdata.get("phone").toString());
 
             String name = getContactbyphone(onlineUserdata.get("phone").toString(), ContentResolver);
             if(name!=null) {
                 newUser.put("name", name );
-                Log.i("api call", "exist in contact ");
+                //Log.i("api call", "exist in contact ");
             }
             else{
                 newUser.put("name", onlineUserdata.get("name").toString() );
-                Log.i("api call", "Not exist in contact ");
+                //Log.i("api call", "Not exist in contact ");
             }
 
             newUser.put("onlineid", onlineUserdata.get("onlineid").toString());
             newUser.put("phone", onlineUserdata.get("phone").toString());
 
-            Log.i("api call", "inserting user in db ");
+            //Log.i("api call", "inserting user in db ");
             insertUser(newUser);
 
-            Log.i("api call", "recursion ");
+            //Log.i("api call", "recursion ");
             updateOnlineUserGroupRelation(onlineUserdata, group_id, ContentResolver);
         }
 
@@ -1161,7 +1161,31 @@ public class DBHelper extends SQLiteOpenHelper {
         * get all the users from relation who all are not existing in  onlineGroupExistingUsers
         * delete user from relation
         * delete user from entry
+        // if(check anyone deleted from the grop from server)
+        // update in local db
         * */
 
+        //String[] exUserArray = new String[onlineGroupExistingUsers.size()];
+        //String args = TextUtils.join(", ", exUserArray);
+
+        //Log.i("api call","arg"+args);
+
+        String args="";
+        for (int i = 0; i < onlineGroupExistingUsers.size(); i++) {
+           args= args+ onlineGroupExistingUsers.get(i)+", ";
+        }
+
+        if(!args.equals("")) {
+            args = args.substring(0, args.length() - 2);
+        }
+        Log.i("api call","arg"+args);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("DELETE FROM "+JOINT_USER_GROUP_RELATION_TABLE_NAME+" WHERE joint_group_id = "+groupId+" and user_id NOT IN ("+args+");");
+        db.close();
+
+        db = this.getReadableDatabase();
+        db.execSQL("DELETE FROM "+JOINTENTRY_TABLE_NAME+" WHERE joint_group_id = "+groupId+" and user_id NOT IN ("+args+");");
+        db.close();
     }
 }

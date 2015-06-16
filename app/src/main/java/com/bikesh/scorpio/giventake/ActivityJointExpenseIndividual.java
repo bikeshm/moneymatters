@@ -543,51 +543,9 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
                         Log.i("api call","entrys_dataJSON "+ entrys_dataJSON );
 
 
-                        //JSONArray members_dataJSONArray = response.optJSONObject("data").optJSONArray("group");
-                        Map<String, String> tempStorage = new HashMap<String, String>();
-                        ArrayList onlineGroupExistingUsers = new ArrayList();
+                        processOnlineGroupMembers(members_dataJSON);
 
-                        try {
-                            for(int i = 0 ; i < members_dataJSON.length(); i++){
-
-                                tempStorage = new HashMap<String, String>();
-
-                                JSONObject jsonObj = members_dataJSON.getJSONObject(i);
-                                Iterator<String> keysIterator = jsonObj.keys();
-                                while (keysIterator.hasNext())
-                                {
-                                    String keyStr = (String)keysIterator.next();
-                                    String valueStr = jsonObj.getString(keyStr);
-
-                                    Log.i("api call","members_data "+ keyStr + " => " + valueStr );
-
-                                    String[] requiredKeys = new String[] {"user_id","name","phone"}; //,"created_date","photo"
-
-                                    if( Arrays.asList(requiredKeys).contains(keyStr) ){
-                                        Log.i("api call r", keyStr + " - "+ valueStr);
-                                        tempStorage.put(keyStr,valueStr );
-                                    }
-
-                                }
-
-                                tempStorage.put("onlineid",tempStorage.get("user_id") );
-                                tempStorage.remove("user_id");
-
-                                //insert to db
-                                myDb.updateOnlineUserGroupRelation(tempStorage, JointGroup.get("_id").toString(),getContentResolver());
-
-                                Map user = myDb.getUserbyOnlineId(tempStorage.get("onlineid"));
-                                onlineGroupExistingUsers.add(user.get("_id"));
-                            }
-
-                            myDb.cleanupOnlineGroupRelation(onlineGroupExistingUsers, JointGroup.get("_id").toString() );
-
-
-                            generateTables();
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        processOnlineGroupEntrys(entrys_dataJSON);
                         /*
                         //update local db
                         myDb.updateOnlineEntrys();
@@ -604,6 +562,114 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
         Rqueue.add(jsObjRequest);
     }
+
+    private void processOnlineGroupMembers(JSONArray members_dataJSON) {
+
+        //JSONArray members_dataJSONArray = response.optJSONObject("data").optJSONArray("group");
+        Map<String, String> tempStorage = new HashMap<String, String>();
+        ArrayList onlineGroupExistingUsers = new ArrayList();
+
+        try {
+            for(int i = 0 ; i < members_dataJSON.length(); i++){
+
+                tempStorage = new HashMap<String, String>();
+
+                JSONObject jsonObj = members_dataJSON.getJSONObject(i);
+                Iterator<String> keysIterator = jsonObj.keys();
+                while (keysIterator.hasNext())
+                {
+                    String keyStr = (String)keysIterator.next();
+                    String valueStr = jsonObj.getString(keyStr);
+
+                    Log.i("api call","members_data "+ keyStr + " => " + valueStr );
+
+                    String[] requiredKeys = new String[] {"user_id","name","phone"}; //,"created_date","photo"
+
+                    if( Arrays.asList(requiredKeys).contains(keyStr) ){
+                        Log.i("api call r", keyStr + " - "+ valueStr);
+                        tempStorage.put(keyStr,valueStr );
+                    }
+
+                }
+
+                tempStorage.put("onlineid",tempStorage.get("user_id") );
+                tempStorage.remove("user_id");
+
+                //insert to db
+                myDb.updateOnlineUserGroupRelation(tempStorage, JointGroup.get("_id").toString(),getContentResolver());
+
+                Map user = myDb.getUserbyOnlineId(tempStorage.get("onlineid"));
+                onlineGroupExistingUsers.add(user.get("_id"));
+            }
+
+            myDb.cleanupOnlineGroupRelation(onlineGroupExistingUsers, JointGroup.get("_id").toString() );
+
+
+            generateTables();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private void processOnlineGroupEntrys(JSONArray entrys_dataJSON) {
+
+        //JSONArray members_dataJSONArray = response.optJSONObject("data").optJSONArray("group");
+        Map<String, String> tempStorage = new HashMap<String, String>();
+        ArrayList onlineGroupExistingUsers = new ArrayList();
+
+        try {
+            for(int i = 0 ; i < entrys_dataJSON.length(); i++){
+
+                tempStorage = new HashMap<String, String>();
+
+                JSONObject jsonObj = entrys_dataJSON.getJSONObject(i);
+                Iterator<String> keysIterator = jsonObj.keys();
+                while (keysIterator.hasNext())
+                {
+
+                    String keyStr = (String)keysIterator.next();
+                    String valueStr = jsonObj.getString(keyStr);
+
+
+                    Log.i("api call","entry_data "+ keyStr + " => " + valueStr );
+                    /*
+                    String[] requiredKeys = new String[] {"user_id","name","phone"}; //,"created_date","photo"
+
+                    if( Arrays.asList(requiredKeys).contains(keyStr) ){
+                        Log.i("api call r", keyStr + " - "+ valueStr);
+                        tempStorage.put(keyStr,valueStr );
+                    }
+                    */
+
+                }
+
+                /*
+                tempStorage.put("onlineid",tempStorage.get("user_id") );
+                tempStorage.remove("user_id");
+
+                //insert to db
+                myDb.updateOnlineUserGroupRelation(tempStorage, JointGroup.get("_id").toString(),getContentResolver());
+
+                Map user = myDb.getUserbyOnlineId(tempStorage.get("onlineid"));
+                onlineGroupExistingUsers.add(user.get("_id"));
+                */
+            }
+
+            /*
+            myDb.cleanupOnlineGroupRelation(onlineGroupExistingUsers, JointGroup.get("_id").toString() );
+               */
+
+            generateTables();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 
 }
