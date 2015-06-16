@@ -555,8 +555,15 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
                         //Log.i("api call","members_dataJSON "+ members_dataJSON );
                         //Log.i("api call","entrys_dataJSON "+ entrys_dataJSON );
 
-                        processOnlineGroupMembers(members_dataJSON);
-                        processOnlineGroupEntrys(entrys_dataJSON);
+                        if(members_dataJSON != null){
+                            processOnlineGroupMembers(members_dataJSON);
+
+                            if(entrys_dataJSON != null){
+                                processOnlineGroupEntrys(entrys_dataJSON);
+                            }
+                        }
+
+
                         generateTables();
                     }
                 }, new Response.ErrorListener() {
