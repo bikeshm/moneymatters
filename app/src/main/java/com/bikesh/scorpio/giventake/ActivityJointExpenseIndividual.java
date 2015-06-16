@@ -1,5 +1,6 @@
 package com.bikesh.scorpio.giventake;
 
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
@@ -62,7 +63,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
     Map<String, String> dbUser = new HashMap<String, String>();
     Map<String, String> JointGroup = new HashMap<String, String>();
 
-
+    ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +116,17 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
     public void onResume() {
         super.onResume();
         //generateTables();
+
+        progressDialog = new ProgressDialog(ActivityJointExpenseIndividual.this);
+        progressDialog.setMessage("loading");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
         apiAccess();
+
+        //progressDialog.dismiss();
+
+
     }
 
     @Override
@@ -217,6 +228,8 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
         generateGroupUsersTable();
 
         generateEntryTable();
+
+        progressDialog.dismiss();
     }
 
 
@@ -449,9 +462,6 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
     private void registerUser() {
 
         Log.i("api call", "register url "+apiUrl_LoginRegisterUser  );
-
-
-
         //dbUser.put("required_data","group_info");
 
         CustomRequest jsObjRequest =   new CustomRequest
@@ -507,8 +517,8 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
     private void getGroupData() {
 
         if(JointGroup.get("onlineid").toString().equals("") || JointGroup.get("onlineid").toString().equals("0")){
-            //not registerd
-            Log.i("api call","not registred group ");
+            //not registerd means it is created as online group but not updated in server
+            Log.i("api call","not registred group it is created as online group but not updated in server");
 
             // TODO: 6/16/2015 :- need to work on it
             // generateTables();
@@ -541,19 +551,13 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
                         JSONArray members_dataJSON = response.optJSONObject("data").optJSONArray("members");
                         JSONArray entrys_dataJSON = response.optJSONObject("data").optJSONArray("entrys");
 
-                        Log.i("api call","group_dataJSON "+ group_dataJSON );
-                        Log.i("api call","members_dataJSON "+ members_dataJSON );
-                        Log.i("api call","entrys_dataJSON "+ entrys_dataJSON );
-
+                        //Log.i("api call","group_dataJSON "+ group_dataJSON );
+                        //Log.i("api call","members_dataJSON "+ members_dataJSON );
+                        //Log.i("api call","entrys_dataJSON "+ entrys_dataJSON );
 
                         processOnlineGroupMembers(members_dataJSON);
-
                         processOnlineGroupEntrys(entrys_dataJSON);
-
                         generateTables();
-
-
-
                     }
                 }, new Response.ErrorListener() {
 
@@ -568,7 +572,6 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
     private void processOnlineGroupMembers(JSONArray members_dataJSON) {
 
-        //JSONArray members_dataJSONArray = response.optJSONObject("data").optJSONArray("group");
         Map<String, String> tempStorage = new HashMap<String, String>();
         ArrayList onlineGroupExistingUsers = new ArrayList();
 
@@ -584,12 +587,12 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
                     String keyStr = (String)keysIterator.next();
                     String valueStr = jsonObj.getString(keyStr);
 
-                    Log.i("api call","members_data "+ keyStr + " => " + valueStr );
+                    //Log.i("api call","members_data "+ keyStr + " => " + valueStr );
 
                     String[] requiredKeys = new String[] {"user_id","name","phone"}; //,"created_date","photo"
 
                     if( Arrays.asList(requiredKeys).contains(keyStr) ){
-                        Log.i("api call r", keyStr + " - "+ valueStr);
+                        //Log.i("api call r", keyStr + " - "+ valueStr);
                         tempStorage.put(keyStr,valueStr );
                     }
 
@@ -607,9 +610,6 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
             myDb.cleanupOnlineGroupRelation(onlineGroupExistingUsers, JointGroup.get("_id").toString() );
 
-
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -619,7 +619,6 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
     private void processOnlineGroupEntrys(JSONArray entrys_dataJSON) {
 
-        //JSONArray members_dataJSONArray = response.optJSONObject("data").optJSONArray("group");
         Map<String, String> tempStorage = new HashMap<String, String>();
         ArrayList onlineGroupExistingEntrys= new ArrayList();
 
@@ -666,6 +665,8 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
         }
 
     }
+
+
 
 
 
