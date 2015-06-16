@@ -621,7 +621,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
         //JSONArray members_dataJSONArray = response.optJSONObject("data").optJSONArray("group");
         Map<String, String> tempStorage = new HashMap<String, String>();
-        ArrayList onlineGroupExistingUsers = new ArrayList();
+        ArrayList onlineGroupExistingEntrys= new ArrayList();
 
         try {
             for(int i = 0 ; i < entrys_dataJSON.length(); i++){
@@ -635,23 +635,15 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
                     String keyStr = (String)keysIterator.next();
                     String valueStr = jsonObj.getString(keyStr);
-
-
-                    Log.i("api call","entry_data "+ keyStr + " => " + valueStr );
+                    //Log.i("api call","entry_data "+ keyStr + " => " + valueStr );
 
                     String[] requiredKeys = new String[] {"entry_id","created_date","description","user_id","amt","is_split","last_updated"}; //,"group_id","created_date","photo"
-
-
-
 
                     if( Arrays.asList(requiredKeys).contains(keyStr) ){
                         Log.i("api call r", keyStr + " - "+ valueStr);
                         tempStorage.put(keyStr,valueStr );
                     }
-
-
                 }
-
 
                 tempStorage.put("onlineid",tempStorage.get("entry_id") );
                 tempStorage.remove("entry_id");
@@ -659,24 +651,15 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
                 tempStorage.remove("group_id");
                 tempStorage.put("status","updated" );
 
-                Map userdatadb = myDb.getUserbyOnlineId(tempStorage.get("user_id"));
+                Map userdatadb = myDb.getUserbyOnlineId(tempStorage.get("user_id").toString());
                 tempStorage.put("user_id", userdatadb.get("_id").toString()  );
 
-
+                onlineGroupExistingEntrys.add(tempStorage.get("onlineid"));
                 //insert to db
                 myDb.updateOnlineUserGroupEntry(tempStorage, JointGroup.get("_id").toString());
-
-                 /*
-                Map user = myDb.getUserbyOnlineId(tempStorage.get("onlineid"));
-                onlineGroupExistingUsers.add(user.get("_id"));
-                */
             }
 
-            /*
-            myDb.cleanupOnlineGroupRelation(onlineGroupExistingUsers, JointGroup.get("_id").toString() );
-               */
-
-
+            myDb.cleanupOnlineGroupEntry(onlineGroupExistingEntrys, JointGroup.get("_id").toString());
 
         } catch (JSONException e) {
             e.printStackTrace();

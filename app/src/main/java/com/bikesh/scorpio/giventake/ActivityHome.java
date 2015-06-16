@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,6 +20,12 @@ import android.widget.TextView;
 
 import com.bikesh.scorpio.giventake.model.DBHelper;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -64,9 +71,12 @@ public class ActivityHome extends ActivityBase {
 
 
         Log.i("dbpath", getDatabasePath("GivnTake.db").getAbsolutePath());
+        Log.i("dbpath", Environment.getExternalStorageDirectory().toString() );
 
 
     }
+
+
 
     private class linkClicked implements View.OnClickListener {
         int item;
