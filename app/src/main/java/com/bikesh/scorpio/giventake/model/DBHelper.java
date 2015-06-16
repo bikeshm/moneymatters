@@ -78,10 +78,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         db.execSQL(
-                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', isonline INTEGER DEFAULT 0, owner text, name text,  members_count INTEGER,ismonthlytask INTEGER , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB, last_updated DATE ,status text DEFAULT 'new')"  /* status=>new,udated (for knowing local changes)    */
+                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', isonline INTEGER DEFAULT 0, owner text, name text,  members_count INTEGER,ismonthlytask INTEGER , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB, last_updated DATE ,status text DEFAULT 'new')"  /* status=>new,updated (for knowing local changes)    */
         );
         db.execSQL(
-                "create table "+JOINTENTRY_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', joint_group_id INTEGER, created_date DATE, description text, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0, last_updated DATE, status text DEFAULT 'new' )"  /* status=>new,udated  (for knowing local changes)   */
+                "create table "+JOINTENTRY_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', joint_group_id INTEGER, created_date DATE, description text, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0, last_updated DATE, status text DEFAULT 'new' )"  /* status=>new,updated  (for knowing local changes)   */
         );
         db.execSQL(
                 "create table "+JOINT_USER_GROUP_RELATION_TABLE_NAME+"  (_id INTEGER primary key autoincrement, user_id INTEGER, joint_group_id INTEGER  )"
@@ -1080,19 +1080,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-
-    public int updateOnlineEntrys (Map<String, String> dataCollection) {
-
-        /*
-        Map<String, String> data = new HashMap<String, String>();
-
-        commonUpdateWhere (Map<String, String> data, String where,  String table)
-        */
-
-        return 1;
-    }
-
-
     public void updateOnlineUserGroupRelation(Map<String, String> onlineUserdata, String group_id, ContentResolver ContentResolver) {
 
         //if(check phone already in user table){
@@ -1187,5 +1174,47 @@ public class DBHelper extends SQLiteOpenHelper {
         db = this.getReadableDatabase();
         db.execSQL("DELETE FROM "+JOINTENTRY_TABLE_NAME+" WHERE joint_group_id = "+groupId+" and user_id NOT IN ("+args+");");
         db.close();
+    }
+
+
+
+    public Boolean isOnlineEntryExist(String online_id) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select _id from "+JOINTENTRY_TABLE_NAME+" where onlineid="+online_id+"", null );
+
+        if(res!=null) {
+            res.moveToFirst();
+            if(res.getCount()>0){
+                return true;
+            }
+        }
+
+        res.close();
+        return false;
+    }
+
+    public void updateOnlineUserGroupEntry(Map<String, String> entryData, String groupId) {
+        /*
+        * if(check same entry exist using online id){
+        *   update entry
+        * }
+        * else{
+        * insert new
+        * }
+        * */
+
+        Log.i("api call",entryData.toString());
+
+        if(isOnlineEntryExist(entryData.get("onlineid").toString())){
+            Log.i("api call","updating online entry");
+            commonUpdateWhere(entryData, "onlineid", JOINTENTRY_TABLE_NAME);
+        }
+        else{
+
+            Log.i("api call","adding new online entry");
+            insertGroupEntry(entryData);
+        }
+
     }
 }

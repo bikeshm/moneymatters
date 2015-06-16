@@ -509,6 +509,9 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
         if(JointGroup.get("onlineid").toString().equals("") || JointGroup.get("onlineid").toString().equals("0")){
             //not registerd
             Log.i("api call","not registred group ");
+
+            // TODO: 6/16/2015 :- need to work on it
+            // generateTables();
         }
         else{
             //registred group
@@ -546,10 +549,10 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
                         processOnlineGroupMembers(members_dataJSON);
 
                         processOnlineGroupEntrys(entrys_dataJSON);
-                        /*
-                        //update local db
-                        myDb.updateOnlineEntrys();
-                        */
+
+                        generateTables();
+
+
 
                     }
                 }, new Response.ErrorListener() {
@@ -605,7 +608,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
             myDb.cleanupOnlineGroupRelation(onlineGroupExistingUsers, JointGroup.get("_id").toString() );
 
 
-            generateTables();
+
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -635,24 +638,35 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
 
                     Log.i("api call","entry_data "+ keyStr + " => " + valueStr );
-                    /*
-                    String[] requiredKeys = new String[] {"user_id","name","phone"}; //,"created_date","photo"
+
+                    String[] requiredKeys = new String[] {"entry_id","created_date","description","user_id","amt","is_split","last_updated"}; //,"group_id","created_date","photo"
+
+
+
 
                     if( Arrays.asList(requiredKeys).contains(keyStr) ){
                         Log.i("api call r", keyStr + " - "+ valueStr);
                         tempStorage.put(keyStr,valueStr );
                     }
-                    */
+
 
                 }
 
-                /*
-                tempStorage.put("onlineid",tempStorage.get("user_id") );
-                tempStorage.remove("user_id");
+
+                tempStorage.put("onlineid",tempStorage.get("entry_id") );
+                tempStorage.remove("entry_id");
+                tempStorage.put("joint_group_id", JointGroup.get("_id").toString() );
+                tempStorage.remove("group_id");
+                tempStorage.put("status","updated" );
+
+                Map userdatadb = myDb.getUserbyOnlineId(tempStorage.get("user_id"));
+                tempStorage.put("user_id", userdatadb.get("_id").toString()  );
+
 
                 //insert to db
-                myDb.updateOnlineUserGroupRelation(tempStorage, JointGroup.get("_id").toString(),getContentResolver());
+                myDb.updateOnlineUserGroupEntry(tempStorage, JointGroup.get("_id").toString());
 
+                 /*
                 Map user = myDb.getUserbyOnlineId(tempStorage.get("onlineid"));
                 onlineGroupExistingUsers.add(user.get("_id"));
                 */
@@ -662,7 +676,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
             myDb.cleanupOnlineGroupRelation(onlineGroupExistingUsers, JointGroup.get("_id").toString() );
                */
 
-            generateTables();
+
 
         } catch (JSONException e) {
             e.printStackTrace();
