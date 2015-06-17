@@ -428,11 +428,11 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
         @Override
         public void onClick(View v) {
 
-            Intent i = new Intent(ActivityJointExpenseIndividual.this, ActivityAddEntry.class);
+            Intent i = new Intent(ActivityJointExpenseIndividual.this,ActivityAddGroupEntry.class); // ActivityAddEntry.class);
             i.putExtra("fromActivity", "ActivityJointExpenseIndividual");
-            i.putExtra("ID", ""+groupId );
+            i.putExtra("groupId", ""+groupId );
             if(JointGroup.size()>0) {
-                i.putExtra("onlineId", JointGroup.get("onlineid").toString());
+                i.putExtra("groupOnlineId", JointGroup.get("onlineid").toString());
             }
             startActivity(i);
 
