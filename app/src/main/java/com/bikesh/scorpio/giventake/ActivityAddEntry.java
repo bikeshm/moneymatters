@@ -58,12 +58,12 @@ public class ActivityAddEntry extends ActivityBase {
 
     RecyclerView recyclerView;
 
-    Adapter_TextRecyclerViewList adapter;
+    //Adapter_TextRecyclerViewList adapter;
 
 
     EditText datePicker,created_date_forDB;
 
-    RequestQueue Rqueue;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,7 +141,8 @@ public class ActivityAddEntry extends ActivityBase {
             backActivityIntent.putExtra("colName", Name);
             generateDataForPersonalExpense();
 
-        } else if (fromActivity.equals("ActivityJointExpenseIndividual")) {
+        }
+        /*else if (fromActivity.equals("ActivityJointExpenseIndividual")) {
             backActivityIntent = new Intent(ActivityAddEntry.this, ActivityJointExpenseIndividual.class);
             backActivityIntent.putExtra("groupId", "" + ID);
 
@@ -154,7 +155,9 @@ public class ActivityAddEntry extends ActivityBase {
             generateDataForJointExpenseIndividual();
 
 
-        } else {
+        }
+        */
+        else {
             throw new IllegalArgumentException("Invalid  ");
         }
 
@@ -450,6 +453,7 @@ public class ActivityAddEntry extends ActivityBase {
 
             }
 
+            /* seperated
             if(fromActivity.equals("ActivityJointExpenseIndividual")  ){
                 int is_split=0;
 
@@ -457,7 +461,7 @@ public class ActivityAddEntry extends ActivityBase {
                 data.put("user_id", ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId() + "");
 
                 int id = ((RadioGroup) currentView.findViewById(R.id.isSplit)).getCheckedRadioButtonId();
-                if (id == -1){ /*no item selected*/ }
+                if (id == -1){ /*no item selected*./ }
                 else {
                     if (id == R.id.isSplitradioYes) {
                         is_split = 1;
@@ -478,60 +482,9 @@ public class ActivityAddEntry extends ActivityBase {
 
 
             }
+            */
 
         }
-    }
-
-
-    private void save_JointEntryToLocal(Map<String, String> data) {
-
-        if (myDb.insertGroupEntry(data) == 1) {
-            Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
-
-            goBack();
-
-        } else {
-            Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-
-    private void save_JointEntryToLocalOnlne(Map<String, String> data) {
-
-        Rqueue = Volley.newRequestQueue(this);
-        String apiUrl_AddEntry = "http://givntake.workassis.com/api/entry/add/";
-
-        Map<String, String> dataForPost = new HashMap<String,String>(data);
-
-        //onlineId = >online group id
-        dataForPost.put("group_id",onlineId); // myDb.getJointGroupField(dataForPost.get("user_id").toString(),"onlineid"));
-        dataForPost.remove("joint_group_id");
-
-        dataForPost.put("user_id",myDb.getUserField( dataForPost.get("user_id").toString(),"onlineid"));
-
-        CustomRequest jsObjRequest =   new CustomRequest
-
-                (Request.Method.POST, apiUrl_AddEntry, dataForPost, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-
-                        Log.i("api call 1", response.toString()+ "");
-                        // no need to edit local db
-
-                        Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
-
-                        goBack();
-
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.i("api call", "ERROR "+error.getMessage());
-                    }
-                });
-        Rqueue.add(jsObjRequest);
     }
 
 
