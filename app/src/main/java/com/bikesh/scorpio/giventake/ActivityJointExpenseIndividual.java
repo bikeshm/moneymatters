@@ -226,7 +226,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
         generateEntryTable();
 
-        closeProgress();
+
     }
 
 
@@ -372,7 +372,13 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
                 tv = generateTextview();
 
-                tv.setText(cursor.getString(cursor.getColumnIndex(fields[i])));
+                if(i==0){
+
+                    tv.setText( formatDate( cursor.getString(cursor.getColumnIndex(fields[i])) ,"dd-MM-yyyy" ) );
+                }
+                else {
+                    tv.setText(cursor.getString(cursor.getColumnIndex(fields[i])));
+                }
 
                 tr.addView(tv);
             }
@@ -393,6 +399,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
 
 
+        closeProgress();
     }
 
 
