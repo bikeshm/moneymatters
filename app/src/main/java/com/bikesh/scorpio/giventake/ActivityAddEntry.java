@@ -20,10 +20,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.bikesh.scorpio.giventake.adapters.Adapter_CustomSimpleCursor;
 import com.bikesh.scorpio.giventake.adapters.Adapter_TextRecyclerViewList;
 import com.bikesh.scorpio.giventake.adapters.CustomDatePicker;
+import com.bikesh.scorpio.giventake.libraries.CustomRequest;
 import com.bikesh.scorpio.giventake.model.DBHelper;
+
+import org.json.JSONObject;
 
 import java.text.Format;
 import java.text.ParseException;
@@ -41,6 +49,7 @@ public class ActivityAddEntry extends ActivityBase {
     long ID=0;
     String Name="",rowId=null;
 
+    String onlineId=null;
     //DBHelper myDb;
 
     boolean actionFlag=false; //if false giving or borrowing
@@ -53,6 +62,8 @@ public class ActivityAddEntry extends ActivityBase {
 
 
     EditText datePicker,created_date_forDB;
+
+    RequestQueue Rqueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +93,8 @@ public class ActivityAddEntry extends ActivityBase {
 
             rowId = extras.getString("rowId",null);
             Name = extras.getString("Name");
+
+            onlineId = extras.getString("onlineId",null);
         }
 
 
@@ -454,21 +467,74 @@ public class ActivityAddEntry extends ActivityBase {
 
                 data.put("is_split",  is_split+"" );
 
-
-
-                if (myDb.insertGroupEntry(data) == 1) {
-                    Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
-
-                    goBack();
-
-                } else {
-                    Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                //onlineId = >online group id
+                if(onlineId==null) {
+                    save_JointEntryToLocal(data);
                 }
+                else{
+                    save_JointEntryToLocalOnlne(data);
+                }
+
+
 
             }
 
         }
     }
+
+
+    private void save_JointEntryToLocal(Map<String, String> data) {
+
+        if (myDb.insertGroupEntry(data) == 1) {
+            Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+
+            goBack();
+
+        } else {
+            Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private void save_JointEntryToLocalOnlne(Map<String, String> data) {
+
+        Rqueue = Volley.newRequestQueue(this);
+        String apiUrl_AddEntry = "http://givntake.workassis.com/api/entry/add/";
+
+        Map<String, String> dataForPost = new HashMap<String,String>(data);
+
+        //onlineId = >online group id
+        dataForPost.put("group_id",onlineId); // myDb.getJointGroupField(dataForPost.get("user_id").toString(),"onlineid"));
+        dataForPost.remove("joint_group_id");
+
+        dataForPost.put("user_id",myDb.getUserField( dataForPost.get("user_id").toString(),"onlineid"));
+
+        CustomRequest jsObjRequest =   new CustomRequest
+
+                (Request.Method.POST, apiUrl_AddEntry, dataForPost, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Log.i("api call 1", response.toString()+ "");
+                        // no need to edit local db
+
+                        Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+
+                        goBack();
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("api call", "ERROR "+error.getMessage());
+                    }
+                });
+        Rqueue.add(jsObjRequest);
+    }
+
+
 
 
     private class cancelActivity implements View.OnClickListener {

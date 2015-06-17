@@ -172,6 +172,20 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    public String commonGetField(String id , String field, String table ) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select "+field+" from "+table+" where _id="+id+"", null );
+        if(res!=null) {
+            res.moveToFirst();
+            while (res.isAfterLast() == false) {
+               return  res.getString(res.getColumnIndex(field));
+            }
+        }
+
+        res.close();
+        return "";
+    }
+
     //-------------------------------------------------------------------------------------------------------
 
     //Map<String, String> map = new HashMap<String, String>();
@@ -229,6 +243,11 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToFirst();
         }
         return res;
+    }
+
+    public String getUserField(String id, String field){
+
+        return commonGetField(id , field, "usertable" );
     }
 
 
@@ -592,6 +611,11 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToFirst();
         }
         return res;
+    }
+
+    public String getJointGroupField(String id, String field){
+
+        return commonGetField(id , field, JOINTGROUP_TABLE_NAME );
     }
 
     public Map fetchJointGroupbyId(String groupId){

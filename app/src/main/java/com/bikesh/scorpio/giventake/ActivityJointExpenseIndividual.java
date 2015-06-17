@@ -431,6 +431,9 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
             Intent i = new Intent(ActivityJointExpenseIndividual.this, ActivityAddEntry.class);
             i.putExtra("fromActivity", "ActivityJointExpenseIndividual");
             i.putExtra("ID", ""+groupId );
+            if(JointGroup.size()>0) {
+                i.putExtra("onlineId", JointGroup.get("onlineid").toString());
+            }
             startActivity(i);
 
         }
@@ -561,6 +564,12 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
                             if(entrys_dataJSON != null){
                                 processOnlineGroupEntrys(entrys_dataJSON);
                             }
+                            else{
+                                myDb.cleanupOnlineGroupEntry(new ArrayList(), JointGroup.get("_id").toString());
+                            }
+                        }
+                        else{
+                            myDb.cleanupOnlineGroupRelation(new ArrayList(), JointGroup.get("_id").toString() );
                         }
 
 

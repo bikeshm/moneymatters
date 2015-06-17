@@ -190,7 +190,7 @@ public class ActivityJointExpense extends ActivityBase {
                                                 String keyStr = (String)keysIterator.next();
                                                 String valueStr = jsonObj.getString(keyStr);
 
-                                                String[] requiredKeys = new String[] {"group_id","owner","name","members_count","ismonthlytask","description","totalamt","balanceamt"}; //,"created_date","photo"
+                                                String[] requiredKeys = new String[] {"group_id","owner","name","members_count","ismonthlytask","description"}; //,"totalamt","balanceamt" //,"created_date","photo"
 
                                                if( Arrays.asList(requiredKeys).contains(keyStr) ){
                                                    Log.i("api call r", keyStr + " - "+ valueStr);
