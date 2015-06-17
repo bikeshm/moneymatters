@@ -10,7 +10,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bikesh.scorpio.giventake.adapters.Adapter_CustomSimpleCursor;
-import com.bikesh.scorpio.giventake.model.DBHelper;
 
 import java.util.Map;
 
@@ -99,7 +98,9 @@ public class ActivityLendAndBorrow extends ActivityBase {
 
         //Todo :- 1. insted of listing all user just list the user who all are having amt balance
         //Todo :- need to implement pagination
-        Cursor cursor = myDb.getAllUsers();
+
+         Cursor cursor = myDb.getLendAndBorrowList();
+        //Cursor cursor = myDb.getAllUsers();
 
 
 

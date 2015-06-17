@@ -7,7 +7,7 @@
 
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingTop="30dp">
@@ -23,7 +23,7 @@
 
         <LinearLayout
             android:id="@+id/lendAndBorrow"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/clickable_text"
             android:clickable="true"
@@ -43,18 +43,20 @@
                 android:text="Lend and Borrow " />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="200dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:clickable="false"
                     android:text="Amount to get " />
 
                 <TextView
+                    android:layout_gravity="end"
                     android:id="@+id/amt_toget"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -64,17 +66,19 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="200dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:clickable="false"
                     android:text="Amount to Give " />
 
                 <TextView
+                    android:layout_gravity="end"
                     android:id="@+id/amt_togive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -88,7 +92,7 @@
 
         <LinearLayout
             android:id="@+id/personalExpense"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/clickable_text"
             android:clickable="true"
@@ -107,16 +111,18 @@
                 android:text="Personal Expense " />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="200dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:text="Current month expense" />
 
                 <TextView
+                    android:layout_gravity="end"
                     android:id="@+id/personalExpenseTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -128,7 +134,7 @@
 
         <LinearLayout
             android:id="@+id/jointExpense"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/clickable_text"
             android:clickable="true"
@@ -147,17 +153,19 @@
                 android:text="Joint/Group Expense" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="200dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:text="Amount spend " />
 
                 <TextView
+                    android:layout_gravity="end"
                     android:id="@+id/joint_amtSpend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -166,16 +174,18 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="200dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:text="Amount to Get " />
 
                 <TextView
+                    android:layout_gravity="end"
                     android:id="@+id/joint_amtGet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -184,16 +194,18 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="200dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:text="Amount to Give " />
 
                 <TextView
+                    android:layout_gravity="end"
                     android:id="@+id/joint_amtGive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

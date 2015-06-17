@@ -1,31 +1,17 @@
 package com.bikesh.scorpio.giventake;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bikesh.scorpio.giventake.model.DBHelper;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -53,13 +39,13 @@ public class ActivityHome extends ActivityBase {
 
 
         Map<String, String> finalResult = myDb.getFinalResult();
-        ((TextView)currentView.findViewById(R.id.amt_togive)).setText(": " + finalResult.get("amt_toGive"));
-        ((TextView)currentView.findViewById(R.id.amt_toget)).setText(": " + finalResult.get("amt_toGet"));
+        ((TextView)currentView.findViewById(R.id.amt_togive)).setText(" " + finalResult.get("amt_toGive"));
+        ((TextView)currentView.findViewById(R.id.amt_toget)).setText(" " + finalResult.get("amt_toGet"));
 
         Map<String, String> jointfinalResult = myDb.getAllGroupTotalSpendGiveGet();
-        ((TextView)currentView.findViewById(R.id.joint_amtSpend)).setText(": "+jointfinalResult.get("total"));
-        ((TextView)currentView.findViewById(R.id.joint_amtGet)).setText(": " + jointfinalResult.get("toget"));
-        ((TextView)currentView.findViewById(R.id.joint_amtGive)).setText(": " + jointfinalResult.get("togive"));
+        ((TextView)currentView.findViewById(R.id.joint_amtSpend)).setText(" "+jointfinalResult.get("total"));
+        ((TextView)currentView.findViewById(R.id.joint_amtGet)).setText(" " + jointfinalResult.get("toget"));
+        ((TextView)currentView.findViewById(R.id.joint_amtGive)).setText(" " + jointfinalResult.get("togive"));
 
 
 
@@ -67,7 +53,7 @@ public class ActivityHome extends ActivityBase {
         String cDate = dmy.format(new Date());
         float amtHolder;
         amtHolder = myDb.getMonthTotalOfPersonalExpense(cDate );
-        ((TextView)currentView.findViewById(R.id.personalExpenseTotal)).setText(": " + amtHolder);
+        ((TextView)currentView.findViewById(R.id.personalExpenseTotal)).setText(" " + amtHolder);
 
 
         Log.i("dbpath", getDatabasePath("GivnTake.db").getAbsolutePath());

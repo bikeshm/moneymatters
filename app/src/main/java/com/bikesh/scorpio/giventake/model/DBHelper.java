@@ -12,7 +12,6 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.text.TextUtils;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -312,16 +311,15 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    //----------------------------------
-    // todo :- need to work on this
+
     public Cursor getLendAndBorrowList() {
-        /*SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from usertable where _id != 1", null );
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from usertable where _id != 1 and ( _id in ( select from_user from "+LENDANDBORROW_TABLE_NAME+" ) or _id in (select to_user from  "+LENDANDBORROW_TABLE_NAME+" ) )", null );
         if (res != null) {
             res.moveToFirst();
         }
-        return res;*/
-        return null;
+        return res;
+        //return null;
     }
 
     //------------------------------------------------------------------------------------------------------------
