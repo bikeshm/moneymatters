@@ -188,6 +188,7 @@ public class ActivityAddGroupEntry extends ActivityBase {
         public void onClick(View v) {
 
             ((Button)currentView.findViewById(R.id.saveBtn)).setEnabled(false);
+            showProgress("Saving ...");
 
             Map<String, String> data = new HashMap<String, String>();
 
@@ -249,10 +250,15 @@ public class ActivityAddGroupEntry extends ActivityBase {
         if (myDb.insertGroupEntry(data) == 1) {
             Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
 
+            closeProgress();
             goBack();
 
         } else {
+
             Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+            ((Button)currentView.findViewById(R.id.saveBtn)).setEnabled(true);
+            closeProgress();
+
         }
     }
 
@@ -284,6 +290,7 @@ public class ActivityAddGroupEntry extends ActivityBase {
 
                         Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
 
+                        closeProgress();
                         goBack();
 
                     }
@@ -292,6 +299,9 @@ public class ActivityAddGroupEntry extends ActivityBase {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.i("api call", "ERROR "+error.getMessage());
+                        Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                        closeProgress();
+                        ((Button)currentView.findViewById(R.id.saveBtn)).setEnabled(true);
                     }
                 });
         Rqueue.add(jsObjRequest);

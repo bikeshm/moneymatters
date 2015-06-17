@@ -51,7 +51,7 @@ public class ActivityJointExpense extends ActivityBase {
     String apiUrl_LoginRegisterUser = "http://givntake.workassis.com/api/user/login_register" ;
 
 
-    ProgressDialog progressDialog;
+
 
 
     boolean registerUserFlag= false;
@@ -122,10 +122,7 @@ public class ActivityJointExpense extends ActivityBase {
 
     private void populateListViewFromDB() {
 
-        progressDialog = new ProgressDialog(ActivityJointExpense.this);
-        progressDialog.setMessage("loading");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+        showProgress();
 
 
         dbUser=myDb.getUser(1);
@@ -253,7 +250,8 @@ public class ActivityJointExpense extends ActivityBase {
         ((TextView)currentView.findViewById(R.id.amtToGet)).setText(": " + finalResult.get("toget"));
 
 
-        progressDialog.dismiss();
+        //progressDialog.dismiss();
+        closeProgress();
     }
 
 

@@ -1,11 +1,10 @@
 package com.bikesh.scorpio.giventake;
 
-import android.content.ContentResolver;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,23 +19,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.bikesh.scorpio.giventake.adapters.DrawerDataAdapter;
 import com.bikesh.scorpio.giventake.model.DBHelper;
-import com.google.i18n.phonenumbers.NumberParseException;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
@@ -79,6 +71,7 @@ public class ActivityBase extends ActionBarActivity {
 
     DBHelper myDb;
 
+    ProgressDialog progressDialog;
     @Override
     public void setContentView(int layoutResID) {
         //super.setContentView(view);
@@ -307,7 +300,21 @@ public class ActivityBase extends ActionBarActivity {
     }
 
 
+    public void showProgress(){
+        showProgress("Loading..");
+    }
 
+    public void showProgress(String msg){
+        progressDialog = new ProgressDialog(ActivityBase.this);
+        progressDialog.setMessage(msg);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    public void closeProgress(){
+
+        progressDialog.dismiss();
+    }
 
 
     @Override

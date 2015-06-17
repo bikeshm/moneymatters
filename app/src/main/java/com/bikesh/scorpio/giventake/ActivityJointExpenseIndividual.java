@@ -63,7 +63,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
     Map<String, String> dbUser = new HashMap<String, String>();
     Map<String, String> JointGroup = new HashMap<String, String>();
 
-    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,10 +117,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
         super.onResume();
         //generateTables();
 
-        progressDialog = new ProgressDialog(ActivityJointExpenseIndividual.this);
-        progressDialog.setMessage("loading");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+        showProgress();
 
         apiAccess();
 
@@ -229,7 +226,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
         generateEntryTable();
 
-        progressDialog.dismiss();
+        closeProgress();
     }
 
 
