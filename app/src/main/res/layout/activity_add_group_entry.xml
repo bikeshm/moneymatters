@@ -87,6 +87,15 @@
                 android:id="@+id/fromUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/fromUserText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:enabled="false"
+                android:visibility="gone"/>
+
         </LinearLayout>
 
 

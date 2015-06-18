@@ -1,6 +1,7 @@
 package com.bikesh.scorpio.giventake;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -35,15 +36,17 @@ public class ActivityAddGroupEntry extends ActivityBase {
 
     String fromActivity=null;
 
-    String groupId=null;
-    //String Name="";
-    //String rowId=null;
-    String groupOnlineId=null;
+    String groupId="0";
+
+    String groupOnlineId="0";
 
     EditText datePicker,created_date_forDB;
 
     Intent backActivityIntent=null;
 
+    String currentUserId ="0",  currentUserOnlineId="0", onlineOwnerId="0",currentUserName="";
+
+    String rowId="0", rowOnlineId="0", rowUserOnlineId="0";
 
 
     RequestQueue Rqueue;
@@ -70,12 +73,25 @@ public class ActivityAddGroupEntry extends ActivityBase {
         } else {
             fromActivity= extras.getString("fromActivity");
 
-            groupId = extras.getString("groupId",null);
+            groupId = extras.getString("groupId","0");
+            groupOnlineId = extras.getString("groupOnlineId","0");
 
-            //rowId = extras.getString("rowId",null);
-            //Name = extras.getString("Name");
+            currentUserId = extras.getString("currentUserId","0");
+            currentUserOnlineId= extras.getString("currentUserOnlineId","0");
 
-            groupOnlineId = extras.getString("groupOnlineId",null);
+            onlineOwnerId= extras.getString("onlineOwnerId","0");
+
+            currentUserName= extras.getString("currentUserName","");
+
+
+
+            //for updating
+            rowId = extras.getString("rowId","0");
+            rowOnlineId = extras.getString("rowOnlineId","0");
+            rowUserOnlineId = extras.getString("rowUserOnlineId","0");
+
+            Log.i("row online Id",rowId+" --- "+rowOnlineId);
+
         }
 
 
@@ -111,6 +127,7 @@ public class ActivityAddGroupEntry extends ActivityBase {
         generateDataForJointExpenseIndividual();
 
 
+
         ((Button)currentView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
         ((Button) currentView.findViewById(R.id.cancelBtn)).setOnClickListener(new cancelActivity());
 
@@ -139,17 +156,39 @@ public class ActivityAddGroupEntry extends ActivityBase {
         //((LinearLayout) addEntryView.findViewById(R.id.isSplitLayer) ).setVisibility(View.VISIBLE);
         //((LinearLayout) addEntryView.findViewById(R.id.grupMembersLayer) ).setVisibility(View.VISIBLE);
         //=====================face 2
-        Map<String, String> data = new HashMap<String, String>();
-        data.put("dataFrom","db"  );
-        ((TextView) currentView.findViewById(R.id.selectUserLabel)).setText("Spend By");
-        Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, myDb.getAllUsersInGroup(groupId) , data );
-        ((Spinner) currentView.findViewById(R.id.fromUser)).setAdapter(adapter);
 
+        Log.i("add entry", currentUserOnlineId + " == " + onlineOwnerId );
+
+        if(currentUserOnlineId.equals(onlineOwnerId)) {
+            Map<String, String> data = new HashMap<String, String>();
+            data.put("dataFrom", "db");
+            ((TextView) currentView.findViewById(R.id.selectUserLabel)).setText("Spend By");
+            Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, myDb.getAllUsersInGroup(groupId), data);
+            ((Spinner) currentView.findViewById(R.id.fromUser)).setAdapter(adapter);
+        }
+        else{
+            ((Spinner) currentView.findViewById(R.id.fromUser)).setVisibility(View.GONE);
+
+
+
+            ((EditText) currentView.findViewById(R.id.fromUserText)).setVisibility(View.VISIBLE);
+
+        }
+
+
+        if(!rowOnlineId.equals("0") && !currentUserOnlineId.equals(onlineOwnerId) && !currentUserOnlineId.equals(rowUserOnlineId) ) {
+            ((Button)currentView.findViewById(R.id.saveBtn)).setEnabled(false);
+        }
 
         //face2
         //((RadioGroup) currentView.findViewById(R.id.isSplit)).setOnCheckedChangeListener(new isSplitChanged());
 
         //recyclerView.setOnKeyListener(new recyclerViewKeyListener());
+
+
+        if(rowId!=null){
+            generateEditData(myDb.getGroupsingleEntry(rowId));
+        }
 
     }
 
@@ -182,6 +221,21 @@ public class ActivityAddGroupEntry extends ActivityBase {
     }
  */
 
+    private void generateEditData(Cursor currentEntry){
+        //created_date DATE, description text, from_user INTEGER, to_user INTEGER,
+
+        if(currentEntry.getCount()>0) {
+            ((EditText) currentView.findViewById(R.id.id)).setText(rowId);
+            datePicker.setText(formatDate(currentEntry.getString(currentEntry.getColumnIndex("created_date")), "ddmmyy"));
+            created_date_forDB.setText(currentEntry.getString(currentEntry.getColumnIndex("created_date")));
+
+            ((EditText) currentView.findViewById(R.id.description)).setText(currentEntry.getString(currentEntry.getColumnIndex("description")));
+            ((EditText) currentView.findViewById(R.id.amount)).setText(currentEntry.getString(currentEntry.getColumnIndex("amt")));
+
+            ((EditText) currentView.findViewById(R.id.fromUserText)).setText(myDb.getUserField(currentEntry.getString(currentEntry.getColumnIndex("user_id")),"name"));
+        }
+
+    }
 
     private class saveData implements View.OnClickListener {
         @Override
@@ -205,37 +259,48 @@ public class ActivityAddGroupEntry extends ActivityBase {
             }
 
 
-            //if(fromActivity.equals("ActivityJointExpenseIndividual")  ){
-                int is_split=0;
 
-                data.put("joint_group_id",  groupId);
+            int is_split=0;
+
+            data.put("joint_group_id",  groupId);
+
+            if(currentUserOnlineId.equals(onlineOwnerId)) {
                 data.put("user_id", ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId() + "");
+            }
+            else{
+                data.put("user_id",currentUserId);
+            }
 
-                /*face 2
-                int id = ((RadioGroup) currentView.findViewById(R.id.isSplit)).getCheckedRadioButtonId();
-                if (id == -1){
-                    //no item selected
+            /*face 2
+            int id = ((RadioGroup) currentView.findViewById(R.id.isSplit)).getCheckedRadioButtonId();
+            if (id == -1){
+                //no item selected
+            }
+            else {
+                if (id == R.id.isSplitradioYes) {
+                    is_split = 1;
                 }
-                else {
-                    if (id == R.id.isSplitradioYes) {
-                        is_split = 1;
-                    }
-                }
-                */
+            }
+            */
 
-                //face2
-                data.put("is_split",  is_split+"" );
+            //face2
+            data.put("is_split",  is_split+"" );
 
             Log.i("save", "online id"+groupOnlineId);
 
-                //onlineId = >online group id
-                if(groupOnlineId==null || groupOnlineId.equals("0")) {
-                    save_JointEntryToLocal(data);
-                }
-                else{
-                    save_JointEntryToOnlne(data);
-                }
-            //}
+            //onlineId = >online group id
+            if(groupOnlineId==null || groupOnlineId.equals("0")) {
+
+                save_JointEntryToLocal(data);
+            }
+            else{
+
+                save_JointEntryToOnlne(data);
+
+
+
+            }
+
 
         }
     }
@@ -247,18 +312,37 @@ public class ActivityAddGroupEntry extends ActivityBase {
 
         Log.i("save", "online id save_JointEntryToLocal"+data);
 
-        if (myDb.insertGroupEntry(data) == 1) {
-            Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+        if(rowId.equals("0")) {
+            if (myDb.insertGroupEntry(data) == 1) {
+                closeProgress();
+                Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+                goBack();
 
-            closeProgress();
-            goBack();
+            } else {
 
-        } else {
+                closeProgress();
+                Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                ((Button) currentView.findViewById(R.id.saveBtn)).setEnabled(true);
 
-            Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
-            ((Button)currentView.findViewById(R.id.saveBtn)).setEnabled(true);
-            closeProgress();
 
+            }
+        }
+        else{
+
+            data.put("_id", rowId);
+
+            if (myDb.updateGroupEntry(data) == 1) {
+
+                closeProgress();
+                Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+
+
+                goBack();
+
+            } else {
+                closeProgress();
+                Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -277,6 +361,13 @@ public class ActivityAddGroupEntry extends ActivityBase {
         dataForPost.remove("joint_group_id");
 
         dataForPost.put("user_id",myDb.getUserField( dataForPost.get("user_id").toString(),"onlineid"));
+
+
+        if(!rowOnlineId.equals("0")) {
+            dataForPost.put("id", rowOnlineId);
+        }
+
+        Log.i("save", "sending data to server save_JointEntryToOnlne"+dataForPost);
 
         CustomRequest jsObjRequest =   new CustomRequest
 

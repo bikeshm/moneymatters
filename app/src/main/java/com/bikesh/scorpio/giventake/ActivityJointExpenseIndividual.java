@@ -1,12 +1,9 @@
 package com.bikesh.scorpio.giventake;
 
-import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,7 +26,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bikesh.scorpio.giventake.adapters.CustomDatePicker;
 import com.bikesh.scorpio.giventake.libraries.CustomRequest;
-import com.bikesh.scorpio.giventake.model.DBHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,7 +73,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
             fromActivity= null;
         } else {
             fromActivity= extras.getString("fromActivity");
-            groupId = Integer.parseInt(extras.getString("groupId"));
+            groupId = Integer.parseInt(extras.getString("groupId","0"));
             //groupName = extras.getString("colName");
         }
 
@@ -364,7 +360,8 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
             tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
             //tr.setClickable(true);
-            //tr.setOnClickListener(new tableRowClicked(Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id")))));
+            tr.setOnClickListener(new tableRowClicked( cursor.getString(cursor.getColumnIndex("_id")) , cursor.getString(cursor.getColumnIndex("onlineid")), cursor.getString(cursor.getColumnIndex("user_id")) ));
+            tr.setOnLongClickListener(new tableRowLongClicked ( Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id"))) ));
 
             //Log.i("bm info", "" + fields.length);
 
@@ -437,24 +434,88 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
             i.putExtra("groupId", ""+groupId );
             if(JointGroup.size()>0) {
                 i.putExtra("groupOnlineId", JointGroup.get("onlineid").toString());
+                i.putExtra("onlineOwnerId", JointGroup.get("owner").toString());
             }
+
+            i.putExtra("userId", ""+dbUser.get("_id").toString());
+            i.putExtra("currentUserName", ""+dbUser.get("name").toString());
+
+            if (!dbUser.get("onlineid").toString().equals("") && !dbUser.get("onlineid").toString().equals("0")) {
+                i.putExtra("userOnlineId",  dbUser.get("onlineid").toString() );
+
+            }
+
             startActivity(i);
 
         }
     }
 
 
+
     private class tableRowClicked implements View.OnClickListener {
-        int rowId=0;
-        public tableRowClicked(int id) {
+        String rowId=null;
+        String rowOnlineId;
+        String rowUseronlineId;
+        public tableRowClicked(String id, String onlineid, String ruserId) {
             rowId=id;
+            rowOnlineId=onlineid;
+            rowUseronlineId=myDb.getUserField(ruserId, "onlineid");
+
+            if(rowUseronlineId.equals("")){
+                rowUseronlineId="0";
+            }
         }
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(getApplicationContext(), "clicked" + rowId, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"clicked"+rowId, Toast.LENGTH_LONG).show();
+
+            Intent i = new Intent(ActivityJointExpenseIndividual.this, ActivityAddGroupEntry.class);
+            i.putExtra("fromActivity", "ActivityJointExpenseIndividual");
+
+            i.putExtra("currentUserId", ""+dbUser.get("_id").toString());
+            i.putExtra("currentUserName", ""+dbUser.get("name").toString());
+
+            if (!dbUser.get("onlineid").equals("") && !dbUser.get("onlineid").equals("0")) {
+                i.putExtra("currentUserOnlineId",  dbUser.get("onlineid") );
+            }
+            i.putExtra("rowId",  rowId+"" );
+            i.putExtra("rowOnlineId",  rowOnlineId+"" );
+            i.putExtra("rowUserOnlineId",  rowUseronlineId);
+
+
+            i.putExtra("groupId", ""+groupId );
+            if(JointGroup.size()>0) {
+                i.putExtra("groupOnlineId", JointGroup.get("onlineid"));
+                i.putExtra("onlineOwnerId", JointGroup.get("owner"));
+
+            }
+
+            Log.i("row online Id",rowId+" --- "+rowOnlineId);
+
+            startActivity(i);
+
+
         }
     }
+
+
+
+    private class tableRowLongClicked implements View.OnLongClickListener {
+        int rowId=0;
+        public tableRowLongClicked(int id)  {
+            rowId=id;
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+
+            Toast.makeText(getApplicationContext(),"Long pressed ", Toast.LENGTH_LONG).show();
+            //generatePopupmenu(rowId);
+            return true;
+        }
+    }
+
 
 
     private TextView generateTextview() {

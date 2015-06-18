@@ -171,6 +171,22 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    public Cursor commonGetWhere(String field, String value, String table) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from "+table+" where "+field+"="+value+"", null );
+        if(res!=null) {
+            res.moveToFirst();
+
+        }
+        return res;
+    }
+
+    public Cursor commonGet(String id , String table ) {
+
+        return commonGetWhere("_id",id,table);
+
+    }
+
     public String commonGetField(String id , String field, String table ) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select "+field+" from "+table+" where _id="+id+"", null );
@@ -244,9 +260,9 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public String getUserField(String id, String field){
+    public String getUserField(String userId, String field){
 
-        return commonGetField(id , field, "usertable" );
+        return commonGetField(userId , field, "usertable" );
     }
 
 
@@ -858,7 +874,17 @@ public class DBHelper extends SQLiteOpenHelper {
         return 1;
     }
 
-    //--
+    public Cursor getGroupsingleEntry(String id) {
+
+        return commonGetWhere("_id",id, JOINTENTRY_TABLE_NAME);
+
+    }
+
+
+    public int updateGroupEntry (Map<String, String> data)
+    {
+        return commonUpdate(data,JOINTENTRY_TABLE_NAME);
+    }
 
 
     public Map<String, String> getAllGroupTotalSpendGiveGet() {
@@ -982,7 +1008,7 @@ public class DBHelper extends SQLiteOpenHelper {
             month="";
         }
 
-        res = db.rawQuery("select E.created_date,E.description,U.name,E.amt,E.is_split from " + JOINTENTRY_TABLE_NAME +" E, usertable U where E.user_id = U._id and  joint_group_id = "+groupId+ month, null);
+        res = db.rawQuery("select E._id, E.onlineid, E.user_id, E.created_date,E.description,U.name,E.amt,E.is_split from " + JOINTENTRY_TABLE_NAME +" E, usertable U where E.user_id = U._id and  joint_group_id = "+groupId+ month, null);
 
         if (res != null) {
             res.moveToFirst();
@@ -1258,4 +1284,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
     }
+
+
 }

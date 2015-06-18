@@ -212,6 +212,8 @@ public class ActivityJointExpense extends ActivityBase {
                             @Override
                             public void onErrorResponse(VolleyError error) {
                                 Log.i("api call", "ERROR "+error.getMessage());
+                                Toast.makeText(getApplicationContext(), "Error while accessing online data", Toast.LENGTH_LONG).show();
+                                populateListViewFromDB_populate();
                             }
                         });
                 Rqueue.add(jsObjRequest);
