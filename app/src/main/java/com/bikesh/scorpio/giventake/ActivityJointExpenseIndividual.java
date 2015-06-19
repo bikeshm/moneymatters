@@ -1,5 +1,7 @@
 package com.bikesh.scorpio.giventake;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -361,7 +363,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
             //tr.setClickable(true);
             tr.setOnClickListener(new tableRowClicked( cursor.getString(cursor.getColumnIndex("_id")) , cursor.getString(cursor.getColumnIndex("onlineid")), cursor.getString(cursor.getColumnIndex("user_id")) ));
-            tr.setOnLongClickListener(new tableRowLongClicked ( Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id"))) ));
+            tr.setOnLongClickListener(new tableRowLongClicked ( cursor.getString(cursor.getColumnIndex("_id")), cursor.getString(cursor.getColumnIndex("onlineid")), cursor.getString(cursor.getColumnIndex("user_id")) ));
 
             //Log.i("bm info", "" + fields.length);
 
@@ -502,19 +504,71 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
 
     private class tableRowLongClicked implements View.OnLongClickListener {
-        int rowId=0;
-        public tableRowLongClicked(int id)  {
+
+        String rowId=null;
+        String rowOnlineId;
+        String rowUseronlineId;
+        public tableRowLongClicked(String id, String onlineid, String ruserId) {
             rowId=id;
+            rowOnlineId=onlineid;
+            rowUseronlineId=myDb.getUserField(ruserId, "onlineid");
+
+            if(rowUseronlineId.equals("")){
+                rowUseronlineId="0";
+            }
         }
 
         @Override
         public boolean onLongClick(View v) {
 
             Toast.makeText(getApplicationContext(),"Long pressed ", Toast.LENGTH_LONG).show();
-            //generatePopupmenu(rowId);
+            generatePopupmenu(rowId,rowOnlineId,rowUseronlineId);
             return true;
         }
     }
+
+
+    public void generatePopupmenu(String rowId, String rowOnlineId,String rowUseronlineId) {
+
+        CharSequence[] options  = { "Cancel" };
+        final String dbrowId = rowId+"";
+
+        if(dbUser.get("onlineid").equals(JointGroup.get("owner")) ||
+                dbUser.get("onlineid").equals(rowUseronlineId)||
+                JointGroup.get("onlineid").equals("0") ||
+                JointGroup.get("onlineid").equals("")) {
+
+            options = new CharSequence[]{"Delete", "Cancel"};
+        }
+
+        final CharSequence[] menuItems= options;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityJointExpenseIndividual.this);
+        //builder.setTitle("Add Photo!");
+
+
+        builder.setItems(menuItems, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+
+                if (menuItems[item].equals("Delete")) {
+
+                    //myDb.deleteEntry(dbrowId);
+
+                    //Cursor entrys =  myDb.getUserEntrys(userId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
+                    //generateTable(entrys);
+
+                }
+                else if (menuItems[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        builder.show();
+    }
+
 
 
 
