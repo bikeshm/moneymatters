@@ -20,21 +20,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
 import com.bikesh.scorpio.giventake.adapters.Adapter_CustomSimpleCursor;
-import com.bikesh.scorpio.giventake.adapters.Adapter_TextRecyclerViewList;
 import com.bikesh.scorpio.giventake.adapters.CustomDatePicker;
-import com.bikesh.scorpio.giventake.libraries.CustomRequest;
-import com.bikesh.scorpio.giventake.model.DBHelper;
 
-import org.json.JSONObject;
-
-import java.text.Format;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;

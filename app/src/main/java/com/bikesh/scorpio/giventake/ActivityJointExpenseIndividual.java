@@ -437,11 +437,11 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
                 i.putExtra("onlineOwnerId", JointGroup.get("owner").toString());
             }
 
-            i.putExtra("userId", ""+dbUser.get("_id").toString());
+            i.putExtra("currentUserId", ""+dbUser.get("_id").toString());
             i.putExtra("currentUserName", ""+dbUser.get("name").toString());
 
             if (!dbUser.get("onlineid").toString().equals("") && !dbUser.get("onlineid").toString().equals("0")) {
-                i.putExtra("userOnlineId",  dbUser.get("onlineid").toString() );
+                i.putExtra("currentUserOnlineId",  dbUser.get("onlineid").toString() );
 
             }
 

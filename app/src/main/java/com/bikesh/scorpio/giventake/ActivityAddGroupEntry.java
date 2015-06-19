@@ -3,6 +3,7 @@ package com.bikesh.scorpio.giventake;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
@@ -29,6 +30,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
 
 public class ActivityAddGroupEntry extends ActivityBase {
 
@@ -159,20 +162,34 @@ public class ActivityAddGroupEntry extends ActivityBase {
 
         Log.i("add entry", currentUserOnlineId + " == " + onlineOwnerId );
 
-        if(currentUserOnlineId.equals(onlineOwnerId)) {
+        if(currentUserOnlineId.equals(onlineOwnerId) || groupOnlineId.equals("0")) {
+
             Map<String, String> data = new HashMap<String, String>();
             data.put("dataFrom", "db");
-            ((TextView) currentView.findViewById(R.id.selectUserLabel)).setText("Spend By");
-            Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, myDb.getAllUsersInGroup(groupId), data);
+            //((TextView) currentView.findViewById(R.id.selectUserLabel)).setText("Spend By");
+            Cursor allGroupMembers = myDb.getAllUsersInGroup(groupId);
+            Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, allGroupMembers  , data);
             ((Spinner) currentView.findViewById(R.id.fromUser)).setAdapter(adapter);
+
+            int cpos = 0;
+            for(int i = 0; i < adapter.getCount(); i++){
+                allGroupMembers.moveToPosition(i);
+                String temp = allGroupMembers.getString(allGroupMembers.getColumnIndex("_id"));
+                if ( temp.equals(myDb.getGroupsingleEntryField(rowId,"user_id")) ){
+                    cpos = i;
+                    break;
+                }
+            }
+            ((Spinner) currentView.findViewById(R.id.fromUser)).setSelection(cpos);
+
         }
         else{
             ((Spinner) currentView.findViewById(R.id.fromUser)).setVisibility(View.GONE);
-
-
-
             ((EditText) currentView.findViewById(R.id.fromUserText)).setVisibility(View.VISIBLE);
 
+            if(rowId.equals("0")){
+                ((EditText) currentView.findViewById(R.id.fromUserText)).setText( currentUserName);
+            }
         }
 
 
@@ -264,13 +281,15 @@ public class ActivityAddGroupEntry extends ActivityBase {
 
             data.put("joint_group_id",  groupId);
 
-            if(currentUserOnlineId.equals(onlineOwnerId)) {
+            if(currentUserOnlineId.equals(onlineOwnerId) || groupOnlineId.equals("0")) {
+            //if(currentUserOnlineId.equals(onlineOwnerId)) {
                 data.put("user_id", ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId() + "");
             }
             else{
                 data.put("user_id",currentUserId);
             }
 
+            Log.i("user_id", "cuid"+ currentUserId + " cuonid "+ currentUserOnlineId+ "ownerid "+ onlineOwnerId+ "id spinner"+ ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId() );
             /*face 2
             int id = ((RadioGroup) currentView.findViewById(R.id.isSplit)).getCheckedRadioButtonId();
             if (id == -1){
@@ -311,6 +330,7 @@ public class ActivityAddGroupEntry extends ActivityBase {
     private void save_JointEntryToLocal(Map<String, String> data) {
 
         Log.i("save", "online id save_JointEntryToLocal"+data);
+        data.put("current_user",currentUserOnlineId);
 
         if(rowId.equals("0")) {
             if (myDb.insertGroupEntry(data) == 1) {

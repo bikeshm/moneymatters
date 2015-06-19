@@ -880,6 +880,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    public String getGroupsingleEntryField(String rowId, String field){
+
+        return commonGetField(rowId , field, JOINTENTRY_TABLE_NAME );
+    }
+
 
     public int updateGroupEntry (Map<String, String> data)
     {
