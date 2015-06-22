@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.bikesh.scorpio.giventake.adapters.Adapter_CustomSimpleCursor;
 import com.bikesh.scorpio.giventake.adapters.CustomDatePicker;
+import com.bikesh.scorpio.giventake.model.DBHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -52,6 +53,7 @@ public class ActivityAddEntry extends ActivityBase {
     EditText datePicker,created_date_forDB;
 
 
+    DBHelper myDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +61,7 @@ public class ActivityAddEntry extends ActivityBase {
         setContentView(R.layout.activity_add_entry);
 
 
-        //myDb = new DBHelper(this);
+        myDb = new DBHelper(this);
 
         //--- initialising RecyclerView otherwise it is throwing null pointer exception
         recyclerView = (RecyclerView) findViewById(R.id.recycler_Users);
@@ -524,6 +526,15 @@ public class ActivityAddEntry extends ActivityBase {
             Toast.makeText(getApplicationContext(),"keyup",Toast.LENGTH_LONG).show();
 
             return false;
+        }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myDb != null) {
+            myDb.close();
         }
     }
 }

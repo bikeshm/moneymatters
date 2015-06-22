@@ -23,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 import com.bikesh.scorpio.giventake.adapters.Adapter_CustomSimpleCursor;
 import com.bikesh.scorpio.giventake.adapters.CustomDatePicker;
 import com.bikesh.scorpio.giventake.libraries.CustomRequest;
+import com.bikesh.scorpio.giventake.model.DBHelper;
 
 import org.json.JSONObject;
 
@@ -55,12 +56,14 @@ public class ActivityAddGroupEntry extends ActivityBase {
 
     RequestQueue Rqueue;
 
+    DBHelper myDb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_group_entry);
 
-        //myDb = new DBHelper(this);
+        myDb = new DBHelper(this);
 
         //--- Face 2  //initialising RecyclerView otherwise it is throwing null pointer exception
         //recyclerView = (RecyclerView) findViewById(R.id.recycler_Users);
@@ -331,7 +334,7 @@ public class ActivityAddGroupEntry extends ActivityBase {
     private void save_JointEntryToLocal(Map<String, String> data) {
 
         Log.i("save", "online id save_JointEntryToLocal"+data);
-        data.put("current_user",currentUserOnlineId);
+        //data.put("current_user",currentUserOnlineId);
 
         if(rowId.equals("0")) {
             if (myDb.insertGroupEntry(data) == 1) {
@@ -374,6 +377,7 @@ public class ActivityAddGroupEntry extends ActivityBase {
 
         Rqueue = Volley.newRequestQueue(this);
 
+        //data.put("current_user",currentUserOnlineId);
 
         Map<String, String> dataForPost = new HashMap<String,String>(data);
 
@@ -383,6 +387,7 @@ public class ActivityAddGroupEntry extends ActivityBase {
 
         dataForPost.put("user_id",myDb.getUserField( dataForPost.get("user_id").toString(),"onlineid"));
 
+        dataForPost.put("current_user",currentUserOnlineId);
 
         if(!rowOnlineId.equals("0")) {
             dataForPost.put("id", rowOnlineId);

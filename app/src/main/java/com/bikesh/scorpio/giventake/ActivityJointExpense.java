@@ -22,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.bikesh.scorpio.giventake.adapters.Adapter_CustomSimpleCursor;
 import com.bikesh.scorpio.giventake.libraries.CustomRequest;
+import com.bikesh.scorpio.giventake.model.DBHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,6 +56,9 @@ public class ActivityJointExpense extends ActivityBase {
 
 
     boolean registerUserFlag= false;
+
+    DBHelper myDb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +72,7 @@ public class ActivityJointExpense extends ActivityBase {
         ((ImageButton)currentView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewGroup());
 
 
-        //myDb = new DBHelper(this);
+        myDb = new DBHelper(this);
 
 
 
@@ -342,5 +346,14 @@ public class ActivityJointExpense extends ActivityBase {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myDb != null) {
+            myDb.close();
+        }
     }
 }

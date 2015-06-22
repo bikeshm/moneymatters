@@ -34,12 +34,13 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
     int  userId=0;
     String userName="";
 
+    DBHelper myDb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lend_and_borrow_personal);
 
-       // myDb = new DBHelper(this);
+       myDb = new DBHelper(this);
 
         Bundle extras = getIntent().getExtras();
         if(extras == null) {
@@ -326,15 +327,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
 
 
 
-    /*
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (myDb != null) {
-            myDb.close();
-        }
-    }
-    */
+
 
 
     @Override
@@ -373,6 +366,14 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
         }
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myDb != null) {
+            myDb.close();
+        }
+    }
 
 
 }

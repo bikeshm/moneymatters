@@ -28,6 +28,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bikesh.scorpio.giventake.adapters.CustomDatePicker;
 import com.bikesh.scorpio.giventake.libraries.CustomRequest;
+import com.bikesh.scorpio.giventake.model.DBHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,12 +65,13 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
     Map<String, String> JointGroup = new HashMap<String, String>();
 
 
+    DBHelper myDb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joint_expense_individual);
 
-        //myDb = new DBHelper(this);
+        myDb = new DBHelper(this);
 
         Bundle extras = getIntent().getExtras();
 
@@ -441,15 +443,15 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
             i.putExtra("fromActivity", "ActivityJointExpenseIndividual");
             i.putExtra("groupId", ""+groupId );
             if(JointGroup.size()>0) {
-                i.putExtra("groupOnlineId", JointGroup.get("onlineid").toString());
-                i.putExtra("onlineOwnerId", JointGroup.get("owner").toString());
+                i.putExtra("groupOnlineId", JointGroup.get("onlineid"));
+                i.putExtra("onlineOwnerId", JointGroup.get("owner"));
             }
 
-            i.putExtra("currentUserId", ""+dbUser.get("_id").toString());
-            i.putExtra("currentUserName", ""+dbUser.get("name").toString());
+            i.putExtra("currentUserId", ""+dbUser.get("_id"));
+            i.putExtra("currentUserName", ""+dbUser.get("name"));
 
-            if (!dbUser.get("onlineid").toString().equals("") && !dbUser.get("onlineid").toString().equals("0")) {
-                i.putExtra("currentUserOnlineId",  dbUser.get("onlineid").toString() );
+            if (!dbUser.get("onlineid").equals("") && !dbUser.get("onlineid").equals("0")) {
+                i.putExtra("currentUserOnlineId",  dbUser.get("onlineid") );
 
             }
 
@@ -882,4 +884,14 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
         }
     }
 
+
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myDb != null) {
+            myDb.close();
+        }
+    }
 }

@@ -29,18 +29,17 @@ import java.util.Map;
 
 public class ActivityPersonalExpense extends ActivityBase {
 
-    //DBHelper myDb;
     //View ActivityPersonalExpenseView;
 
     ListView listView;
 
+    DBHelper myDb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_personal_expense);
 
-
+        myDb = new DBHelper(this);
 
         listView = (ListView) currentView.findViewById(R.id.listViewFromDB);
 
@@ -278,7 +277,7 @@ public class ActivityPersonalExpense extends ActivityBase {
     }
 
 
-/*
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -286,8 +285,6 @@ public class ActivityPersonalExpense extends ActivityBase {
             myDb.close();
         }
     }
-*/
-
 
 
 }

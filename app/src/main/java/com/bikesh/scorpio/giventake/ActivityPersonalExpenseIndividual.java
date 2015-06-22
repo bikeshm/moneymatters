@@ -31,17 +31,18 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
 
 
     //View personalExpenseIndividualView;
-    //DBHelper myDb;
     String fromActivity=null;
     int  colId=0;
     String colName="";
+
+    DBHelper myDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_expense_individual);
 
-        //myDb = new DBHelper(this);
+        myDb = new DBHelper(this);
 
         Bundle extras = getIntent().getExtras();
 
@@ -337,5 +338,14 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myDb != null) {
+            myDb.close();
+        }
     }
 }
