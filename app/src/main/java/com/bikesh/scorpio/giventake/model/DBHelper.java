@@ -1060,6 +1060,13 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
+    public Integer deleteGroupEntry (String id)
+    {
+        return commonDelete(id, JOINTENTRY_TABLE_NAME);
+    }
+
+
+
     //===========================Online Group===============================
 
     public int insertOnlineGroup(Map<String, String> data) {

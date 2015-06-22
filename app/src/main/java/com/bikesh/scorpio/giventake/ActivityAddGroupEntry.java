@@ -51,6 +51,7 @@ public class ActivityAddGroupEntry extends ActivityBase {
 
     String rowId="0", rowOnlineId="0", rowUserOnlineId="0";
 
+    String apiUrl_AddEntry = "http://givntake.workassis.com/api/entry/add/";
 
     RequestQueue Rqueue;
 
@@ -372,7 +373,7 @@ public class ActivityAddGroupEntry extends ActivityBase {
         Log.i("save", "online id save_JointEntryToOnlne"+data);
 
         Rqueue = Volley.newRequestQueue(this);
-        String apiUrl_AddEntry = "http://givntake.workassis.com/api/entry/add/";
+
 
         Map<String, String> dataForPost = new HashMap<String,String>(data);
 
@@ -453,5 +454,14 @@ public class ActivityAddGroupEntry extends ActivityBase {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myDb != null) {
+            myDb.close();
+        }
     }
 }

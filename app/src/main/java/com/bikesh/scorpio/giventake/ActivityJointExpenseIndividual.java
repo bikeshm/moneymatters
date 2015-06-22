@@ -56,6 +56,8 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
     String apiUrl_GroupDetails = "http://givntake.workassis.com/api/group/get/" ;
     String apiUrl_LoginRegisterUser = "http://givntake.workassis.com/api/user/login_register" ;
+    String apiUrl_DeleteEntry = "http://givntake.workassis.com/api/entry/delete/";
+
     RequestQueue Rqueue;
 
     Map<String, String> dbUser = new HashMap<String, String>();
@@ -115,7 +117,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
         super.onResume();
         //generateTables();
 
-        showProgress();
+
 
         apiAccess();
 
@@ -131,6 +133,10 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
 
     private void apiAccess() {
+
+        showProgress();
+
+
 
         JointGroup=myDb.fetchJointGroupbyId(groupId + "");
         dbUser=myDb.getUser(1);
@@ -521,7 +527,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
         @Override
         public boolean onLongClick(View v) {
 
-            Toast.makeText(getApplicationContext(),"Long pressed ", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Long pressed RO"+rowOnlineId, Toast.LENGTH_LONG).show();
             generatePopupmenu(rowId,rowOnlineId,rowUseronlineId);
             return true;
         }
@@ -545,29 +551,53 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ActivityJointExpenseIndividual.this);
         //builder.setTitle("Add Photo!");
-
-
-        builder.setItems(menuItems, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-
-                if (menuItems[item].equals("Delete")) {
-
-                    //myDb.deleteEntry(dbrowId);
-
-                    //Cursor entrys =  myDb.getUserEntrys(userId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
-                    //generateTable(entrys);
-
-                }
-                else if (menuItems[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-
+        builder.setItems(menuItems, new popupmenuClickedListener(rowId, rowOnlineId, rowUseronlineId, menuItems ));
         builder.show();
     }
+
+    private class popupmenuClickedListener implements DialogInterface.OnClickListener {
+
+        String rowId=null;
+        String rowOnlineId;
+        String rowUseronlineId;
+        CharSequence[] menuItems;
+
+        public popupmenuClickedListener(String rId, String rOnlineId, String rUseronlineId, CharSequence[] mnItems) {
+            rowId= rId;
+            rowOnlineId = rOnlineId;
+            rowUseronlineId = rUseronlineId;
+            menuItems=mnItems;
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+
+            //Toast.makeText(getApplicationContext(),menuItems[which], Toast.LENGTH_LONG).show();
+
+            if (menuItems[which].equals("Delete")) {
+
+                Toast.makeText(getApplicationContext(),menuItems[which], Toast.LENGTH_LONG).show();
+
+                //myDb.deleteEntry(dbrowId);
+
+                //Cursor entrys =  myDb.getUserEntrys(userId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
+                //generateTable(entrys);
+
+                deleteGroupEntry(rowId, rowOnlineId, rowUseronlineId);
+
+            }
+            else if (menuItems[which].equals("Cancel")) {
+                dialog.dismiss();
+            }
+
+
+
+
+        }
+
+
+    }
+
 
 
 
@@ -804,5 +834,52 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
 
 
+    private void deleteGroupEntry(String rowId, String rowOnlineId, String rowUseronlineId) {
+
+        //if it is online entry delete from server
+        //if it is local entry delete from local
+
+
+        if(rowOnlineId.equals("") || rowOnlineId.equals("0")){
+            //Toast.makeText(getApplicationContext(), "Local", Toast.LENGTH_LONG).show();
+            showProgress();
+            myDb.deleteGroupEntry(rowId);
+            generateTables();
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Online", Toast.LENGTH_LONG).show();
+
+            Map<String, String> row = new HashMap<String, String>();
+            row.put("entry_id", rowOnlineId);
+            row.put("user_id", rowUseronlineId);
+            row.put("current_user", dbUser.get("onlineid"));
+            row.put("group_id", JointGroup.get("onlineid"));
+
+
+            Log.i("api call del", row.toString());
+
+            //delete from server
+            // *delete from local = >
+            CustomRequest jsObjRequest = new CustomRequest
+
+                    (Request.Method.POST, apiUrl_DeleteEntry, row, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+
+                            Log.i("api call del", response.toString() + "");
+                            //get group information
+                            apiAccess();
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.i("api call", "ERROR " + error.getMessage());
+                        }
+                    });
+            Rqueue.add(jsObjRequest);
+        }
+    }
 
 }
