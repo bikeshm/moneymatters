@@ -28,5 +28,6 @@
     <string name="title_activity_activity_joint_expense_individual">ActivityJointExpenseIndividual
     </string>
     <string name="title_activity_activity_add_group_entry">ActivityAddGroupEntry</string>
+    <string name="title_activity_activity_add_category">ActivityAddCategory</string>
 
 </resources>

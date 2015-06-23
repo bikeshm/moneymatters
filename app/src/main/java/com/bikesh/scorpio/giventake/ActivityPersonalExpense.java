@@ -242,7 +242,7 @@ public class ActivityPersonalExpense extends ActivityBase {
         @Override
         public void onClick(View v) {
 
-            Intent i = new Intent(ActivityPersonalExpense.this, ActivityAddGroup.class);
+            Intent i = new Intent(ActivityPersonalExpense.this, ActivityAddCategory.class);
             i.putExtra("fromActivity", "ActivityPersonalExpense");
             startActivity(i);
 

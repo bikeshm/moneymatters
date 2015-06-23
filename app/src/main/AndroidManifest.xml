@@ -72,6 +72,10 @@
             android:name=".ActivityAddGroupEntry"
             android:label="@string/title_activity_activity_add_group_entry" >
         </activity>
+        <activity
+            android:name=".ActivityAddCategory"
+            android:label="@string/title_activity_activity_add_category" >
+        </activity>
     </application>
 
 </manifest>
