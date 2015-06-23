@@ -41,25 +41,7 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/phoneLayer">
 
-            <TextView
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="Phone"
-                />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/phone"
-                android:hint="Phone"
-                android:inputType="phone" />
-
-        </LinearLayout>
 
 
         <LinearLayout
@@ -88,9 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:id="@+id/isOnlineLayer"
-            android:visibility="gone"
-            >
+            android:id="@+id/isOnlineLayer" >
 
             <TextView
                 android:layout_width="80dp"
@@ -129,9 +109,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:id="@+id/groupTypeLayer"
-            android:visibility="gone"
-            >
+            android:id="@+id/groupTypeLayer" >
 
             <TextView
                 android:layout_width="80dp"
@@ -167,25 +145,7 @@
 
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/emailLayer">
 
-            <TextView
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="Email"
-                />
-            <EditText
-                android:inputType="textEmailAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/email"
-                android:hint="Email"/>
-
-        </LinearLayout>
 
 
 
@@ -219,8 +179,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:id="@+id/grupMembersLayer"
-            android:visibility="gone" >
+            android:id="@+id/grupMembersLayer" >
 
             <TextView
                 android:id="@+id/selectUserLabel"

@@ -38,7 +38,7 @@ public class ActivitySplash extends ActionBarActivity {
                 // if first time opening the app , need to register root user (me user)
                 if(myDb.getNumRowsUsertable()==0){
                     //register user
-                    i = new Intent(ActivitySplash.this, ActivityAddGroup.class);
+                    i = new Intent(ActivitySplash.this, ActivityAddCategory.class);
                     i.putExtra("fromActivity", "ActivitySplash");
 
                 }
