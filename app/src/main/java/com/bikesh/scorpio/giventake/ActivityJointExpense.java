@@ -28,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -79,47 +80,6 @@ public class ActivityJointExpense extends ActivityBase {
         //populateListViewFromDB();
 
     }
-
-
-
-
-
-    /*
-    private void  registerUserOnline(){
-
-        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, apiUrl_RegisterUser, dbUser, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.i("api call reg", response.toString() + "" );
-
-                //// TODO: 6/11/2015  add to local db
-
-                populateListViewFromDB_populate();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                Log.i("api call Error", ""+error.getMessage());
-                populateListViewFromDB_populate();
-            }
-        });
-
-        Rqueue.add(jsObjRequest);
-
-    }
-    */
-
-
-
-
-
-
-    
-
-
-
-
 
 
 
@@ -181,6 +141,9 @@ public class ActivityJointExpense extends ActivityBase {
                                     JSONArray requested_dataJSON = response.optJSONObject("data").optJSONArray("requested_data");
                                     Map<String, String> incommingGroup = new HashMap<String, String>();
 
+                                    ArrayList onlineExistingGroups= new ArrayList();
+
+
                                     try {
                                         for(int i = 0 ; i < requested_dataJSON.length(); i++){
 
@@ -203,7 +166,11 @@ public class ActivityJointExpense extends ActivityBase {
                                             incommingGroup.put("isonline","1" );
                                             //insert to db
                                             myDb.insertOnlineGroup(incommingGroup);
+
+                                            onlineExistingGroups.add(incommingGroup.get("onlineid"));
                                         }
+
+                                        myDb.cleanupOnlineGroup(onlineExistingGroups);
 
                                     } catch (JSONException e) {
                                         e.printStackTrace();

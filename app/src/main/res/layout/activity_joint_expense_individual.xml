@@ -61,7 +61,7 @@
                 android:id="@+id/amtTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=": 12000.00"/>
+                android:text=""/>
 
         </LinearLayout>
 
@@ -81,7 +81,7 @@
                 android:id="@+id/amtPerHead"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=": 3000.00"/>
+                android:text=""/>
 
         </LinearLayout>
 

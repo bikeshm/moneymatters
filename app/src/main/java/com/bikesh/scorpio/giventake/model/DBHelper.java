@@ -1298,4 +1298,27 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
+    public void cleanupOnlineGroup(ArrayList existingGroups) {
+
+
+        String args="";
+        for (int i = 0; i < existingGroups.size(); i++) {
+            args= args+ existingGroups.get(i)+", ";
+        }
+
+        if(!args.equals("")) {
+            args = args.substring(0, args.length() - 2);
+        }
+
+        Log.i("api call","arg"+args);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("DELETE FROM "+JOINTGROUP_TABLE_NAME+" WHERE isonline=1 and onlineid NOT IN ("+args+");");
+        db.close();
+
+        db = this.getReadableDatabase();
+        db.execSQL("DELETE FROM "+JOINTENTRY_TABLE_NAME+" WHERE joint_group_id in ( select _id from "+JOINTGROUP_TABLE_NAME+" where onlineid IN ("+args+")  );");
+        db.close();
+
+    }
 }

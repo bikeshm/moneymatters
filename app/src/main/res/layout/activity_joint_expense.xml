@@ -28,7 +28,7 @@
                 android:id="@+id/totalspend"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="500.00"/>
+                android:text=""/>
 
         </LinearLayout>
 
@@ -46,7 +46,7 @@
                 android:id="@+id/amtToGive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="500.00"/>
+                android:text=""/>
 
         </LinearLayout>
 
@@ -64,7 +64,7 @@
                 android:id="@+id/amtToGet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="500.00"/>
+                android:text=""/>
 
         </LinearLayout>
 
