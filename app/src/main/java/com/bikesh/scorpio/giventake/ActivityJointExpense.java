@@ -99,10 +99,7 @@ public class ActivityJointExpense extends ActivityBase {
 
         showProgress();
 
-
         dbUser=myDb.getUser(1);
-
-
 
         //chking user updated in db with online user id
         //if(dbUser.get("onlineid").equals("0")) {
