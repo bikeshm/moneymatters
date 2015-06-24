@@ -215,6 +215,17 @@ public class DBHelper extends SQLiteOpenHelper {
         return commonUpdate(data,"usertable");
     }
 
+
+    public int updatUserOnlineIdByPhone (String phone,  String onlineid) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("onlineid", onlineid);
+        db.update("usertable", contentValues, "phone = ? ", new String[] { phone } );
+        db.close();
+        return 1;
+    }
+
     public Map getUser(long id) {
         Map<String, String> data = new HashMap<String, String>();
         SQLiteDatabase db = this.getReadableDatabase();

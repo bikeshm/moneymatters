@@ -659,7 +659,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("api call", "ERROR "+error.getMessage());
+                        Log.i("api call", "ERROR "+apiUrl_LoginRegisterUser+error.getMessage());
                     }
                 });
         Rqueue.add(jsObjRequest);
@@ -730,7 +730,9 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("api call", "ERROR "+error.getMessage());
+                        Log.i("api call", "ERROR "+apiUrl_GroupDetails+error.getMessage());
+                        Toast.makeText(getApplicationContext(), "Error while accessing online data", Toast.LENGTH_LONG).show();
+                        closeProgress();
                     }
                 });
 
@@ -878,6 +880,8 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.i("api call", "ERROR " + error.getMessage());
+                            Toast.makeText(getApplicationContext(), "Error while accessing online data", Toast.LENGTH_LONG).show();
+                            closeProgress();
                         }
                     });
             Rqueue.add(jsObjRequest);

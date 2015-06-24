@@ -185,6 +185,7 @@ public class ActivityJointExpense extends ActivityBase {
                                 Log.i("api call", "ERROR "+error.getMessage());
                                 Toast.makeText(getApplicationContext(), "Error while accessing online data", Toast.LENGTH_LONG).show();
                                 populateListViewFromDB_populate();
+                                closeProgress();
                             }
                         });
                 Rqueue.add(jsObjRequest);

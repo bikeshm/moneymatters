@@ -24,10 +24,14 @@ import com.bikesh.scorpio.giventake.libraries.CustomRequest;
 import com.bikesh.scorpio.giventake.libraries.functions;
 import com.bikesh.scorpio.giventake.model.DBHelper;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import static com.bikesh.scorpio.giventake.libraries.functions.md5;
@@ -241,6 +245,36 @@ public class ActivityAddGroup extends ActivityBase {
 
                                     Log.i("api call addGroup", response.toString()+ "");
                                     // no need to edit local db
+
+                                    //update user online id
+                                    //myDb.updatUserOnlineIdByPhone()
+
+                                    JSONArray user_dataJSON = response.optJSONArray("user_data");
+                                    HashMap<String, String> tempStorage;
+
+                                    try{
+                                        for(int i = 0 ; i < user_dataJSON.length(); i++){
+
+                                            tempStorage = new HashMap<String, String>();
+
+                                            JSONObject jsonObj = user_dataJSON.getJSONObject(i);
+                                            Iterator<String> keysIterator = jsonObj.keys();
+                                            while (keysIterator.hasNext())
+                                            {
+                                                String keyStr = (String)keysIterator.next();
+                                                String valueStr = jsonObj.getString(keyStr);
+                                                tempStorage.put(keyStr,valueStr );
+                                            }
+
+                                            myDb.updatUserOnlineIdByPhone(tempStorage.get("phone"),tempStorage.get("onlineid")  );
+
+                                        }
+
+                                    }
+                                    catch (JSONException e) {
+                                    e.printStackTrace();
+                                    }
+
 
                                     Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
 

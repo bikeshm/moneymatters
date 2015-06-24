@@ -288,6 +288,8 @@ public class ActivityAddGroupEntry extends ActivityBase {
             if(currentUserOnlineId.equals(onlineOwnerId) || groupOnlineId.equals("0")) {
             //if(currentUserOnlineId.equals(onlineOwnerId)) {
                 data.put("user_id", ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId() + "");
+
+                Log.i("user_id","spinner");
             }
             else{
                 data.put("user_id",currentUserId);
@@ -385,7 +387,8 @@ public class ActivityAddGroupEntry extends ActivityBase {
         dataForPost.put("group_id",groupOnlineId); // myDb.getJointGroupField(dataForPost.get("user_id").toString(),"onlineid"));
         dataForPost.remove("joint_group_id");
 
-        dataForPost.put("user_id",myDb.getUserField( dataForPost.get("user_id").toString(),"onlineid"));
+
+        dataForPost.put("user_id",myDb.getUserField( dataForPost.get("user_id")+"","onlineid"));
 
         dataForPost.put("current_user",currentUserOnlineId);
 
