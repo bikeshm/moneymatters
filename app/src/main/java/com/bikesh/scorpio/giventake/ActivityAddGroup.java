@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -21,21 +20,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.bikesh.scorpio.giventake.adapters.Adapter_RecyclerViewList;
 import com.bikesh.scorpio.giventake.libraries.CustomRequest;
-import com.bikesh.scorpio.giventake.libraries.functions;
-import com.bikesh.scorpio.giventake.model.DBHelper;
+import com.bikesh.scorpio.giventake.database.DBHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import static com.bikesh.scorpio.giventake.libraries.functions.md5;
-import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
 
 
 public class ActivityAddGroup extends ActivityBase {

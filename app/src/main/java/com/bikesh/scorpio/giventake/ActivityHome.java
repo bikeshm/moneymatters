@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bikesh.scorpio.giventake.model.DBHelper;
+import com.bikesh.scorpio.giventake.database.DBHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -2,30 +2,21 @@ package com.bikesh.scorpio.giventake;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.provider.ContactsContract;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.bikesh.scorpio.giventake.adapters.Adapter_RecyclerViewList;
-import com.bikesh.scorpio.giventake.model.DBHelper;
+import com.bikesh.scorpio.giventake.database.DBHelper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.bikesh.scorpio.giventake.libraries.functions.md5;
-import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
 
 public class ActivityAddCategory extends ActivityBase {
 
@@ -76,14 +67,17 @@ public class ActivityAddCategory extends ActivityBase {
             backActivityIntent = new Intent(ActivityAddCategory.this, ActivityLendAndBorrow.class);
             getSupportActionBar().setTitle("Create User");
 
-        } else if (fromActivity.equals("ActivitySplash")) {
+        }
+        /*
+        else if (fromActivity.equals("ActivitySplash")) {
             ((Button) currentView.findViewById(R.id.cancelBtn)).setVisibility(View.GONE);
             ((LinearLayout) currentView.findViewById(R.id.passwordLayer)).setVisibility(View.VISIBLE);
 
             getSupportActionBar().setTitle("Register");
             backActivityIntent = new Intent(ActivityAddCategory.this, ActivityHome.class);
 
-        } else if (fromActivity.equals("ActivityPersonalExpense")) {
+        }*/
+        else if (fromActivity.equals("ActivityPersonalExpense")) {
             ((LinearLayout) currentView.findViewById(R.id.emailLayer)).setVisibility(View.GONE);
             ((LinearLayout) currentView.findViewById(R.id.phoneLayer)).setVisibility(View.GONE);
             backActivityIntent = new Intent(ActivityAddCategory.this, ActivityPersonalExpense.class);
@@ -102,7 +96,9 @@ public class ActivityAddCategory extends ActivityBase {
 
 
 
-        } else if (fromActivity.equals("ActivityJointExpense")) {
+        }
+        /*
+        else if (fromActivity.equals("ActivityJointExpense")) {
             getSupportActionBar().setTitle("Create a Group");
 
             ((LinearLayout) currentView.findViewById(R.id.isOnlineLayer)).setVisibility(View.VISIBLE);
@@ -124,18 +120,20 @@ public class ActivityAddCategory extends ActivityBase {
             //Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.listview_item_with_checkbox_template, cursor);
 
             //((ListView) currentView.findViewById(R.id.users)).setAdapter(adapter);
-                /*
+                /.*
                 recyclerView = (RecyclerView) findViewById(R.id.users);
                 recyclerView.setHasFixedSize(true);
 
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);
                 recyclerView.setLayoutManager(layoutManager);
-                */
+                *./
             adapter = new Adapter_RecyclerViewList(cursor, this);
             recyclerView.setAdapter(adapter);
 
 
-        } else {
+        }
+        */
+        else {
             throw new IllegalArgumentException("Invalid  ");
         }
 
@@ -166,15 +164,16 @@ public class ActivityAddCategory extends ActivityBase {
             data.put("description", ((EditText) currentView.findViewById(R.id.description)).getText().toString());
 
 
-            if(fromActivity.equals("ActivityLendAndBorrow") || fromActivity.equals("ActivitySplash") ) {
+            /* //removed user registration from lend and borrow
+            if(fromActivity.equals("ActivityLendAndBorrow") ){ //|| fromActivity.equals("ActivitySplash") ) {
 
 
                 data.put("email",  ((EditText) currentView.findViewById(R.id.email) ).getText().toString() );
                 data.put("phone", parsePhone(((EditText) currentView.findViewById(R.id.phone)).getText().toString()) );
 
-                if (((LinearLayout) currentView.findViewById(R.id.passwordLayer)).getVisibility()==View.VISIBLE){
-                    data.put("password", md5(((EditText) currentView.findViewById(R.id.phone)).getText().toString()) );
-                }
+                //if (((LinearLayout) currentView.findViewById(R.id.passwordLayer)).getVisibility()==View.VISIBLE){
+                //    data.put("password", md5(((EditText) currentView.findViewById(R.id.phone)).getText().toString()) );
+                //}
 
                 if (myDb.insertUser(data)==1) {
                     Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
@@ -185,7 +184,9 @@ public class ActivityAddCategory extends ActivityBase {
                     Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
                 }
             }
-            else  if(fromActivity.equals("ActivityPersonalExpense")) {
+            else
+            */
+            if(fromActivity.equals("ActivityPersonalExpense")) {
 
                 Log.i("saving colection", "in");
                 String currentGroupId = ((EditText) currentView.findViewById(R.id.id)).getText().toString();
@@ -222,6 +223,7 @@ public class ActivityAddCategory extends ActivityBase {
 
             }
 
+           /*
             else  if(fromActivity.equals("ActivityJointExpense")) {
 
                 int ismonthlytask=0;
@@ -232,7 +234,7 @@ public class ActivityAddCategory extends ActivityBase {
 
 
 
-                /*
+                /.*
                 CheckBox cb;
                 ListView mainListView =((ListView) currentView.findViewById(R.id.users));
                 for (int x = 0; x<mainListView.getChildCount();x++){
@@ -243,7 +245,7 @@ public class ActivityAddCategory extends ActivityBase {
                         members.add( Integer.parseInt( ((TextView) mainListView.getChildAt(x).findViewById(R.id.item_id)).getText().toString()  )  );
                     }
                 }
-                */
+                *./
 
 
                 int id = ((RadioGroup) currentView.findViewById(R.id.groupType)).getCheckedRadioButtonId();
@@ -327,6 +329,7 @@ public class ActivityAddCategory extends ActivityBase {
 
 
             }
+            */
 
 
         }

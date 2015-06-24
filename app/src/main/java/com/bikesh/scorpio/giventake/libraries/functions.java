@@ -10,9 +10,11 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhoneGetAll;
@@ -187,8 +189,6 @@ public class functions {
         return null;
 
     }
-
-
 
 
 

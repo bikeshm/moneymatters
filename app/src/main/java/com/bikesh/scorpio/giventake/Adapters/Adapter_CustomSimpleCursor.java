@@ -13,7 +13,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.bikesh.scorpio.giventake.R;
-import com.bikesh.scorpio.giventake.model.DBHelper;
+import com.bikesh.scorpio.giventake.database.DBHelper;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -130,7 +130,7 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
                 int phoneNumberType = (int) cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
                 String label = ContactsContract.CommonDataKinds.Phone.getTypeLabel(context.getResources(), phoneNumberType, "").toString();
 
-                ((TextView) view.findViewById(R.id.item_phone)).setText(parsePhone(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))));
+                ((TextView) view.findViewById(R.id.item_phone)).setText(parsePhone(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)), myDb.getdefaultContryCode()));
                 ((TextView) view.findViewById(R.id.item_phonetype)).setText(" " + label);
             }
             else if(dataExtra.get("dataFrom").equals("db") ) {

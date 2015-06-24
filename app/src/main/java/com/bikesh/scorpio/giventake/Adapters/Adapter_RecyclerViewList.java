@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.bikesh.scorpio.giventake.R;
+import com.bikesh.scorpio.giventake.database.DBHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ public class Adapter_RecyclerViewList extends RecyclerView.Adapter<Adapter_Recyc
 
     public HashMap<String, Map<String, String>> selectedUsers1 = new HashMap<String,  Map<String, String>>();
 
+
     public Adapter_RecyclerViewList(Cursor c, Context con) {
         this.context = con;
         mCursor=c;
@@ -42,7 +44,11 @@ public class Adapter_RecyclerViewList extends RecyclerView.Adapter<Adapter_Recyc
     @Override
     public viewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_item_with_checkbox_template, parent, false);
+
+
+
         return new viewHolder(itemView);
+
     }
 
     @Override
@@ -55,7 +61,14 @@ public class Adapter_RecyclerViewList extends RecyclerView.Adapter<Adapter_Recyc
             //((TextView) view.findViewById(R.id.item_id)).setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID)));
             String name = mCursor.getString(mCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             holder.item_name.setText(name );
-            String phoneNumber = parsePhone( mCursor.getString(mCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)) );
+
+            DBHelper  myDb = new DBHelper(context);
+
+            String phoneNumber = parsePhone( mCursor.getString(mCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)),myDb.getdefaultContryCode() );
+
+            if (myDb != null) {
+                myDb.close();
+            }
 
             String contact_id = mCursor.getString(mCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID));
 

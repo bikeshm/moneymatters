@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.bikesh.scorpio.giventake.adapters.Adapter_CustomSimpleCursor;
 import com.bikesh.scorpio.giventake.adapters.CustomDatePicker;
-import com.bikesh.scorpio.giventake.model.DBHelper;
+import com.bikesh.scorpio.giventake.database.DBHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -224,7 +224,7 @@ public class ActivityAddEntry extends ActivityBase {
 
             for (int i = 0; i < adapter.getCount(); i++) {
                 cursor.moveToPosition(i);
-                String temp = (parsePhone(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))));//cursor.getString(cursor.getColumnIndex("phone"));
+                String temp = (parsePhone(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)), myDb.getdefaultContryCode()));//cursor.getString(cursor.getColumnIndex("phone"));
                 if (temp.equals(phone)) {
                     cpos = i;
                     break;

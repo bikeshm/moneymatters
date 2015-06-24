@@ -21,7 +21,7 @@ import com.android.volley.toolbox.Volley;
 import com.bikesh.scorpio.giventake.adapters.Adapter_CustomSimpleCursor;
 import com.bikesh.scorpio.giventake.adapters.CustomDatePicker;
 import com.bikesh.scorpio.giventake.libraries.CustomRequest;
-import com.bikesh.scorpio.giventake.model.DBHelper;
+import com.bikesh.scorpio.giventake.database.DBHelper;
 
 import org.json.JSONObject;
 

@@ -76,6 +76,10 @@
             android:name=".ActivityAddCategory"
             android:label="@string/title_activity_activity_add_category" >
         </activity>
+        <activity
+            android:name=".ActivityRegisterUser"
+            android:label="@string/title_activity_activity_register_user" >
+        </activity>
     </application>
 
 </manifest>

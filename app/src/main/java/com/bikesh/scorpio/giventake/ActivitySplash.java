@@ -7,7 +7,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.bikesh.scorpio.giventake.model.DBHelper;
+import com.bikesh.scorpio.giventake.database.DBHelper;
 
 
 public class ActivitySplash extends ActionBarActivity {
@@ -38,7 +38,7 @@ public class ActivitySplash extends ActionBarActivity {
                 // if first time opening the app , need to register root user (me user)
                 if(myDb.getNumRowsUsertable()==0){
                     //register user
-                    i = new Intent(ActivitySplash.this, ActivityAddCategory.class);
+                    i = new Intent(ActivitySplash.this, ActivityRegisterUser.class);
                     i.putExtra("fromActivity", "ActivitySplash");
 
                 }

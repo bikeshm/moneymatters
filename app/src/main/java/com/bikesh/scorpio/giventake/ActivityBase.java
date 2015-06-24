@@ -23,12 +23,22 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.bikesh.scorpio.giventake.adapters.DrawerDataAdapter;
-import com.bikesh.scorpio.giventake.model.DBHelper;
+import com.bikesh.scorpio.giventake.database.DBHelper;
+import com.bikesh.scorpio.giventake.models.Country;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONObject;
+
+import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
@@ -230,7 +240,7 @@ public class ActivityBase extends ActionBarActivity {
         //Locale.getDefault().getCountry()
         String user_id=null;
 
-        phone=parsePhone(phone);
+        phone=parsePhone(phone,myDb.getdefaultContryCode());
 
         Log.i("Phone n", phone);
 
@@ -322,6 +332,31 @@ public class ActivityBase extends ActionBarActivity {
         super.onDestroy();
         if (myDb != null) {
             myDb.close();
+        }
+    }
+
+
+
+
+    public List<Country> getCountries() {
+        try {
+            InputStream is = getAssets().open("country_phone_code.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            String countriesJsonString = new String(buffer, "UTF-8");
+
+            JSONObject countriesJsonObject = new JSONObject(countriesJsonString);
+
+            Gson gson = new GsonBuilder().create();
+            Type listType = new TypeToken<ArrayList<Country>>() { }.getType();
+
+            List<Country> countries = gson.fromJson(countriesJsonObject.getJSONArray("country").toString(), listType);
+            return countries;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
         }
     }
 

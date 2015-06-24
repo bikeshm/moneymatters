@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bikesh.scorpio.giventake.adapters.CustomDatePicker;
-import com.bikesh.scorpio.giventake.model.DBHelper;
+import com.bikesh.scorpio.giventake.database.DBHelper;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

@@ -14,10 +14,10 @@ import java.util.Map;
 public class parsePhone {
 
 
-    public static String parsePhone(String phone) {
+    public static String parsePhone(String phone, String contryCode ) {
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
         try {
-            Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phone, Locale.getDefault().getCountry());
+            Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phone,  contryCode.toUpperCase() ); //Locale.getDefault().getCountry()
             return  phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164) ;
 
         } catch (NumberParseException e) {

@@ -1,4 +1,4 @@
-package com.bikesh.scorpio.giventake.model;
+package com.bikesh.scorpio.giventake.database;
 
 /**
  * Author : bikesh on 5/8/2015.
@@ -58,7 +58,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(
-                "create table "+USER_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', name text, email text, phone text,password text, description text, photo BLOB )"
+                "create table "+USER_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', name text, email text, phone text,password text, description text, country_code text , photo BLOB )"
         );
 
         db.execSQL(
@@ -255,6 +255,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 data.put("email", res.getString(res.getColumnIndex("email")));
                 data.put("phone", res.getString(res.getColumnIndex("phone")));
                 data.put("description", res.getString(res.getColumnIndex("description")));
+                data.put("country_code", res.getString(res.getColumnIndex("country_code")));
+
+
                 res.moveToNext();
             }
         }
@@ -297,6 +300,19 @@ public class DBHelper extends SQLiteOpenHelper {
 
             if(res.getCount()>0) {
                 return res.getString(res.getColumnIndex("phone"));
+            }
+        }
+        return null;
+    }
+
+    public String getdefaultContryCode() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select country_code from usertable where _id='1'", null );
+        if (res != null) {
+            res.moveToFirst();
+
+            if(res.getCount()>0) {
+                return res.getString(res.getColumnIndex("country_code"));
             }
         }
         return null;
