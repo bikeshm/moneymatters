@@ -1,6 +1,5 @@
 package com.bikesh.scorpio.giventake;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -79,6 +78,18 @@ public class ActivityJointExpense extends ActivityBase {
 
         //populateListViewFromDB();
 
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        populateListViewFromDB();
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(ActivityJointExpense.this,ActivityHome.class));
     }
 
 
@@ -228,17 +239,6 @@ public class ActivityJointExpense extends ActivityBase {
         closeProgress();
     }
 
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        populateListViewFromDB();
-    }
-
-    @Override
-    public void onBackPressed() {
-        startActivity(new Intent(ActivityJointExpense.this,ActivityHome.class));
-    }
 
 
     private class listItemClicked implements android.widget.AdapterView.OnItemClickListener {

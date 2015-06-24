@@ -3,7 +3,6 @@ package com.bikesh.scorpio.giventake;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -31,8 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
 
 public class ActivityAddGroupEntry extends ActivityBase {
 
@@ -396,7 +392,7 @@ public class ActivityAddGroupEntry extends ActivityBase {
             dataForPost.put("id", rowOnlineId);
         }
 
-        Log.i("save", "sending data to server save_JointEntryToOnlne"+dataForPost);
+        //Log.i("save", "sending data to server save_JointEntryToOnlne"+dataForPost);
 
         CustomRequest jsObjRequest =   new CustomRequest
 
@@ -405,7 +401,7 @@ public class ActivityAddGroupEntry extends ActivityBase {
                     @Override
                     public void onResponse(JSONObject response) {
 
-                        Log.i("api call 1", response.toString()+ "");
+                        //Log.i("api call 1", response.toString()+ "");
                         // no need to edit local db
 
                         Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
@@ -421,7 +417,8 @@ public class ActivityAddGroupEntry extends ActivityBase {
                         Log.i("api call", "ERROR "+error.getMessage());
                         Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
                         closeProgress();
-                        ((Button)currentView.findViewById(R.id.saveBtn)).setEnabled(true);
+                        //((Button)currentView.findViewById(R.id.saveBtn)).setEnabled(true);
+                        goBack();
                     }
                 });
         Rqueue.add(jsObjRequest);
