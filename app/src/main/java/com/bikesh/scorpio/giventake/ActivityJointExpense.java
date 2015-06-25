@@ -1,5 +1,7 @@
 package com.bikesh.scorpio.giventake;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -44,6 +46,8 @@ public class ActivityJointExpense extends ActivityBase {
 
     Map<String, String> dbUser = new HashMap<String, String>();
 
+
+
     RequestQueue Rqueue;
 
     //Api
@@ -68,6 +72,8 @@ public class ActivityJointExpense extends ActivityBase {
 
         listView = (ListView) currentView.findViewById(R.id.listViewFromDB);
         listView.setOnItemClickListener(new listItemClicked());
+        listView.setOnItemLongClickListener(new listItemLongClicked() );
+
 
         ((ImageButton)currentView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewGroup());
 
@@ -321,4 +327,88 @@ public class ActivityJointExpense extends ActivityBase {
             myDb.close();
         }
     }
+
+    private class listItemLongClicked implements AdapterView.OnItemLongClickListener {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+            generatePopupmenu(id+"");
+
+            return true;
+        }
+    }
+
+    public void generatePopupmenu(String groupId) {
+
+        CharSequence[] options  = { "Cancel" };
+
+        Map<String, String> dbGroup = myDb.fetchJointGroupbyId(groupId );
+
+
+
+
+        if(dbUser.get("onlineid").equals(dbGroup.get("owner")) ||
+                dbGroup.get("onlineid").equals("0") ||
+                dbGroup.get("onlineid").equals("")) {
+
+            options = new CharSequence[]{"Edit","Delete", "Cancel"};
+        }
+
+        final CharSequence[] menuItems= options;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityJointExpense.this);
+        //builder.setTitle("Add Photo!");
+        builder.setItems(menuItems, new popupmenuClickedListener(dbGroup, menuItems ));
+        builder.show();
+    }
+
+
+
+    private class popupmenuClickedListener implements DialogInterface.OnClickListener {
+
+        Map<String, String> dbGroup;
+        CharSequence[] menuItems;
+
+        public popupmenuClickedListener(Map<String, String> group, CharSequence[] mnItems) {
+            dbGroup= group;
+
+            menuItems=mnItems;
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+
+            //Toast.makeText(getApplicationContext(),menuItems[which], Toast.LENGTH_LONG).show();
+
+            if (menuItems[which].equals("Delete")) {
+                //if online delete from online
+                //if offline delete group and group entry
+
+                //populateListViewFromDB();
+
+            }
+
+            else if (menuItems[which].equals("Edit")) {
+
+                Intent i = new Intent(ActivityJointExpense.this, ActivityAddGroup.class);
+                i.putExtra("fromActivity", "ActivityJointExpense");
+                i.putExtra("groupId", dbGroup.get("_id"));
+                startActivity(i);
+
+                //Toast.makeText(getApplicationContext(),menuItems[which], Toast.LENGTH_LONG).show();
+
+                //myDb.deleteEntry(dbrowId);
+
+                //Cursor entrys =  myDb.getUserEntrys(userId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
+                //generateTable(entrys);
+
+                //deleteGroupEntry(rowId, rowOnlineId, rowUseronlineId);
+
+            }
+            else if (menuItems[which].equals("Cancel")) {
+                dialog.dismiss();
+            }
+        }
+    }
+
 }

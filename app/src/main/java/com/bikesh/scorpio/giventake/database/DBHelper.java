@@ -77,7 +77,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         db.execSQL(
-                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', isonline INTEGER DEFAULT 0, owner text, name text,  members_count INTEGER,ismonthlytask INTEGER , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB, last_updated DATE ,status text DEFAULT 'new')"  /* status=>new,updated (for knowing local changes)    */
+                "create table "+JOINTGROUP_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', isonline INTEGER DEFAULT 0, owner text, name text,  members_count INTEGER,ismonthlytask INTEGER  DEFAULT 0 , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB, last_updated DATE ,status text DEFAULT 'new')"  /* status=>new,updated (for knowing local changes)    */
         );
         db.execSQL(
                 "create table "+JOINTENTRY_TABLE_NAME+"  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', joint_group_id INTEGER, created_date DATE, description text, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0, last_updated DATE, status text DEFAULT 'new' )"  /* status=>new,updated  (for knowing local changes)   */
@@ -850,6 +850,46 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToFirst();
         }
         return res;
+    }
+
+
+
+    public ArrayList<String> getAllUsersIdsInGroup(String groupId) {
+
+        ArrayList<String> userIds = new ArrayList<String>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select user_id from "+JOINT_USER_GROUP_RELATION_TABLE_NAME+" where joint_group_id = "+groupId , null );
+        if (res != null) {
+            res.moveToFirst();
+
+            while (res.isAfterLast() == false) {
+
+                userIds.add(  res.getString(res.getColumnIndex("user_id")) );
+                res.moveToNext();
+            }
+
+        }
+        return userIds;
+    }
+
+    public ArrayList<String> getAllUsersPhoneInGroup(String groupId) {
+
+        ArrayList<String> userIds = new ArrayList<String>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select phone from usertable where _id in ( select user_id from "+JOINT_USER_GROUP_RELATION_TABLE_NAME+" where joint_group_id = "+groupId+")", null );
+        if (res != null) {
+            res.moveToFirst();
+
+            while (res.isAfterLast() == false) {
+
+                userIds.add(  res.getString(res.getColumnIndex("phone")) );
+                res.moveToNext();
+            }
+
+        }
+        return userIds;
     }
 
     //for ongoing single exp

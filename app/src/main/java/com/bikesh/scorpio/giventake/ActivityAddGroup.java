@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -19,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.bikesh.scorpio.giventake.adapters.Adapter_RecyclerViewList;
+import com.bikesh.scorpio.giventake.adapters.userCheckBoxRecycler;
 import com.bikesh.scorpio.giventake.libraries.CustomRequest;
 import com.bikesh.scorpio.giventake.database.DBHelper;
 
@@ -35,17 +37,8 @@ import java.util.Map;
 public class ActivityAddGroup extends ActivityBase {
 
     String fromActivity=null;
-
-    //View addGroupView;
-
-    //private DBHelper myDb ;
-
     Intent backActivityIntent=null;
-
-    RecyclerView recyclerView;
-    Adapter_RecyclerViewList adapter;
-
-    String groupId="0";
+    userCheckBoxRecycler adapter_userCheckBoxRecycler;
 
     DBHelper myDb;
 
@@ -53,21 +46,35 @@ public class ActivityAddGroup extends ActivityBase {
 
     RequestQueue Rqueue;
 
+    String groupId="0";
+    Map<String, String> dbGroup;
+
+    EditText nameEditText, descriptionEditText;
+    RadioGroup isOnlineRadio,groupTypeRadio;
+    RecyclerView usersRecyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_group);
+
+
+        nameEditText        = ((EditText) currentView.findViewById(R.id.name) );
+        descriptionEditText = ((EditText) currentView.findViewById(R.id.description));
+        isOnlineRadio       = ((RadioGroup) currentView.findViewById(R.id.isOnline));
+        groupTypeRadio      = ((RadioGroup) currentView.findViewById(R.id.groupType));
+        usersRecyclerView   = (RecyclerView) findViewById(R.id.recycler_Users);;
 
         myDb = new DBHelper(this);
 
         Rqueue = Volley.newRequestQueue(this);
 
         //--- initialising RecyclerView otherwise it is throwing null pointer exception
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_Users);
-        recyclerView.setHasFixedSize(true);
+
+        usersRecyclerView.setHasFixedSize(true);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        usersRecyclerView.setLayoutManager(layoutManager);
         //--
 
         Bundle extras = getIntent().getExtras();
@@ -79,6 +86,39 @@ public class ActivityAddGroup extends ActivityBase {
 
             groupId = extras.getString("groupId","0");
 
+        }
+
+
+        //edit
+
+        ArrayList<String> existingMembersPhoneList = new ArrayList<String>();
+
+        if(!groupId.equals("0")){
+
+            dbGroup = myDb.fetchJointGroupbyId(groupId );
+
+            nameEditText.setText(dbGroup.get("name"));
+            descriptionEditText.setText("description");
+
+            Log.i("group",dbGroup.get("isonline") );
+
+            if(dbGroup.get("isonline").equals("1")) {
+                isOnlineRadio.check(R.id.radioYes);
+            }
+            else {
+                isOnlineRadio.check(R.id.radioNo);
+            }
+
+            if(dbGroup.get("ismonthlytask").equals("1")) {
+                groupTypeRadio.check(R.id.radioMonthlyRenewing);
+            }
+            else {
+                groupTypeRadio.check(R.id.radioOnGoingSingle);
+            }
+
+            //usersRecyclerView
+
+            existingMembersPhoneList = myDb.getAllUsersPhoneInGroup(groupId);
         }
 
 
@@ -104,8 +144,11 @@ public class ActivityAddGroup extends ActivityBase {
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(layoutManager);
             */
-        adapter = new Adapter_RecyclerViewList(cursor, this);
-        recyclerView.setAdapter(adapter);
+
+
+        //adapter = new Adapter_RecyclerViewList(cursor, this);
+        adapter_userCheckBoxRecycler = new userCheckBoxRecycler(cursor, this, existingMembersPhoneList);
+        usersRecyclerView.setAdapter(adapter_userCheckBoxRecycler);
 
 
 
@@ -114,6 +157,8 @@ public class ActivityAddGroup extends ActivityBase {
 
         ((Button) currentView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
         ((Button) currentView.findViewById(R.id.cancelBtn)).setOnClickListener(new cancelActivity());
+
+
 
 
 
@@ -127,7 +172,7 @@ public class ActivityAddGroup extends ActivityBase {
 
             showProgress("Saving ...");
 
-            if(((EditText) currentView.findViewById(R.id.name) ).getText().toString().trim().equals("")){
+            if(nameEditText.getText().toString().trim().equals("")){
                 Toast.makeText(getApplicationContext(),"Name required", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -135,20 +180,20 @@ public class ActivityAddGroup extends ActivityBase {
             Map<String, String> data = new HashMap<String, String>();
 
             //Todo:- validate and escape incomming data
-            data.put("name",  ((EditText) currentView.findViewById(R.id.name) ).getText().toString());
-            data.put("description", ((EditText) currentView.findViewById(R.id.description)).getText().toString());
+            data.put("name",  nameEditText.getText().toString());
+            data.put("description", descriptionEditText.getText().toString());
 
 
 
-            ArrayList<String> members =new ArrayList<String>(adapter.CheckBoxSelected);
+            ArrayList<String> members =new ArrayList<String>(adapter_userCheckBoxRecycler.CheckBoxSelected);
 
             String membersDataJSON  = "[]";
 
 
-            HashMap<String, Map<String, String>> members1 = new HashMap<String,  Map<String, String>>(adapter.selectedUsers1);
+            HashMap<String, Map<String, String>> members1 = new HashMap<String,  Map<String, String>>(adapter_userCheckBoxRecycler.selectedUsers1);
 
             int ismonthlytask=0;
-            int groupTypeRadioButtonId = ((RadioGroup) currentView.findViewById(R.id.groupType)).getCheckedRadioButtonId();
+            int groupTypeRadioButtonId = groupTypeRadio.getCheckedRadioButtonId();
             if (groupTypeRadioButtonId == -1){
                 //no item selected
             }
@@ -192,7 +237,7 @@ public class ActivityAddGroup extends ActivityBase {
                 data.put("members_count", "" + members.size());
 
 
-                int isOnlineRadioButtonId = ((RadioGroup) currentView.findViewById(R.id.isOnline)).getCheckedRadioButtonId();
+                int isOnlineRadioButtonId = isOnlineRadio.getCheckedRadioButtonId();
 
                 if (isOnlineRadioButtonId == R.id.radioNo){  //selected offline save to local db
 
