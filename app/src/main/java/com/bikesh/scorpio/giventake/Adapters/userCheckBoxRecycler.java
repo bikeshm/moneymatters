@@ -32,8 +32,6 @@ public class userCheckBoxRecycler extends RecyclerView.Adapter<userCheckBoxRecyc
     public ArrayList<String> CheckBoxSelected = new ArrayList<String>();
 
     Map<String, String> selectedUsers = new HashMap<String, String>();
-    //map.put("name", "demo");
-
 
     public HashMap<String, Map<String, String>> selectedUsers1 = new HashMap<String,  Map<String, String>>();
 
@@ -47,11 +45,7 @@ public class userCheckBoxRecycler extends RecyclerView.Adapter<userCheckBoxRecyc
     @Override
     public viewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_item_with_checkbox_template, parent, false);
-
-
-
         return new viewHolder(itemView);
-
     }
 
     @Override
@@ -81,12 +75,9 @@ public class userCheckBoxRecycler extends RecyclerView.Adapter<userCheckBoxRecyc
 
             }
 
-
-
             holder.item_name.setOnClickListener(new checkboxClicked(   contact_id, name, phoneNumber  ) );
             holder.item_name.clearFocus();
             holder.item_name.setFocusable(false);
-
 
             //for edit
             if(existingMembersphoneList.contains(phoneNumber)){
@@ -99,9 +90,7 @@ public class userCheckBoxRecycler extends RecyclerView.Adapter<userCheckBoxRecyc
                 selectedUsers1.put(contact_id, temp);
 
             }
-
         }
-
     }
 
     @Override
@@ -124,8 +113,6 @@ public class userCheckBoxRecycler extends RecyclerView.Adapter<userCheckBoxRecyc
             CheckBox cb = (CheckBox) v;
             if(cb.isChecked()){
 
-                //map.put("name", "demo");
-
                 if (!selectedUsers.containsKey(rid) ) {
 
                     Map<String, String> temp = new HashMap<String, String>();
@@ -134,36 +121,22 @@ public class userCheckBoxRecycler extends RecyclerView.Adapter<userCheckBoxRecyc
 
                     selectedUsers1.put(rid, temp);
                 }
-
-                /*
-                if (!CheckBoxSelected.contains(rid) ) {
-                    CheckBoxSelected.add(rid);
-                }*/
             }
             else{
-                //CheckBoxSelected.remove(rid);
                 selectedUsers1.remove(rid);
             }
         }
     }
 
-
-
-    //holder
+   //holder
     public static class viewHolder extends RecyclerView.ViewHolder {
 
-        //public ImageView imageMedicineType;
         public CheckBox item_name;
-        // public TextView txtDosage;
-        // public TextView txtNextTimeOfAlarm;
-
         public viewHolder(View itemView) {
             super(itemView);
-            //imageMedicineType = (ImageView) itemView.findViewById(R.id.imageMedicineType);
             item_name = (CheckBox) itemView.findViewById(R.id.item_name);
-            //txtDosage = (TextView) itemView.findViewById(R.id.txtDosage);
-            //txtNextTimeOfAlarm = (TextView) itemView.findViewById(R.id.txtNextTimeOfAlarm);
         }
     }
+
 
 }
