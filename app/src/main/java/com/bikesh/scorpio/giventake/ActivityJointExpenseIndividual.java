@@ -675,7 +675,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
             Log.i("api call","not registred group it is created as online group but not updated in server");
 
             // TODO: 6/16/2015 :- need to work on it
-            // generateTables();
+            generateTables();
         }
         else{
             //registred group
@@ -758,7 +758,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
                     //Log.i("api call","members_data "+ keyStr + " => " + valueStr );
 
-                    String[] requiredKeys = new String[] {"user_id","name","phone"}; //,"created_date","photo"
+                    String[] requiredKeys = new String[] {"user_id","name","phone","country_code"}; //,"created_date","photo"
 
                     if( Arrays.asList(requiredKeys).contains(keyStr) ){
                         //Log.i("api call r", keyStr + " - "+ valueStr);

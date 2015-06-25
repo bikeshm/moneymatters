@@ -1216,6 +1216,9 @@ public class DBHelper extends SQLiteOpenHelper {
             newUser.put("onlineid", onlineUserdata.get("onlineid").toString());
             newUser.put("phone", onlineUserdata.get("phone").toString());
 
+            newUser.put("country_code", onlineUserdata.get("country_code").toString());
+
+
             //Log.i("api call", "inserting user in db ");
             insertUser(newUser);
 
