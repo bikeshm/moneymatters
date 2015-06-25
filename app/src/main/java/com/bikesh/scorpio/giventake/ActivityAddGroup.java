@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -100,14 +101,17 @@ public class ActivityAddGroup extends ActivityBase {
             nameEditText.setText(dbGroup.get("name"));
             descriptionEditText.setText("description");
 
-            Log.i("group",dbGroup.get("isonline") );
-
             if(dbGroup.get("isonline").equals("1")) {
                 isOnlineRadio.check(R.id.radioYes);
             }
             else {
                 isOnlineRadio.check(R.id.radioNo);
             }
+            // note :- there is a chance to make offline group to online currently we are not allowing
+            //isOnlineRadio.setEnabled(false);
+            ((RadioButton) currentView.findViewById(R.id.radioYes)).setEnabled(false);
+            ((RadioButton) currentView.findViewById(R.id.radioNo)).setEnabled(false);
+
 
             if(dbGroup.get("ismonthlytask").equals("1")) {
                 groupTypeRadio.check(R.id.radioMonthlyRenewing);
@@ -174,6 +178,7 @@ public class ActivityAddGroup extends ActivityBase {
 
             if(nameEditText.getText().toString().trim().equals("")){
                 Toast.makeText(getApplicationContext(),"Name required", Toast.LENGTH_LONG).show();
+                closeProgress();
                 return;
             }
 
@@ -208,6 +213,7 @@ public class ActivityAddGroup extends ActivityBase {
             if (members1.size() == 0){
                 //no item selected
                 Toast.makeText(getApplicationContext(), "Select Group members", Toast.LENGTH_SHORT).show();
+                closeProgress();
             }
             else {
 
@@ -241,39 +247,70 @@ public class ActivityAddGroup extends ActivityBase {
 
                 if (isOnlineRadioButtonId == R.id.radioNo){  //selected offline save to local db
 
-                    if (myDb.insertJointGroup(data)==1) {
+                    if(groupId.equals("0")) {
 
-                        Toast.makeText(getApplicationContext(), "Group created", Toast.LENGTH_SHORT).show();
+                        if (myDb.insertJointGroup(data) == 1) { //insert
 
-                       //getting group details
-                        Map<String, String> result = new HashMap<String, String>();
-                        result=myDb.getJointGroup(data);
+                            Toast.makeText(getApplicationContext(), "Group created", Toast.LENGTH_SHORT).show();
 
-                        //insert user relation
-                        if(result.size()>0){
-                            if(myDb.insertUserGroupRelation( Integer.parseInt(result.get("_id")), members)==1){
-                                Toast.makeText(getApplicationContext(), "Data saved", Toast.LENGTH_SHORT).show();
+                            //getting group details
+                            Map<String, String> result = new HashMap<String, String>();
+                            result = myDb.getJointGroup(data);
+
+                            //insert user relation
+                            if (result.size() > 0) {
+                                if (myDb.insertUserGroupRelation(Integer.parseInt(result.get("_id")), members) == 1) {
+                                    Toast.makeText(getApplicationContext(), "Data saved", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                            else {
-                                Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
-                            }
+
+                            closeProgress();
+                            goBack();
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                            closeProgress();
                         }
-
-                        closeProgress();
-                        goBack();
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
                     }
+                    else{ //update
+
+                        Log.i("group update",data+""+members );
+                        closeProgress();
+                    }
+
+
 
                 } else{ //selected  online save groupdetails to local online group table and  parse
 
+                    // note :- there is a chance to make offline group to online currently we are not allowing
+
                     data.put("members_json", membersDataJSON);
-                    data.put("owner", myDb.getUserField("1","onlineid"));
+
+                    String ownerId = myDb.getUserField("1", "onlineid");
+
+                    if(ownerId.equals("0") || ownerId.equals("") || ownerId ==null ){
+                        Log.i("creating group","Invalid user online id "+ownerId  );
+                        Toast.makeText(getApplicationContext(), "Error while creating Online group ", Toast.LENGTH_LONG).show();
+                        closeProgress();
+                        goBack();
+                        return;
+                    }
+
+                    data.put("owner", ownerId );
+
+
+
+                    if(groupId.equals("0")) {} //insert
+                    else{ //update
+                        data.put("id", dbGroup.get("onlineid") );
+                    }
+
+
+
 
                     Log.i("data to server",data +"" );
-
-
 
                     CustomRequest jsObjRequest =   new CustomRequest
 
