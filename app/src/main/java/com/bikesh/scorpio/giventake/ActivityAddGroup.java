@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -20,8 +19,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.bikesh.scorpio.giventake.adapters.Adapter_RecyclerViewList;
-import com.bikesh.scorpio.giventake.adapters.userCheckBoxRecycler;
 import com.bikesh.scorpio.giventake.libraries.CustomRequest;
 import com.bikesh.scorpio.giventake.database.DBHelper;
 
@@ -373,15 +370,6 @@ public class ActivityAddGroup extends ActivityBase {
                     //closeProgress();
                 }
             }
-
-
-
-
-
-
-
-
-
 
 
         }
