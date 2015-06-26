@@ -21,7 +21,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.bikesh.scorpio.giventake.Adapters.Adapter_CustomSimpleCursor;
+import com.bikesh.scorpio.giventake.adapters.Adapter_CustomSimpleCursor;
 import com.bikesh.scorpio.giventake.libraries.CustomRequest;
 import com.bikesh.scorpio.giventake.database.DBHelper;
 

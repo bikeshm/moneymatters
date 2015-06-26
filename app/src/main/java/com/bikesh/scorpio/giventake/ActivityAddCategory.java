@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.bikesh.scorpio.giventake.Adapters.Adapter_RecyclerViewList;
+import com.bikesh.scorpio.giventake.adapters.Adapter_RecyclerViewList;
 import com.bikesh.scorpio.giventake.database.DBHelper;
 
 import java.util.HashMap;

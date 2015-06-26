@@ -22,7 +22,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.bikesh.scorpio.giventake.Adapters.DrawerDataAdapter;
+import com.bikesh.scorpio.giventake.adapters.DrawerDataAdapter;
 import com.bikesh.scorpio.giventake.database.DBHelper;
 import com.bikesh.scorpio.giventake.models.Country;
 import com.google.gson.Gson;
