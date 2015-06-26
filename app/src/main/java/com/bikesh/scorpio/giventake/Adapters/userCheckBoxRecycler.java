@@ -21,7 +21,7 @@ import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
 /**
  * Created by bikesh on 6/25/2015.
  */
-public class userCheckBoxRecycler extends RecyclerView.Adapter<userCheckBoxRecycler.viewHolder> {
+public class UserCheckBoxRecycler extends RecyclerView.Adapter<UserCheckBoxRecycler.viewHolder> {
 
     private Context context;
 
@@ -36,7 +36,7 @@ public class userCheckBoxRecycler extends RecyclerView.Adapter<userCheckBoxRecyc
     public HashMap<String, Map<String, String>> selectedUsers1 = new HashMap<String,  Map<String, String>>();
 
 
-    public userCheckBoxRecycler(Cursor c, Context con, ArrayList<String> existingMembersPhone) {
+    public UserCheckBoxRecycler(Cursor c, Context con, ArrayList<String> existingMembersPhone) {
         this.context = con;
         mCursor=c;
         existingMembersphoneList=existingMembersPhone;
@@ -128,7 +128,7 @@ public class userCheckBoxRecycler extends RecyclerView.Adapter<userCheckBoxRecyc
         }
     }
 
-   //holder
+    //holder
     public static class viewHolder extends RecyclerView.ViewHolder {
 
         public CheckBox item_name;
@@ -137,7 +137,4 @@ public class userCheckBoxRecycler extends RecyclerView.Adapter<userCheckBoxRecyc
             item_name = (CheckBox) itemView.findViewById(R.id.item_name);
         }
     }
-
-
-
 }

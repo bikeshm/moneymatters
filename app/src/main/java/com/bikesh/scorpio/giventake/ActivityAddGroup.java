@@ -19,7 +19,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.bikesh.scorpio.giventake.adapters.userCheckBoxRecycler;
+import com.bikesh.scorpio.giventake.adapters.UserCheckBoxRecycler;
 import com.bikesh.scorpio.giventake.libraries.CustomRequest;
 import com.bikesh.scorpio.giventake.database.DBHelper;
 
@@ -37,7 +37,7 @@ public class ActivityAddGroup extends ActivityBase {
 
     String fromActivity=null;
     Intent backActivityIntent=null;
-    userCheckBoxRecycler adapter_userCheckBoxRecycler;
+    UserCheckBoxRecycler adapter_userCheckBoxRecycler;
 
     DBHelper myDb;
 
@@ -149,7 +149,7 @@ public class ActivityAddGroup extends ActivityBase {
 
 
         //adapter = new Adapter_RecyclerViewList(cursor, this);
-        adapter_userCheckBoxRecycler = new userCheckBoxRecycler(cursor, this, existingMembersPhoneList);
+        adapter_userCheckBoxRecycler = new UserCheckBoxRecycler(cursor, this, existingMembersPhoneList);
         usersRecyclerView.setAdapter(adapter_userCheckBoxRecycler);
 
 
