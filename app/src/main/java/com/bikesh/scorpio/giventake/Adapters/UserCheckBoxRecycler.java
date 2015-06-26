@@ -138,3 +138,4 @@ public class UserCheckBoxRecycler extends RecyclerView.Adapter<UserCheckBoxRecyc
         }
     }
 }
+
