@@ -792,23 +792,52 @@ public class DBHelper extends SQLiteOpenHelper {
 
 //    "create table "+JOINT_USER_GROUP_RELATION_TABLE_NAME+"  (_id INTEGER primary key autoincrement, user_id INTEGER, joint_group_id INTEGER  )"
 
-    public int insertUserGroupRelation (int groupId, ArrayList<String> members) {
+    public int insertUserGroupRelation (String groupId, ArrayList<String> members) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues;
 
-        for(int i=0;i<members.size();i++)
-        {
-            contentValues = new ContentValues();
-            contentValues.put("joint_group_id",groupId );
-            contentValues.put("user_id",members.get(i) );
 
-            db.insert(JOINT_USER_GROUP_RELATION_TABLE_NAME, null, contentValues);
+        for(int i=0;i<members.size();i++) {
+
+            if (isRelationExist(members.get(i), groupId) == 0 ){
+
+                contentValues = new ContentValues();
+                contentValues.put("joint_group_id", groupId);
+                contentValues.put("user_id", members.get(i));
+
+                db.insert(JOINT_USER_GROUP_RELATION_TABLE_NAME, null, contentValues);
+            }
         }
 
 
         db.close();
         return 1;
     }
+
+    /*
+    public int cleanupUserGroupRelation(String groupId, ArrayList<String> members)
+    {
+
+        String args="";
+        for (int i = 0; i < members.size(); i++) {
+            args= args+ members.get(i)+", ";
+        }
+
+        if(!args.equals("")) {
+            args = args.substring(0, args.length() - 2);
+        }
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("DELETE FROM "+JOINT_USER_GROUP_RELATION_TABLE_NAME+" WHERE joint_group_id = "+groupId+" and user_id NOT IN ("+args+");");
+        db.close();
+
+        db = this.getReadableDatabase();
+        db.execSQL("DELETE FROM "+JOINTENTRY_TABLE_NAME+" WHERE joint_group_id = "+groupId+" and user_id NOT IN ("+args+");");
+        db.close();
+    }
+    */
+
+
 
     public int insertRelation (String userId,  String groupId) {
         SQLiteDatabase db = this.getWritableDatabase();

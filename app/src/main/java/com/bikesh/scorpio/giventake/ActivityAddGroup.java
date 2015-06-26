@@ -257,7 +257,7 @@ public class ActivityAddGroup extends ActivityBase {
 
                             //insert user relation
                             if (result.size() > 0) {
-                                if (myDb.insertUserGroupRelation(Integer.parseInt(result.get("_id")), members) == 1) {
+                                if (myDb.insertUserGroupRelation( result.get("_id"), members) == 1) {
                                     Toast.makeText(getApplicationContext(), "Data saved", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
@@ -276,22 +276,18 @@ public class ActivityAddGroup extends ActivityBase {
 
                         data.put("_id", groupId );
 
+                        //update group
                         if (myDb.updateJointGroup(data) == 1) {
 
-                            //get currently selected users
-                            //get allready exsisting users
-                            // remove from relation table user who all r not in current user list
-                            // remove all the entrs from group entry
+                            //update user group relation
+                            myDb.insertUserGroupRelation(groupId, members);
 
-                            //remove allready exsisting user from current user and inser remaining user to relation
-
-
-
+                            //clean up
+                            //myDb.cleanupUserGroupRelation(groupId, members);
+                            myDb.cleanupOnlineGroupRelation(members,groupId );
                         }
-
-
-                        Log.i("group update",data+""+members );
                         closeProgress();
+                        goBack();
                     }
 
 
