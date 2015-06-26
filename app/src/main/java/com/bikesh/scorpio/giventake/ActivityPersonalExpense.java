@@ -17,8 +17,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bikesh.scorpio.giventake.adapters.Adapter_CustomSimpleCursor;
-import com.bikesh.scorpio.giventake.adapters.CustomDatePicker;
+import com.bikesh.scorpio.giventake.Adapters.Adapter_CustomSimpleCursor;
+import com.bikesh.scorpio.giventake.Adapters.CustomDatePicker;
 import com.bikesh.scorpio.giventake.database.DBHelper;
 
 import java.text.SimpleDateFormat;

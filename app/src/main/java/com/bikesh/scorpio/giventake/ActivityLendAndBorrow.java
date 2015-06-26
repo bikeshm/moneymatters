@@ -9,7 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.bikesh.scorpio.giventake.adapters.Adapter_CustomSimpleCursor;
+import com.bikesh.scorpio.giventake.Adapters.Adapter_CustomSimpleCursor;
 import com.bikesh.scorpio.giventake.database.DBHelper;
 
 import java.util.Map;

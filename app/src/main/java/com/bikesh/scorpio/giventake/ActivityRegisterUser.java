@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -19,7 +18,7 @@ import java.util.Map;
 import static com.bikesh.scorpio.giventake.libraries.functions.md5;
 import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
 
-import com.bikesh.scorpio.giventake.adapters.CountryAdapter;
+import com.bikesh.scorpio.giventake.Adapters.CountryAdapter;
 import com.bikesh.scorpio.giventake.models.Country;
 
 public class ActivityRegisterUser extends ActivityBase {
