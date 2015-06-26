@@ -645,6 +645,11 @@ public class DBHelper extends SQLiteOpenHelper {
         return commonInsert(data, JOINTGROUP_TABLE_NAME);
     }
 
+    public int updateJointGroup (Map<String, String> data)
+    {
+        return commonUpdate(data, JOINTGROUP_TABLE_NAME);
+    }
+
     public Cursor getJointGroupbyId(String groupId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select * from "+JOINTGROUP_TABLE_NAME+" where _id = "+ groupId, null );

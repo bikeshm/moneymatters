@@ -274,15 +274,31 @@ public class ActivityAddGroup extends ActivityBase {
                     }
                     else{ //update
 
+                        data.put("_id", groupId );
+
+                        if (myDb.updateJointGroup(data) == 1) {
+
+                            //get currently selected users
+                            //get allready exsisting users
+                            // remove from relation table user who all r not in current user list
+                            // remove all the entrs from group entry
+
+                            //remove allready exsisting user from current user and inser remaining user to relation
+
+
+
+                        }
+
+
                         Log.i("group update",data+""+members );
                         closeProgress();
                     }
 
 
 
-                } else{ //selected  online save groupdetails to local online group table and  parse
+                } else{ //selected  online
 
-                    // note :- there is a chance to make offline group to online currently we are not allowing
+                    // note :- while editing group, there is a chance to make offline group to online currently we are not allowing
 
                     data.put("members_json", membersDataJSON);
 
