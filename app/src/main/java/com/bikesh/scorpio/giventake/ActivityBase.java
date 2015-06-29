@@ -90,6 +90,9 @@ public class ActivityBase extends ActionBarActivity {
             return;
         }
 
+        NAME=myDb.getUserField("1", "name");
+        EMAIL = myDb.getUserField("1", "phone");
+
         //loading home activity templet in to template frame
         FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
         frame.removeAllViews();
