@@ -245,6 +245,8 @@ public class ActivityAddGroup extends ActivityBase {
 
                 if (isOnlineRadioButtonId == R.id.radioNo){  //selected offline save to local db
 
+                    Toast.makeText(getApplicationContext(),"group id save"+ dbGroup.get("_id"), Toast.LENGTH_LONG).show();
+
                     if(groupId.equals("0")) {
 
                         if (myDb.insertJointGroup(data) == 1) { //insert
@@ -298,23 +300,31 @@ public class ActivityAddGroup extends ActivityBase {
 
                     data.put("members_json", membersDataJSON);
 
-                    String ownerId = myDb.getUserField("1", "onlineid");
+                    String currentUserOnlineId = myDb.getUserField("1", "onlineid");
 
-                    if(ownerId.equals("0") || ownerId.equals("") || ownerId ==null ){
-                        Log.i("creating group","Invalid user online id "+ownerId  );
+                    if(currentUserOnlineId.equals("0") || currentUserOnlineId.equals("") || currentUserOnlineId ==null ){
+                        Log.i("creating group","Invalid user online id "+currentUserOnlineId  );
                         Toast.makeText(getApplicationContext(), "Error while creating Online group ", Toast.LENGTH_LONG).show();
                         closeProgress();
                         goBack();
                         return;
                     }
 
-                    data.put("owner", ownerId );
 
 
 
-                    if(groupId.equals("0")) {} //insert
+
+                    if(groupId.equals("0")) { //insert
+
+                        data.put("owner", currentUserOnlineId );
+
+
+                    }
                     else{ //update
                         data.put("id", dbGroup.get("onlineid") );
+                        data.put("current_user_id", currentUserOnlineId );
+                        data.put("owner", dbGroup.get("owner") );
+
                     }
 
 

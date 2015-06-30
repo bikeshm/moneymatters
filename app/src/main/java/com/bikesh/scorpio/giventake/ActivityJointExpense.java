@@ -390,6 +390,8 @@ public class ActivityJointExpense extends ActivityBase {
 
             else if (menuItems[which].equals("Edit")) {
 
+                Toast.makeText(getApplicationContext(),"group id"+ dbGroup.get("_id"), Toast.LENGTH_LONG).show();
+
                 Intent i = new Intent(ActivityJointExpense.this, ActivityAddGroup.class);
                 i.putExtra("fromActivity", "ActivityJointExpense");
                 i.putExtra("groupId", dbGroup.get("_id"));
