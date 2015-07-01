@@ -650,6 +650,37 @@ public class DBHelper extends SQLiteOpenHelper {
         return commonUpdate(data, JOINTGROUP_TABLE_NAME);
     }
 
+    public int deleteGroup(String GroupId){
+
+        //delet etable
+        commonDelete (GroupId,  JOINTGROUP_TABLE_NAME);
+
+        //delete relation
+        //
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(JOINT_USER_GROUP_RELATION_TABLE_NAME,
+                "joint_group_id = ? ",
+                new String[]{GroupId});
+
+        db.close();
+
+        //delete entrys
+
+        db = this.getWritableDatabase();
+        result = db.delete(JOINTENTRY_TABLE_NAME,
+                "joint_group_id = ? ",
+                new String[]{GroupId});
+
+        db.close();
+
+
+
+
+
+        return 1;
+    }
+
     public Cursor getJointGroupbyId(String groupId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select * from "+JOINTGROUP_TABLE_NAME+" where _id = "+ groupId, null );

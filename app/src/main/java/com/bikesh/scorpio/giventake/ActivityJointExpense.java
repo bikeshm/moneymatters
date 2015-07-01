@@ -386,11 +386,23 @@ public class ActivityJointExpense extends ActivityBase {
 
                 //populateListViewFromDB();
 
+                if(dbGroup.get("onlineid").equals("0")){ //offline
+                    myDb.deleteGroup( dbGroup.get("_id") );
+                    populateListViewFromDB();
+
+                }
+                else{ //online
+
+                }
+
+
+                //Toast.makeText(getApplicationContext(),""+ dbGroup.get("onlineid") , Toast.LENGTH_LONG).show();
+
             }
 
             else if (menuItems[which].equals("Edit")) {
 
-                Toast.makeText(getApplicationContext(),"group id"+ dbGroup.get("_id"), Toast.LENGTH_LONG).show();
+               // Toast.makeText(getApplicationContext(),"group id"+ dbGroup.get("_id"), Toast.LENGTH_LONG).show();
 
                 Intent i = new Intent(ActivityJointExpense.this, ActivityAddGroup.class);
                 i.putExtra("fromActivity", "ActivityJointExpense");

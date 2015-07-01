@@ -152,18 +152,8 @@ public class ActivityAddGroup extends ActivityBase {
         adapter_userCheckBoxRecycler = new UserCheckBoxRecycler(cursor, this, existingMembersPhoneList);
         usersRecyclerView.setAdapter(adapter_userCheckBoxRecycler);
 
-
-
-
-
-
         ((Button) currentView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
         ((Button) currentView.findViewById(R.id.cancelBtn)).setOnClickListener(new cancelActivity());
-
-
-
-
-
 
     }
 
@@ -245,7 +235,7 @@ public class ActivityAddGroup extends ActivityBase {
 
                 if (isOnlineRadioButtonId == R.id.radioNo){  //selected offline save to local db
 
-                    Toast.makeText(getApplicationContext(),"group id save"+ dbGroup.get("_id"), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(),"group id save"+ dbGroup.get("_id"), Toast.LENGTH_LONG).show();
 
                     if(groupId.equals("0")) {
 
