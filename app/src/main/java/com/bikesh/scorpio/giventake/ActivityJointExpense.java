@@ -55,6 +55,7 @@ public class ActivityJointExpense extends ActivityBase {
     //String apiUrl_RegisterUser = "http://givntake.workassis.com/api/user/register" ;
     String apiUrl_LoginRegisterUser = "http://givntake.workassis.com/api/user/login_register" ;
 
+    String apiUrl_DeleteGroup= "http://givntake.workassis.com/api/group/delete";
 
 
 
@@ -393,6 +394,16 @@ public class ActivityJointExpense extends ActivityBase {
                 }
                 else{ //online
 
+                    showProgress("Deleting ...");
+
+                    Map<String, String> data = new HashMap<String, String>();
+
+                    data.put("id", dbGroup.get("onlineid") );
+                    data.put("current_user_id",  myDb.getUserField("1", "onlineid") );
+                    //data.put("owner", dbGroup.get("owner") );
+
+                    deleteOnlienGroup( data );
+
                 }
 
 
@@ -423,6 +434,43 @@ public class ActivityJointExpense extends ActivityBase {
                 dialog.dismiss();
             }
         }
+    }
+
+
+
+    public void deleteOnlienGroup( Map<String, String> data ){
+
+        Log.i("data to server",data +"" );
+
+        if (!getInternetType(getApplicationContext()).equals("?")) {
+            CustomRequest jsObjRequest = new CustomRequest
+
+                    (Request.Method.POST, apiUrl_DeleteGroup, data, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+
+                            Log.i("api call delete Group", response.toString() + "");
+                            closeProgress();
+                            populateListViewFromDB();
+
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.i("api call delete Group", "ERROR " + error.getMessage() + error);
+                            Toast.makeText(getApplicationContext(), "Error while deleting group", Toast.LENGTH_SHORT).show();
+                            closeProgress();
+                            //((Button)currentView.findViewById(R.id.saveBtn)).setEnabled(true);
+                        }
+                    });
+            Rqueue.add(jsObjRequest);
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "No internet connection to update Online Groups", Toast.LENGTH_LONG).show();
+        }
+
     }
 
 }
