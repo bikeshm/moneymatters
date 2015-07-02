@@ -132,21 +132,7 @@ public class ActivityAddEntry extends ActivityBase {
             generateDataForPersonalExpense();
 
         }
-        /*else if (fromActivity.equals("ActivityJointExpenseIndividual")) {
-            backActivityIntent = new Intent(ActivityAddEntry.this, ActivityJointExpenseIndividual.class);
-            backActivityIntent.putExtra("groupId", "" + ID);
 
-            //=====split --face 2
-            //Cursor cursor = myDb.getAllUsersIncludedMe();
-            //adapter = new Adapter_TextRecyclerViewList(cursor, this);
-            //recyclerView.setAdapter(adapter);
-            //=====split --face 2
-
-            generateDataForJointExpenseIndividual();
-
-
-        }
-        */
         else {
             throw new IllegalArgumentException("Invalid  ");
         }
@@ -356,8 +342,6 @@ public class ActivityAddEntry extends ActivityBase {
 
                 View spinnerView = (((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedView());
 
-                //Log.i("Phone", ((TextView) spinnerView.findViewById(R.id.item_phone)).getText().toString());
-                //Log.i("Phone", ((TextView) spinnerView.findViewById(R.id.item_id)).getText().toString());
 
                 if(spinnerView==null){
                     Toast.makeText(getApplicationContext(), "Select a User", Toast.LENGTH_SHORT).show();
@@ -443,36 +427,7 @@ public class ActivityAddEntry extends ActivityBase {
 
             }
 
-            /* seperated
-            if(fromActivity.equals("ActivityJointExpenseIndividual")  ){
-                int is_split=0;
 
-                data.put("joint_group_id",  ID+"");
-                data.put("user_id", ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId() + "");
-
-                int id = ((RadioGroup) currentView.findViewById(R.id.isSplit)).getCheckedRadioButtonId();
-                if (id == -1){ /*no item selected*./ }
-                else {
-                    if (id == R.id.isSplitradioYes) {
-                        is_split = 1;
-                    }
-                }
-
-
-                data.put("is_split",  is_split+"" );
-
-                //onlineId = >online group id
-                if(onlineId==null) {
-                    save_JointEntryToLocal(data);
-                }
-                else{
-                    save_JointEntryToLocalOnlne(data);
-                }
-
-
-
-            }
-            */
 
         }
     }
@@ -493,15 +448,6 @@ public class ActivityAddEntry extends ActivityBase {
     }
 
 
-    /*
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (myDb != null) {
-            myDb.close();
-        }
-    }
-    */
 
     private class isSplitChanged implements RadioGroup.OnCheckedChangeListener {
         @Override
