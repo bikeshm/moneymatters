@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -48,7 +50,7 @@ public class ActivityAddGroup extends ActivityBase {
     String groupId="0";
     Map<String, String> dbGroup;
 
-    EditText nameEditText, descriptionEditText;
+    EditText nameEditText, descriptionEditText, UsersFilter;
     RadioGroup isOnlineRadio,groupTypeRadio;
     RecyclerView usersRecyclerView;
 
@@ -63,6 +65,8 @@ public class ActivityAddGroup extends ActivityBase {
         isOnlineRadio       = ((RadioGroup) currentView.findViewById(R.id.isOnline));
         groupTypeRadio      = ((RadioGroup) currentView.findViewById(R.id.groupType));
         usersRecyclerView   = (RecyclerView) findViewById(R.id.recycler_Users);;
+
+        UsersFilter = ((EditText) currentView.findViewById(R.id.recycler_Users_Filter) );
 
         myDb = new DBHelper(this);
 
@@ -155,8 +159,25 @@ public class ActivityAddGroup extends ActivityBase {
         ((Button) currentView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
         ((Button) currentView.findViewById(R.id.cancelBtn)).setOnClickListener(new cancelActivity());
 
+        UsersFilter.addTextChangedListener(filterTextWatcher);
+
     }
 
+
+    private TextWatcher filterTextWatcher = new TextWatcher() {
+
+        public void afterTextChanged(Editable s) {
+        }
+
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            adapter_userCheckBoxRecycler.getFilter().filter(s);
+
+        }
+
+    };
 
     private class saveData implements View.OnClickListener {
         @Override

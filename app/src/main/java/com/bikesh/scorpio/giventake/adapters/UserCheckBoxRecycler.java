@@ -4,10 +4,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Filterable;
+import android.widget.Filter;
 
 import com.bikesh.scorpio.giventake.R;
 import com.bikesh.scorpio.giventake.database.DBHelper;
@@ -21,11 +24,11 @@ import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
 /**
  * Created by bikesh on 6/25/2015.
  */
-public class UserCheckBoxRecycler extends RecyclerView.Adapter<UserCheckBoxRecycler.viewHolder> {
+public class UserCheckBoxRecycler extends RecyclerView.Adapter<UserCheckBoxRecycler.viewHolder> implements Filterable {
 
     private Context context;
 
-    Cursor mCursor;
+    Cursor mCursor,tempCursor;
 
     ArrayList<String> existingMembersphoneList = new ArrayList<String>();
 
@@ -39,6 +42,7 @@ public class UserCheckBoxRecycler extends RecyclerView.Adapter<UserCheckBoxRecyc
     public UserCheckBoxRecycler(Cursor c, Context con, ArrayList<String> existingMembersPhone) {
         this.context = con;
         mCursor=c;
+        tempCursor=c;
         existingMembersphoneList=existingMembersPhone;
     }
 
@@ -68,7 +72,7 @@ public class UserCheckBoxRecycler extends RecyclerView.Adapter<UserCheckBoxRecyc
 
             String contact_id = mCursor.getString(mCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID));
 
-            if ( selectedUsers.containsKey(contact_id)) {
+            if ( selectedUsers1.containsKey(contact_id)) {
                 holder.item_name.setChecked(true);
             } else {
                 holder.item_name.setChecked(false);
@@ -137,4 +141,50 @@ public class UserCheckBoxRecycler extends RecyclerView.Adapter<UserCheckBoxRecyc
             item_name = (CheckBox) itemView.findViewById(R.id.item_name);
         }
     }
+
+
+
+    private MyFilter myFilter;
+
+    @Override
+    public Filter getFilter() {
+        if(myFilter == null) {
+            myFilter = new MyFilter();
+        }
+        return myFilter;
+    }
+
+    private class MyFilter extends Filter {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults filterResults = new FilterResults();
+
+            Cursor cursor= tempCursor;
+
+
+
+
+            if(null != constraint && constraint.length()>0) {
+                //iterate list from db
+                Log.i("filter", constraint + "");
+                cursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME   + " like  '%"+constraint+"%'" , null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC" );
+            }
+
+            /*else {
+                cursor = mCursor;
+            }
+            */
+            filterResults.values = cursor;
+            filterResults.count = cursor.getCount() ;
+            return filterResults;
+
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            mCursor = (Cursor) results.values;
+            notifyDataSetChanged();
+        }
+    }
+
 }
