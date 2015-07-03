@@ -59,7 +59,7 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_group);
+        setContentView(R.layout.activity_joint_expense_add_group);
 
 
         nameEditText        = ((EditText) currentView.findViewById(R.id.name) );

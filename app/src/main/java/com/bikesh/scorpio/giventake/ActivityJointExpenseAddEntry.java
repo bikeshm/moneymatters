@@ -57,7 +57,7 @@ public class ActivityJointExpenseAddEntry extends ActivityBase {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_group_entry);
+        setContentView(R.layout.activity_joint_expense_add_entry);
 
         myDb = new DBHelper(this);
 
