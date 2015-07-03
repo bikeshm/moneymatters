@@ -84,7 +84,7 @@ public class UserCheckBoxRecycler extends RecyclerView.Adapter<UserCheckBoxRecyc
             holder.item_name.setFocusable(false);
 
             //for edit
-            if(existingMembersphoneList.contains(phoneNumber)){
+            if(existingMembersphoneList!=null && existingMembersphoneList.contains(phoneNumber)){
                 holder.item_name.setChecked(true);
                 //holder.item_name.performClick();
 

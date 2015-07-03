@@ -7,6 +7,7 @@ import android.provider.ContactsContract;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -161,6 +162,9 @@ public class ActivityAddGroup extends ActivityBase {
         ((Button) currentView.findViewById(R.id.cancelBtn)).setOnClickListener(new cancelActivity());
 
         UsersFilter.addTextChangedListener(filterTextWatcher);
+
+        UsersFilter.setInputType( ~(InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) );
+        UsersFilter.setInputType( ~(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS) );
 
         usersRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
