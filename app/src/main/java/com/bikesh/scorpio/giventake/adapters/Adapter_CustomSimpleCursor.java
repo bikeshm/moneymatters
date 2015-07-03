@@ -119,7 +119,7 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
         }
         else if(cContext.getResources().getResourceEntryName(layout).equals("custom_spinner_item_template")){
 
-            Log.i("ppppp" , dataExtra.get("dataFrom") );
+            Log.i("ppppp" , dataExtra.get("dataFrom")+"" );
 
             if(dataExtra.get("dataFrom").equals("contact") ) {
 

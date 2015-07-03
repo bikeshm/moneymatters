@@ -12,8 +12,10 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FilterQueryProvider;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -34,24 +36,31 @@ import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
 
 public class ActivityLendAndBorrowAddEntry extends ActivityBase {
 
-    String fromActivity=null;
+    String fromActivity = null;
 
-    String ID=null;
-    String Name="",rowId=null;
+    //String ID=null;
+    //String Name="";
+    String rowId=null;
 
-    String onlineId=null;
-    //DBHelper myDb;
+    //String onlineId=null;
 
-    boolean actionFlag=false; //if false giving or borrowing
 
-    Intent backActivityIntent=null;
+    boolean actionFlag = false; //if false giving or borrowing
+
+    Intent backActivityIntent = null;
 
     //RecyclerView recyclerView;
 
     //Adapter_TextRecyclerViewList adapter;
 
 
-    EditText datePicker,created_date_forDB;
+    EditText datePicker, created_date_forDB;
+
+    Adapter_CustomSimpleCursor adapter_CustomSimpleCursor;
+    AutoCompleteTextView autoCompleteFromUser;
+
+    Map<String, String> selectedFromUser = new HashMap<String, String>();
+    ;
 
 
     DBHelper myDb;
@@ -64,6 +73,9 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
 
         myDb = new DBHelper(this);
 
+        autoCompleteFromUser = (AutoCompleteTextView) findViewById(R.id.fromUser);
+
+
         //--- initialising RecyclerView otherwise it is throwing null pointer exception
         //recyclerView = (RecyclerView) findViewById(R.id.recycler_Users);
         //recyclerView.setHasFixedSize(true);
@@ -74,10 +86,10 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
 
         Bundle extras = getIntent().getExtras();
 
-        if(extras == null) {
-            fromActivity= null;
+        if (extras == null) {
+            fromActivity = null;
         } else {
-            fromActivity= extras.getString("fromActivity");
+            fromActivity = extras.getString("fromActivity");
 
 
             //ID = extras.getString("ID", null);
@@ -109,31 +121,23 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         //----implementing date picker
 
 
-
-
         if (fromActivity.equals("ActivityLendAndBorrow")) {
             backActivityIntent = new Intent(ActivityLendAndBorrowAddEntry.this, ActivityLendAndBorrow.class);
             generateDataForLendNBorrow();
 
         } else if (fromActivity.equals("ActivityLendAndBorrowPersonal")) {
-            backActivityIntent = new Intent(ActivityLendAndBorrowAddEntry.this, ActivityLendAndBorrowIndividual.class);
-            backActivityIntent.putExtra("fromActivity", "ActivityLendAndBorrow");
-            backActivityIntent.putExtra("userId", "" + ID);
-            backActivityIntent.putExtra("userName", Name);
-            generateDataForLendNBorrow();
+//            backActivityIntent = new Intent(ActivityLendAndBorrowAddEntry.this, ActivityLendAndBorrowIndividual.class);
+//            backActivityIntent.putExtra("fromActivity", "ActivityLendAndBorrow");
+//            backActivityIntent.putExtra("userId", "" + ID);
+//            backActivityIntent.putExtra("userName", Name);
+//            generateDataForLendNBorrow();
 
-        }
-
-
-        else {
+        } else {
             throw new IllegalArgumentException("Invalid  ");
         }
 
 
-
-
-
-        ((Button)currentView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
+        ((Button) currentView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
         ((Button) currentView.findViewById(R.id.cancelBtn)).setOnClickListener(new cancelActivity());
 
     }
@@ -142,31 +146,7 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
 
 
     /*
-    private void generateDataForJointExpenseIndividual() {
-        ((LinearLayout) currentView.findViewById(R.id.l3) ).setVisibility(View.GONE);
-
-        //===================face 2
-        //((LinearLayout) addEntryView.findViewById(R.id.isSplitLayer) ).setVisibility(View.VISIBLE);
-        //((LinearLayout) addEntryView.findViewById(R.id.grupMembersLayer) ).setVisibility(View.VISIBLE);
-        //=====================face 2
-        Map<String, String> data = new HashMap<String, String>();
-        data.put("dataFrom","db"  );
-        ((TextView) currentView.findViewById(R.id.selectUserLabel)).setText("Spend By");
-        Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, myDb.getAllUsersInGroup(ID + "") , data );
-        ((Spinner) currentView.findViewById(R.id.fromUser)).setAdapter(adapter);
-
-
-
-        ((RadioGroup) currentView.findViewById(R.id.isSplit)).setOnCheckedChangeListener(new isSplitChanged());
-
-        //recyclerView.setOnKeyListener(new recyclerViewKeyListener());
-
-    }
-    */
-
-
-
-    private void generate_FromuserSpinner(Cursor cursor, String dataFrom) {
+     private void generate_FromuserSpinner(Cursor cursor, String dataFrom) {
 
         Map<String, String> data = new HashMap<String, String>();
 
@@ -196,39 +176,25 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
                 }
             }
         }
-        else{
-            /*
-            for(int i = 0; i < adapter.getCount(); i++){
-                cursor.moveToPosition(i);
-                Double temp = Double.parseDouble(cursor.getString(cursor.getColumnIndex("_id")));
-                if ( temp == ID ){
-                    cpos = i;
-                    break;
-                }
-            }
-            */
 
-        }
+
 
         //((Spinner) currentView.findViewById(R.id.fromUser)).setSelection(cpos);
 
     }
+    */
 
 
+    private void generateDataForLendNBorrow() {
 
 
-
-    private void generateDataForLendNBorrow(){
-
-
-        String[] entryAction = { "Giving to", "Borrow from",};
-
+        String[] entryAction = {"Giving to", "Borrow from",};
 
 
         // getting options from xml string array
-        ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, entryAction );
-        ((Spinner)findViewById(R.id.actionSpinner)).setAdapter(actionSpinnerArrayAdapter);
-        ((Spinner)findViewById(R.id.actionSpinner)).setOnItemSelectedListener(new selectedAction());
+        ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, entryAction);
+        ((Spinner) findViewById(R.id.actionSpinner)).setAdapter(actionSpinnerArrayAdapter);
+        ((Spinner) findViewById(R.id.actionSpinner)).setOnItemSelectedListener(new selectedAction());
 
 
         //Cursor cursor = myDb.getAllUsers();
@@ -237,18 +203,67 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         //Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
         Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
-        generate_FromuserSpinner(cursor,"contact");
+        Map<String, String> data = new HashMap<String, String>();
+
+        data.put("dataFrom", "contact");
+
+        adapter_CustomSimpleCursor = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, cursor, data);
+
+
+        //auto complete
+        autoCompleteFromUser.setAdapter(adapter_CustomSimpleCursor);
+        autoCompleteFromUser.setThreshold(1);
+
+        adapter_CustomSimpleCursor.setFilterQueryProvider(new FilterQueryProvider() {
+            public Cursor runQuery(CharSequence str) {
+                return getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + str + "%'", null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+            }
+        });
+
+        adapter_CustomSimpleCursor.setCursorToStringConverter(new Adapter_CustomSimpleCursor.CursorToStringConverter() {
+            public CharSequence convertToString(Cursor cur) {
+                int index = cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+                return cur.getString(index);
+            }
+        });
+
+
+        autoCompleteFromUser.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View arg1, int pos, long id) {
+
+                View clickedView = adapter_CustomSimpleCursor.getView(pos, null, null);
+
+                selectedFromUser.put("name", ((TextView) clickedView.findViewById(R.id.item_name)).getText() + "");
+
+                selectedFromUser.put("id", ((TextView) clickedView.findViewById(R.id.item_id)).getText() + "");
+                selectedFromUser.put("phone", ((TextView) clickedView.findViewById(R.id.item_phone)).getText() + "");
+                selectedFromUser.put("phonetype", ((TextView) clickedView.findViewById(R.id.item_phonetype)).getText() + "");
+
+                //Log.i("click", selected+"");
+
+
+                //Toast.makeText(MainActivity.this, ((TextView)clickedView.findViewById(R.id.item_name)).getText()+"", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        //autocomplete
+
+        //generate_FromuserSpinner(cursor,"contact");
 
 
         //clicked on the table row
-        if(rowId!=null){
-            generateEditData(myDb.getEntryById(rowId));
-        }
+        // if(rowId!=null){
+        //     generateEditData(myDb.getEntryById(rowId));
+        // }
+
 
     }
 
 
 
+    /*
     private void generateEditData(Cursor currentEntry){
         //created_date DATE, description text, from_user INTEGER, to_user INTEGER,
 
@@ -270,25 +285,24 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         }
 
     }
-
-
+    */
 
 
     private class selectedAction implements AdapterView.OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            if(id==0){
-                ((TextView) currentView.findViewById (R.id.selectUserLabel)).setText("Give to ");
-                actionFlag=false;
-            }
-            else{
-                ((TextView) currentView.findViewById (R.id.selectUserLabel)).setText("Borrow from ");
-                actionFlag=true;
+            if (id == 0) {
+                ((TextView) currentView.findViewById(R.id.selectUserLabel)).setText("Give to ");
+                actionFlag = false;
+            } else {
+                ((TextView) currentView.findViewById(R.id.selectUserLabel)).setText("Borrow from ");
+                actionFlag = true;
             }
         }
 
         @Override
-        public void onNothingSelected(AdapterView<?> parent) { }
+        public void onNothingSelected(AdapterView<?> parent) {
+        }
     }
 
 
@@ -298,124 +312,80 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         @Override
         public void onClick(View v) {
 
+            Log.i("save", selectedFromUser+"  =="+selectedFromUser.size());
 
+            if (selectedFromUser.size() == 0 || !autoCompleteFromUser.getText().toString().equals(selectedFromUser.get("name"))) {
+                Toast.makeText(getApplicationContext(), "Select a User", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             Map<String, String> data = new HashMap<String, String>();
 
             //common field
-            data.put("created_date",  ((EditText) currentView.findViewById(R.id.created_date) ).getText().toString() );
+            data.put("created_date", ((EditText) currentView.findViewById(R.id.created_date)).getText().toString());
             data.put("description", ((EditText) currentView.findViewById(R.id.description)).getText().toString());
 
 
-            try{
+            try {
                 data.put("amt", Float.parseFloat(((EditText) currentView.findViewById(R.id.amount)).getText().toString()) + "");
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 data.put("amt", "0");
             }
 
 
 
 
+            String userId = registreUserFromContact(selectedFromUser.get("phone"), selectedFromUser.get("name"));
 
-            if(fromActivity.equals("ActivityLendAndBorrowPersonal") || fromActivity.equals("ActivityLendAndBorrow")  ) {
+            Log.i("Phone id", userId);
+
+            if (actionFlag == false) {
+                data.put("from_user", "1");
+                data.put("to_user", userId);
+            } else {
+                data.put("from_user", userId);
+                data.put("to_user", "1");
+            }
+
+            //String recodId = ((EditText) currentView.findViewById(R.id.id)).getText().toString();
+
+            Log.i("save", data+"");
 
 
-                ContentResolver cr = getContentResolver();
+            if (rowId==null || rowId.equals("0")) {
+                if (myDb.insertEntry(data) == 1) {
+                    Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
 
-                View spinnerView = (((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedView());
+                    backActivityIntent = new Intent(ActivityLendAndBorrowAddEntry.this, ActivityLendAndBorrowIndividual.class);
+                    backActivityIntent.putExtra("fromActivity", "ActivityLendAndBorrow");
+                    backActivityIntent.putExtra("userId", "" + userId);
+                    backActivityIntent.putExtra("userName", selectedFromUser.get("name"));
 
+                    goBack();
 
-                if(spinnerView==null){
-                    Toast.makeText(getApplicationContext(), "Select a User", Toast.LENGTH_SHORT).show();
-                    return;
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                }
+            } else { //update
+                data.put("_id", rowId);
+
+                if (myDb.updateEntry(data) == 1) {
+                    Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+
+                    goBack();
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
                 }
 
-                String userId = registreUserFromContact(
-                        ((TextView) spinnerView.findViewById(R.id.item_phone)).getText().toString(),
-                        ((TextView) spinnerView.findViewById(R.id.item_name)).getText().toString()
-                );
-
-                Log.i("Phone id",userId);
-
-                if(actionFlag==false) {
-                    data.put("from_user", "1" );
-                    data.put("to_user", userId );
-                }
-                else{
-                    data.put("from_user",  userId );
-                    data.put("to_user", "1" );
-                }
-
-                String recodId=((EditText) currentView.findViewById(R.id.id)).getText().toString();
-
-                if(recodId.equals("0")) {
-                    if (myDb.insertEntry(data) == 1) {
-                        Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
-
-                        backActivityIntent = new Intent(ActivityLendAndBorrowAddEntry.this, ActivityLendAndBorrowIndividual.class);
-                        backActivityIntent.putExtra("fromActivity", "ActivityLendAndBorrow");
-                        backActivityIntent.putExtra("userId", "" + userId);
-                        backActivityIntent.putExtra("userName", ((TextView) spinnerView.findViewById(R.id.item_name)).getText().toString() );
-
-                        goBack();
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                else { //update
-                    data.put("_id", recodId );
-
-                    if (myDb.updateEntry(data) == 1) {
-                        Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
-
-                        goBack();
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
-                    }
-
-
-                }
 
             }
 
-
-            if(fromActivity.equals("ActivityPersonalExpense") || fromActivity.equals("ActivityPersonalExpenseIndividual") ){
-                data.put("collection_id",  ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId()+"" );
-
-                if(rowId == null) {
-                    if (myDb.insertPersonalExpense(data) == 1) {
-                        Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
-
-                        goBack();
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                else{
-                    data.put("_id", rowId );
-                    if (myDb.updatePersonalExpense(data) == 1) {
-                        Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
-
-                        goBack();
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-
-            }
 
 
 
         }
     }
-
-
 
 
     private class cancelActivity implements View.OnClickListener {
@@ -425,41 +395,10 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         }
     }
 
-    private void goBack(){
+    private void goBack() {
         startActivity(backActivityIntent);
         finish();
     }
-
-
-
-    private class isSplitChanged implements RadioGroup.OnCheckedChangeListener {
-        @Override
-        public void onCheckedChanged(RadioGroup group, int checkedId) {
-            Toast.makeText( getApplicationContext(),""+ checkedId,Toast.LENGTH_LONG).show();
-
-            if(checkedId==R.id.isSplitradioYes){
-                ((LinearLayout) currentView.findViewById(R.id.grupMembersLayer) ).setVisibility(View.VISIBLE);
-                ((EditText)currentView.findViewById(R.id.amount)).setEnabled(false);
-            }
-            else{
-                ((LinearLayout) currentView.findViewById(R.id.grupMembersLayer) ).setVisibility(View.GONE);
-                ((EditText)currentView.findViewById(R.id.amount)).setEnabled(true);
-            }
-        }
-    }
-
-
-    /*
-    private class recyclerViewKeyListener implements View.OnKeyListener {
-        @Override
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-
-            Toast.makeText(getApplicationContext(),"keyup",Toast.LENGTH_LONG).show();
-
-            return false;
-        }
-    }
-    */
 
 
     @Override

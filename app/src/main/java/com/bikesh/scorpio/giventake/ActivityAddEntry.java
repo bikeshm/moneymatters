@@ -241,9 +241,9 @@ public class ActivityAddEntry extends ActivityBase {
     private void generateDataForLendNBorrow(){
 
 
-
+        String[] entryAction = { "Giving to", "Borrow from",};
         // getting options from xml string array
-        ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.addEntryAction));
+        ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item,entryAction);
         ((Spinner)findViewById(R.id.actionSpinner)).setAdapter(actionSpinnerArrayAdapter);
         ((Spinner)findViewById(R.id.actionSpinner)).setOnItemSelectedListener(new selectedAction());
 
