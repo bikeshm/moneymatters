@@ -137,6 +137,7 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
             selectedFromUser=myDb.getUser( Long.parseLong(fromUserId));
             autoCompleteFromUser.setText(selectedFromUser.get("name"));
             autoCompleteFromUser.setEnabled(false);
+            clearFlag=true;
 
         }
 
@@ -161,9 +162,11 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
             public Cursor runQuery(CharSequence str) {
 
                 if(clearFlag==true){
-                    autoCompleteFromUser.setText(""+ str.charAt(str.length() - 1) );
-                    //autoCompleteFromUser.setSelection(str.length());
+                    autoCompleteFromUser.setText("");
+                    //autoCompleteFromUser.setText(""+ str.charAt(str.length() - 1) );
+                    //autoCompleteFromUser.setSelection(autoCompleteFromUser.getText().toString().length());
                     clearFlag=false;
+                    str="";
                 }
                 return getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + str + "%'", null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
             }
