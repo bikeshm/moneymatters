@@ -5,12 +5,6 @@
     <string name="action_settings">Settings</string>
 
 
-    <!-- dot change the order of addEntryActionarray -->
-    <string-array name="addEntryAction">
-        <item>Giving to</item>
-        <item>Borrow from</item>
-    </string-array>
-
     <string-array name="contryCode">
         <item>+91</item>
         <item>+1</item>

@@ -35,7 +35,8 @@ import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
 public class ActivityLendAndBorrowAddEntry extends ActivityBase {
 
     String fromActivity=null;
-    long ID=0;
+
+    String ID=null;
     String Name="",rowId=null;
 
     String onlineId=null;
@@ -45,7 +46,7 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
 
     Intent backActivityIntent=null;
 
-    RecyclerView recyclerView;
+    //RecyclerView recyclerView;
 
     //Adapter_TextRecyclerViewList adapter;
 
@@ -58,17 +59,17 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_entry);
+        setContentView(R.layout.activity_lend_and_borrow_add_entry);
 
 
         myDb = new DBHelper(this);
 
         //--- initialising RecyclerView otherwise it is throwing null pointer exception
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_Users);
-        recyclerView.setHasFixedSize(true);
+        //recyclerView = (RecyclerView) findViewById(R.id.recycler_Users);
+        //recyclerView.setHasFixedSize(true);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        //LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        //recyclerView.setLayoutManager(layoutManager);
         //--
 
         Bundle extras = getIntent().getExtras();
@@ -78,13 +79,13 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         } else {
             fromActivity= extras.getString("fromActivity");
 
-            if(extras.getString("ID")!=null)
-                ID = Long.parseLong(extras.getString("ID"));
 
-            rowId = extras.getString("rowId",null);
-            Name = extras.getString("Name");
+            //ID = extras.getString("ID", null);
 
-            onlineId = extras.getString("onlineId",null);
+            //rowId = extras.getString("rowId",null);
+            //Name = extras.getString("Name");
+
+            //onlineId = extras.getString("onlineId",null);
         }
 
 
@@ -121,17 +122,8 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
             backActivityIntent.putExtra("userName", Name);
             generateDataForLendNBorrow();
 
-        } else if (fromActivity.equals("ActivityPersonalExpense")) {
-            backActivityIntent = new Intent(ActivityLendAndBorrowAddEntry.this, ActivityPersonalExpense.class);
-            generateDataForPersonalExpense();
-
-        } else if (fromActivity.equals("ActivityPersonalExpenseIndividual")) {
-            backActivityIntent = new Intent(ActivityLendAndBorrowAddEntry.this, ActivityPersonalExpenseIndividual.class);
-            backActivityIntent.putExtra("colId", "" + ID);
-            backActivityIntent.putExtra("colName", Name);
-            generateDataForPersonalExpense();
-
         }
+
 
         else {
             throw new IllegalArgumentException("Invalid  ");
@@ -149,6 +141,7 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
 
 
 
+    /*
     private void generateDataForJointExpenseIndividual() {
         ((LinearLayout) currentView.findViewById(R.id.l3) ).setVisibility(View.GONE);
 
@@ -166,26 +159,12 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
 
         ((RadioGroup) currentView.findViewById(R.id.isSplit)).setOnCheckedChangeListener(new isSplitChanged());
 
-        recyclerView.setOnKeyListener(new recyclerViewKeyListener());
+        //recyclerView.setOnKeyListener(new recyclerViewKeyListener());
 
     }
-
-    private void generateDataForPersonalExpense(){
-
-        ((LinearLayout) currentView.findViewById(R.id.l3) ).setVisibility(View.GONE);
-        ((TextView)currentView.findViewById(R.id.selectUserLabel)).setText("Select Collection : ");
-
-        Cursor cursor = myDb.getAllCollection();
-        generate_FromuserSpinner(cursor, "db");
+    */
 
 
-        if(rowId!=null){
-            generateEditData(myDb.getPersonalExpense(rowId));
-        }
-
-
-
-    }
 
     private void generate_FromuserSpinner(Cursor cursor, String dataFrom) {
 
@@ -195,7 +174,7 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
 
         Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, cursor,data);
 
-        ((Spinner) currentView.findViewById(R.id.fromUser)).setAdapter(adapter);
+        //((Spinner) currentView.findViewById(R.id.fromUser)).setAdapter(adapter);
 
         //// TODO: 6/3/2015 :-
         //setting passed/selected user name in spinner
@@ -218,7 +197,7 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
             }
         }
         else{
-
+            /*
             for(int i = 0; i < adapter.getCount(); i++){
                 cursor.moveToPosition(i);
                 Double temp = Double.parseDouble(cursor.getString(cursor.getColumnIndex("_id")));
@@ -227,10 +206,11 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
                     break;
                 }
             }
+            */
 
         }
 
-        ((Spinner) currentView.findViewById(R.id.fromUser)).setSelection(cpos);
+        //((Spinner) currentView.findViewById(R.id.fromUser)).setSelection(cpos);
 
     }
 
@@ -241,9 +221,12 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
     private void generateDataForLendNBorrow(){
 
 
+        String[] entryAction = { "Giving to", "Borrow from",};
+
+
 
         // getting options from xml string array
-        ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.addEntryAction));
+        ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, entryAction );
         ((Spinner)findViewById(R.id.actionSpinner)).setAdapter(actionSpinnerArrayAdapter);
         ((Spinner)findViewById(R.id.actionSpinner)).setOnItemSelectedListener(new selectedAction());
 
@@ -465,6 +448,8 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         }
     }
 
+
+    /*
     private class recyclerViewKeyListener implements View.OnKeyListener {
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -474,6 +459,7 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
             return false;
         }
     }
+    */
 
 
     @Override

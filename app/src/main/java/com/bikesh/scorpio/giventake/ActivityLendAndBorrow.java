@@ -75,12 +75,14 @@ public class ActivityLendAndBorrow extends ActivityBase {
         @Override
         public void onClick(View v) {
 
-            Intent i = new Intent(ActivityLendAndBorrow.this, ActivityAddEntry.class);
+            Intent i = new Intent(ActivityLendAndBorrow.this, ActivityLendAndBorrowAddEntry.class);
             i.putExtra("fromActivity", "ActivityLendAndBorrow");
             startActivity(i);
 
         }
     }
+
+    /*
     private class openAddnewGroup implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -90,7 +92,7 @@ public class ActivityLendAndBorrow extends ActivityBase {
             startActivity(i);
 
         }
-    }
+    }*/
 
 
 
