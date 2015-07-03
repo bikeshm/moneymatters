@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ActivityAddGroupEntry extends ActivityBase {
+public class ActivityJointExpenseAddEntry extends ActivityBase {
 
     RecyclerView recyclerView;
 
@@ -114,11 +114,11 @@ public class ActivityAddGroupEntry extends ActivityBase {
         created_date_forDB.setText(tmpdmyDate);
 
         //setting datepicker adapter
-        datePicker.setOnClickListener(new CustomDatePicker(ActivityAddGroupEntry.this, datePicker, created_date_forDB, false));
+        datePicker.setOnClickListener(new CustomDatePicker(ActivityJointExpenseAddEntry.this, datePicker, created_date_forDB, false));
         //----implementing date picker
 
 
-        backActivityIntent = new Intent(ActivityAddGroupEntry.this, ActivityJointExpenseIndividual.class);
+        backActivityIntent = new Intent(ActivityJointExpenseAddEntry.this, ActivityJointExpenseIndividual.class);
         backActivityIntent.putExtra("groupId",  groupId);
 
         //=====split --face 2

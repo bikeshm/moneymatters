@@ -439,7 +439,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
         @Override
         public void onClick(View v) {
 
-            Intent i = new Intent(ActivityJointExpenseIndividual.this,ActivityAddGroupEntry.class); // ActivityAddEntry.class);
+            Intent i = new Intent(ActivityJointExpenseIndividual.this,ActivityJointExpenseAddEntry.class); // ActivityAddEntry.class);
             i.putExtra("fromActivity", "ActivityJointExpenseIndividual");
             i.putExtra("groupId", ""+groupId );
             if(JointGroup.size()>0) {
@@ -480,7 +480,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
         public void onClick(View v) {
             Toast.makeText(getApplicationContext(),"clicked"+rowId, Toast.LENGTH_LONG).show();
 
-            Intent i = new Intent(ActivityJointExpenseIndividual.this, ActivityAddGroupEntry.class);
+            Intent i = new Intent(ActivityJointExpenseIndividual.this, ActivityJointExpenseAddEntry.class);
             i.putExtra("fromActivity", "ActivityJointExpenseIndividual");
 
             i.putExtra("currentUserId", ""+dbUser.get("_id").toString());

@@ -215,7 +215,7 @@ public class ActivityPersonalExpense extends ActivityBase {
 
                     Toast.makeText(ActivityPersonalExpense.this,"id"+dbrowId, Toast.LENGTH_LONG).show();
 
-                    Intent i = new Intent(ActivityPersonalExpense.this, ActivityAddGroup.class);
+                    Intent i = new Intent(ActivityPersonalExpense.this, ActivityJointExpenseAddGroup.class);
                     i.putExtra("fromActivity", "ActivityPersonalExpense");
                     i.putExtra("groupId", dbrowId);
                     startActivity(i);

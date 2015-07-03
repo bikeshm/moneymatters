@@ -44,7 +44,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ActivityAddGroup"
+            android:name=".ActivityJointExpenseAddGroup"
             android:label="@string/title_activity_activity_add_user"
             android:screenOrientation="portrait" >
         </activity>
@@ -69,7 +69,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ActivityAddGroupEntry"
+            android:name=".ActivityJointExpenseAddEntry"
             android:label="@string/title_activity_activity_add_group_entry" >
         </activity>
         <activity

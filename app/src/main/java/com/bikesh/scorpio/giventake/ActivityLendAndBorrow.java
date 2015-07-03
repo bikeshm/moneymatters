@@ -85,7 +85,7 @@ public class ActivityLendAndBorrow extends ActivityBase {
         @Override
         public void onClick(View v) {
 
-            Intent i = new Intent(ActivityLendAndBorrow.this, ActivityAddGroup.class);
+            Intent i = new Intent(ActivityLendAndBorrow.this, ActivityJointExpenseAddGroup.class);
             i.putExtra("fromActivity", "ActivityLendAndBorrow");
             startActivity(i);
 

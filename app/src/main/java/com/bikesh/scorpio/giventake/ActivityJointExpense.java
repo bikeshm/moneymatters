@@ -264,7 +264,7 @@ public class ActivityJointExpense extends ActivityBase {
         @Override
         public void onClick(View v) {
 
-            Intent i = new Intent(ActivityJointExpense.this, ActivityAddGroup.class);
+            Intent i = new Intent(ActivityJointExpense.this, ActivityJointExpenseAddGroup.class);
             i.putExtra("fromActivity", "ActivityJointExpense");
             startActivity(i);
 
@@ -415,7 +415,7 @@ public class ActivityJointExpense extends ActivityBase {
 
                // Toast.makeText(getApplicationContext(),"group id"+ dbGroup.get("_id"), Toast.LENGTH_LONG).show();
 
-                Intent i = new Intent(ActivityJointExpense.this, ActivityAddGroup.class);
+                Intent i = new Intent(ActivityJointExpense.this, ActivityJointExpenseAddGroup.class);
                 i.putExtra("fromActivity", "ActivityJointExpense");
                 i.putExtra("groupId", dbGroup.get("_id"));
                 startActivity(i);
