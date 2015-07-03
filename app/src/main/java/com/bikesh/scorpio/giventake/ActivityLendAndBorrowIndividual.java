@@ -266,7 +266,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
         public void onClick(View v) {
             Toast.makeText(getApplicationContext(),"clicked"+rowId, Toast.LENGTH_LONG).show();
 
-            Intent i = new Intent(ActivityLendAndBorrowIndividual.this, ActivityAddEntry.class);
+            Intent i = new Intent(ActivityLendAndBorrowIndividual.this, ActivityLendAndBorrowAddEntry.class);
             i.putExtra("fromActivity", "ActivityLendAndBorrowPersonal");
             i.putExtra("fromUserId", ""+fromUserId);
             i.putExtra("Name",  userName );

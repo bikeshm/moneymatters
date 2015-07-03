@@ -54,7 +54,9 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
 
     Map<String, String> selectedFromUser = new HashMap<String, String>();
 
+    Button saveBtn;
 
+    boolean clearFlag=false;
 
     DBHelper myDb;
 
@@ -67,15 +69,8 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         myDb = new DBHelper(this);
 
         autoCompleteFromUser = (AutoCompleteTextView) findViewById(R.id.fromUser);
+        saveBtn = ((Button) currentView.findViewById(R.id.saveBtn));
 
-
-        //--- initialising RecyclerView otherwise it is throwing null pointer exception
-        //recyclerView = (RecyclerView) findViewById(R.id.recycler_Users);
-        //recyclerView.setHasFixedSize(true);
-
-        //LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        //recyclerView.setLayoutManager(layoutManager);
-        //--
 
         Bundle extras = getIntent().getExtras();
 
@@ -87,10 +82,8 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
             fromUserId = extras.getString("fromUserId", null);
             fromUserName = extras.getString("Name");
 
-            //rowId = extras.getString("rowId",null);
+            rowId = extras.getString("rowId",null);
 
-
-            //onlineId = extras.getString("onlineId",null);
         }
 
 
@@ -130,78 +123,27 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         }
 
 
-        ((Button) currentView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
+        saveBtn.setOnClickListener(new saveData());
         ((Button) currentView.findViewById(R.id.cancelBtn)).setOnClickListener(new cancelActivity());
 
     }
-
-
-
-
-    /*
-     private void generate_FromuserSpinner(Cursor cursor, String dataFrom) {
-
-        Map<String, String> data = new HashMap<String, String>();
-
-        data.put("dataFrom",dataFrom  );
-
-        Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, cursor,data);
-
-        //((Spinner) currentView.findViewById(R.id.fromUser)).setAdapter(adapter);
-
-        //// TODO: 6/3/2015 :-
-        //setting passed/selected user name in spinner
-
-        int cpos = 0;
-
-
-
-        if(dataFrom.equals("contact")) {
-
-            String phone = myDb.getUserPhone(ID + "");
-
-            for (int i = 0; i < adapter.getCount(); i++) {
-                cursor.moveToPosition(i);
-                String temp = (parsePhone(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)), myDb.getdefaultContryCode()));//cursor.getString(cursor.getColumnIndex("phone"));
-                if (temp.equals(phone)) {
-                    cpos = i;
-                    break;
-                }
-            }
-        }
-
-
-
-        //((Spinner) currentView.findViewById(R.id.fromUser)).setSelection(cpos);
-
-    }
-    */
-
 
     private void generateDataForLendNBorrow() {
 
 
         String[] entryAction = {"Giving to", "Borrow from",};
 
-
-        if(fromUserId!=null){
+        if(fromUserId!=null){ // add button clicked from individual page
             selectedFromUser=myDb.getUser( Long.parseLong(fromUserId));
             autoCompleteFromUser.setText(selectedFromUser.get("name"));
             autoCompleteFromUser.setEnabled(false);
 
         }
 
-
-
         // getting options from xml string array
         ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, entryAction);
         ((Spinner) findViewById(R.id.actionSpinner)).setAdapter(actionSpinnerArrayAdapter);
         ((Spinner) findViewById(R.id.actionSpinner)).setOnItemSelectedListener(new selectedAction());
-
-
-
-
-        //Cursor cursor = myDb.getAllUsers();
 
         //getting user from contact
         Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
@@ -217,6 +159,12 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
 
         adapter_CustomSimpleCursor.setFilterQueryProvider(new FilterQueryProvider() {
             public Cursor runQuery(CharSequence str) {
+
+                if(clearFlag==true){
+                    autoCompleteFromUser.setText(""+ str.charAt(str.length() - 1) );
+                    //autoCompleteFromUser.setSelection(str.length());
+                    clearFlag=false;
+                }
                 return getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + str + "%'", null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
             }
         });
@@ -230,22 +178,13 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
 
 
         autoCompleteFromUser.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View arg1, int pos, long id) {
-
                 View clickedView = adapter_CustomSimpleCursor.getView(pos, null, null);
-
                 selectedFromUser.put("name", ((TextView) clickedView.findViewById(R.id.item_name)).getText() + "");
-
-                //selectedFromUser.put("id", ((TextView) clickedView.findViewById(R.id.item_id)).getText() + "");
                 selectedFromUser.put("phone", ((TextView) clickedView.findViewById(R.id.item_phone)).getText() + "");
-                //selectedFromUser.put("phonetype", ((TextView) clickedView.findViewById(R.id.item_phonetype)).getText() + "");
 
-                //Log.i("click", selected+"");
-
-
-                //Toast.makeText(MainActivity.this, ((TextView)clickedView.findViewById(R.id.item_name)).getText()+"", Toast.LENGTH_LONG).show();
+                clearFlag=true;
             }
         });
 
@@ -254,21 +193,21 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         //generate_FromuserSpinner(cursor,"contact");
 
 
-        //clicked on the table row
-        // if(rowId!=null){
-        //     generateEditData(myDb.getEntryById(rowId));
-        // }
+        //Update entry (clicked on the table row)
+        if(rowId!=null){
+             generateEditData(myDb.getEntryById(rowId));
+        }
 
 
     }
 
 
 
-    /*
+
     private void generateEditData(Cursor currentEntry){
         //created_date DATE, description text, from_user INTEGER, to_user INTEGER,
 
-        ((EditText) currentView.findViewById(R.id.id)).setText( rowId );
+        //((EditText) currentView.findViewById(R.id.id)).setText( rowId );
         datePicker.setText( formatDate(currentEntry.getString(currentEntry.getColumnIndex("created_date")), "ddmmyy") );
         created_date_forDB.setText(currentEntry.getString(currentEntry.getColumnIndex("created_date")));
 
@@ -276,7 +215,7 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         ((EditText) currentView.findViewById(R.id.amount)).setText( currentEntry.getString(currentEntry.getColumnIndex("amt")) );
 
 
-        //for lennd and borrow
+        //Action spinner settings
         if(currentEntry.getColumnIndex("from_user")>0) {
             if (currentEntry.getInt(currentEntry.getColumnIndex("from_user")) == 1) {
                 ((Spinner) currentView.findViewById(R.id.actionSpinner)).setSelection(0);
@@ -285,8 +224,12 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
             }
         }
 
+
+        //assuming current user and from user in the entry are same bcz it is from individual
+        autoCompleteFromUser.setEnabled(true);
+
     }
-    */
+
 
 
     private class selectedAction implements AdapterView.OnItemSelectedListener {
@@ -314,11 +257,14 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         public void onClick(View v) {
 
             showProgress("Saving. . .");
+            saveBtn.setEnabled(false);
 
             Log.i("save", selectedFromUser+"  =="+selectedFromUser.size());
 
             if (selectedFromUser.size() == 0 || !autoCompleteFromUser.getText().toString().equals(selectedFromUser.get("name"))) {
-                Toast.makeText(getApplicationContext(), "Select a User", Toast.LENGTH_SHORT).show();
+                closeProgress();
+                saveBtn.setEnabled(true);
+                Toast.makeText(getApplicationContext(), "Invalid User", Toast.LENGTH_SHORT).show();
                 return;
             }
 
