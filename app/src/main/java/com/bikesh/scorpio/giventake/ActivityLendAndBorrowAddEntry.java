@@ -1,14 +1,10 @@
 package com.bikesh.scorpio.giventake;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,8 +12,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
-import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,15 +25,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.bikesh.scorpio.giventake.libraries.parsePhone.parsePhone;
-
 
 public class ActivityLendAndBorrowAddEntry extends ActivityBase {
 
     String fromActivity = null;
 
-    //String ID=null;
-    //String Name="";
+    String fromUserId=null;
+    String fromUserName="";
+
     String rowId=null;
 
     //String onlineId=null;
@@ -60,7 +53,7 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
     AutoCompleteTextView autoCompleteFromUser;
 
     Map<String, String> selectedFromUser = new HashMap<String, String>();
-    ;
+
 
 
     DBHelper myDb;
@@ -91,11 +84,11 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         } else {
             fromActivity = extras.getString("fromActivity");
 
-
-            //ID = extras.getString("ID", null);
+            fromUserId = extras.getString("fromUserId", null);
+            fromUserName = extras.getString("Name");
 
             //rowId = extras.getString("rowId",null);
-            //Name = extras.getString("Name");
+
 
             //onlineId = extras.getString("onlineId",null);
         }
@@ -126,11 +119,11 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
             generateDataForLendNBorrow();
 
         } else if (fromActivity.equals("ActivityLendAndBorrowPersonal")) {
-//            backActivityIntent = new Intent(ActivityLendAndBorrowAddEntry.this, ActivityLendAndBorrowIndividual.class);
-//            backActivityIntent.putExtra("fromActivity", "ActivityLendAndBorrow");
-//            backActivityIntent.putExtra("userId", "" + ID);
-//            backActivityIntent.putExtra("userName", Name);
-//            generateDataForLendNBorrow();
+            backActivityIntent = new Intent(ActivityLendAndBorrowAddEntry.this, ActivityLendAndBorrowIndividual.class);
+            backActivityIntent.putExtra("fromActivity", "ActivityLendAndBorrow");
+            backActivityIntent.putExtra("fromUserId", "" + fromUserId);
+            backActivityIntent.putExtra("userName", fromUserName);
+            generateDataForLendNBorrow();
 
         } else {
             throw new IllegalArgumentException("Invalid  ");
@@ -191,16 +184,26 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         String[] entryAction = {"Giving to", "Borrow from",};
 
 
+        if(fromUserId!=null){
+            selectedFromUser=myDb.getUser( Long.parseLong(fromUserId));
+            autoCompleteFromUser.setText(selectedFromUser.get("name"));
+            autoCompleteFromUser.setEnabled(false);
+
+        }
+
+
+
         // getting options from xml string array
         ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, entryAction);
         ((Spinner) findViewById(R.id.actionSpinner)).setAdapter(actionSpinnerArrayAdapter);
         ((Spinner) findViewById(R.id.actionSpinner)).setOnItemSelectedListener(new selectedAction());
 
 
+
+
         //Cursor cursor = myDb.getAllUsers();
 
         //getting user from contact
-        //Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
         Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
         Map<String, String> data = new HashMap<String, String>();
@@ -208,8 +211,6 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         data.put("dataFrom", "contact");
 
         adapter_CustomSimpleCursor = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, cursor, data);
-
-
         //auto complete
         autoCompleteFromUser.setAdapter(adapter_CustomSimpleCursor);
         autoCompleteFromUser.setThreshold(1);
@@ -237,9 +238,9 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
 
                 selectedFromUser.put("name", ((TextView) clickedView.findViewById(R.id.item_name)).getText() + "");
 
-                selectedFromUser.put("id", ((TextView) clickedView.findViewById(R.id.item_id)).getText() + "");
+                //selectedFromUser.put("id", ((TextView) clickedView.findViewById(R.id.item_id)).getText() + "");
                 selectedFromUser.put("phone", ((TextView) clickedView.findViewById(R.id.item_phone)).getText() + "");
-                selectedFromUser.put("phonetype", ((TextView) clickedView.findViewById(R.id.item_phonetype)).getText() + "");
+                //selectedFromUser.put("phonetype", ((TextView) clickedView.findViewById(R.id.item_phonetype)).getText() + "");
 
                 //Log.i("click", selected+"");
 
@@ -312,6 +313,8 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         @Override
         public void onClick(View v) {
 
+            showProgress("Saving. . .");
+
             Log.i("save", selectedFromUser+"  =="+selectedFromUser.size());
 
             if (selectedFromUser.size() == 0 || !autoCompleteFromUser.getText().toString().equals(selectedFromUser.get("name"))) {
@@ -331,6 +334,7 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
             } catch (Exception e) {
                 data.put("amt", "0");
             }
+
 
 
 
@@ -358,8 +362,9 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
 
                     backActivityIntent = new Intent(ActivityLendAndBorrowAddEntry.this, ActivityLendAndBorrowIndividual.class);
                     backActivityIntent.putExtra("fromActivity", "ActivityLendAndBorrow");
-                    backActivityIntent.putExtra("userId", "" + userId);
+                    backActivityIntent.putExtra("fromUserId", "" + userId);
                     backActivityIntent.putExtra("userName", selectedFromUser.get("name"));
+
 
                     goBack();
 
@@ -382,7 +387,7 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
             }
 
 
-
+            closeProgress();
 
         }
     }

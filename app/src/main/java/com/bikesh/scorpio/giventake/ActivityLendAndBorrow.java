@@ -60,7 +60,7 @@ public class ActivityLendAndBorrow extends ActivityBase {
             //id == table id
             Intent i = new Intent(ActivityLendAndBorrow.this, ActivityLendAndBorrowIndividual.class);
             i.putExtra("fromActivity", "ActivityLendAndBorrow");
-            i.putExtra("userId", ""+id);
+            i.putExtra("fromUserId", ""+id);
             i.putExtra("userName", ""+ ((TextView) view.findViewById(R.id.item_name)).getText().toString() );
             startActivity(i);
             //Toast.makeText(ActivityLendAndBorrow.this, "Id "+ id , Toast.LENGTH_LONG).show();

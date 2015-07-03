@@ -31,7 +31,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
     //View lendAndBorrowPersonalView;
     //DBHelper myDb;
     String fromActivity=null;
-    int  userId=0;
+    int  fromUserId=0;
     String userName="";
 
     DBHelper myDb;
@@ -47,7 +47,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
             fromActivity= null;
         } else {
             fromActivity= extras.getString("fromActivity");
-            userId = Integer.parseInt(extras.getString("userId"));
+            fromUserId = Integer.parseInt(extras.getString("fromUserId"));
             userName = extras.getString("userName");
         }
 
@@ -62,7 +62,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
         SimpleDateFormat dbmy = new SimpleDateFormat("yyyy-MM");
         String cdbDate = dbmy.format(new Date());
 
-        Cursor entrys =  myDb.getUserEntrys(userId,cDate);
+        Cursor entrys =  myDb.getUserEntrys(fromUserId,cDate);
 
         TextView dateChanger= (TextView)currentView.findViewById(R.id.dateChanger);
         TextView dateChangerForDb= (TextView)currentView.findViewById(R.id.dateChangerForDb);
@@ -88,7 +88,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
     public void onResume() {
         super.onResume();
 
-        Cursor entrys =  myDb.getUserEntrys(userId, ((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
+        Cursor entrys =  myDb.getUserEntrys(fromUserId, ((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
         generateTable(entrys);
     }
 
@@ -105,7 +105,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
         public void afterTextChanged(Editable s) {
             Toast.makeText(getApplicationContext(),""+((TextView)currentView.findViewById(R.id.dateChangerForDb)).getText(),Toast.LENGTH_LONG).show();
 
-            Cursor entrys =  myDb.getUserEntrys(userId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
+            Cursor entrys =  myDb.getUserEntrys(fromUserId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
 
             generateTable(entrys);
 
@@ -204,14 +204,14 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
 
 
         float amtHolder;
-        amtHolder = myDb.getMonthTotalOfGive(userId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
+        amtHolder = myDb.getMonthTotalOfGive(fromUserId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
 
         ((TextView)currentView.findViewById(R.id.monthTotalToGive)).setText(": "+amtHolder);
 
-        amtHolder = myDb.getMonthTotalOfGet(userId, ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString() );
+        amtHolder = myDb.getMonthTotalOfGet(fromUserId, ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString() );
         ((TextView)currentView.findViewById(R.id.monthTotalToGet)).setText(": " + amtHolder);
 
-        float balanceAmt=  myDb.getTotalBalance(userId);
+        float balanceAmt=  myDb.getTotalBalance(fromUserId);
 
         ((TextView)currentView.findViewById(R.id.balanceAmt)).setText(": "+balanceAmt);
 
@@ -228,7 +228,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
         }
 
 
-        amtHolder = myDb.getPrevBalance(userId, ((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
+        amtHolder = myDb.getPrevBalance(fromUserId, ((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
 
         if(amtHolder<0){
             ((TextView)currentView.findViewById(R.id.prevBalanceAmtLabel)).setText("Previous balance amount get from him/her");
@@ -268,7 +268,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
 
             Intent i = new Intent(ActivityLendAndBorrowIndividual.this, ActivityAddEntry.class);
             i.putExtra("fromActivity", "ActivityLendAndBorrowPersonal");
-            i.putExtra("ID", ""+userId);
+            i.putExtra("fromUserId", ""+fromUserId);
             i.putExtra("Name",  userName );
             i.putExtra("rowId",  rowId+"" );
             startActivity(i);
@@ -312,7 +312,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
 
                     myDb.deleteEntry(dbrowId);
 
-                    Cursor entrys =  myDb.getUserEntrys(userId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
+                    Cursor entrys =  myDb.getUserEntrys(fromUserId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
                     generateTable(entrys);
 
                 }
@@ -357,9 +357,9 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
         @Override
         public void onClick(View v) {
 
-            Intent i = new Intent(ActivityLendAndBorrowIndividual.this, ActivityAddEntry.class);
+            Intent i = new Intent(ActivityLendAndBorrowIndividual.this, ActivityLendAndBorrowAddEntry.class);
             i.putExtra("fromActivity", "ActivityLendAndBorrowPersonal");
-            i.putExtra("ID", ""+userId);
+            i.putExtra("fromUserId", ""+fromUserId);
             i.putExtra("Name",  userName );
             startActivity(i);
 
