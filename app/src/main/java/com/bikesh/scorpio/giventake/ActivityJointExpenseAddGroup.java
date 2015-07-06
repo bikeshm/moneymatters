@@ -93,17 +93,20 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
 
         }
 
+        getSupportActionBar().setTitle("Create a Group");
 
         //edit
 
         ArrayList<String> existingMembersPhoneList = new ArrayList<String>();
 
-        if(!groupId.equals("0")){
+        if(!groupId.equals("0")){ //edit group
+
+            getSupportActionBar().setTitle("Edit Group");
 
             dbGroup = myDb.fetchJointGroupbyId(groupId );
 
             nameEditText.setText(dbGroup.get("name"));
-            descriptionEditText.setText("description");
+            descriptionEditText.setText(dbGroup.get("description"));
 
             if(dbGroup.get("isonline").equals("1")) {
                 isOnlineRadio.check(R.id.radioYes);
@@ -131,7 +134,7 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
 
 
 
-        getSupportActionBar().setTitle("Create a Group");
+
 
         backActivityIntent = new Intent(ActivityJointExpenseAddGroup.this, ActivityJointExpense.class);
 
@@ -280,19 +283,19 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
 
                     //Toast.makeText(getApplicationContext(),"group id save"+ dbGroup.get("_id"), Toast.LENGTH_LONG).show();
 
-                    if(groupId.equals("0")) {
+                    if(groupId.equals("0")) { //insert
 
                         if (myDb.insertJointGroup(data) == 1) { //insert
 
                             Toast.makeText(getApplicationContext(), "Group created", Toast.LENGTH_SHORT).show();
 
                             //getting group details
-                            Map<String, String> result = new HashMap<String, String>();
-                            result = myDb.getJointGroup(data);
+                            Map<String, String> newGroupDetails = new HashMap<String, String>();
+                            newGroupDetails = myDb.getJointGroup(data);
 
                             //insert user relation
-                            if (result.size() > 0) {
-                                if (myDb.insertUserGroupRelation( result.get("_id"), members) == 1) {
+                            if (newGroupDetails.size() > 0) {
+                                if (myDb.insertUserGroupRelation( newGroupDetails.get("_id"), members) == 1) {
                                     Toast.makeText(getApplicationContext(), "Data saved", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();

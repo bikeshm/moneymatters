@@ -690,6 +690,31 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getJointGroupbyOnlineId(String onlineId){
+
+        Map<String, String> data = new HashMap<String, String>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from "+JOINTGROUP_TABLE_NAME+" where onlineid="+onlineId+"", null );
+
+        if (res != null) {
+            res.moveToFirst();
+        }
+        return res;
+    }
+
+    public String getJointGroupIdByOnlineId(String onlineId){
+
+        Cursor c = getJointGroupbyOnlineId(onlineId);
+
+        if(c.getCount()>0) {
+            return c.getString(c.getColumnIndex("_id"));
+        }
+
+        return null;
+    }
+
+
+
     public String getJointGroupField(String id, String field){
 
         return commonGetField(id , field, JOINTGROUP_TABLE_NAME );
