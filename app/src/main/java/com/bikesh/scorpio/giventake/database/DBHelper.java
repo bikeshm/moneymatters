@@ -1044,7 +1044,7 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToFirst();
             data.put("total", "" + String.format("%.2f", res.getFloat(0)));
             data.put("togive", ""+ String.format("%.2f", res.getFloat(1)) );
-            data.put("toget", ""+ String.format("%.2f", (res.getFloat(2)*-1) ) );
+            data.put("toget", ""+ String.format("%.2f", ((res.getFloat(2)>=0) ? res.getFloat(2) : (res.getFloat(2)*-1) ) ) );
         }
 
 
