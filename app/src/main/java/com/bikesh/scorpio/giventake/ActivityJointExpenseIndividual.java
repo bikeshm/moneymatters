@@ -693,8 +693,18 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
         Log.i("api call","inside get group url : "+ apiUrl_GroupDetails+JointGroup.get("onlineid").toString() );
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, apiUrl_GroupDetails+JointGroup.get("onlineid").toString(), new Response.Listener<JSONObject>() {
+        //JsonObjectRequest jsObjRequest = new JsonObjectRequest
+        //        (Request.Method.GET, apiUrl_GroupDetails+JointGroup.get("onlineid").toString(), new Response.Listener<JSONObject>() {
+
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("id",JointGroup.get("onlineid").toString());
+
+        data.put("required","members, entrys"); //shoud be seprated with comma and space
+
+
+        CustomRequest jsObjRequest =   new CustomRequest
+                            (Request.Method.POST, apiUrl_GroupDetails, data, new Response.Listener<JSONObject>() {
+
 
                     @Override
                     public void onResponse(JSONObject response) {

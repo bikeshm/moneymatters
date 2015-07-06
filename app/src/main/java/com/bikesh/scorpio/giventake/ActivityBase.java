@@ -325,8 +325,9 @@ public class ActivityBase extends ActionBarActivity {
     }
 
     public void closeProgress(){
-
-        progressDialog.dismiss();
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 
 

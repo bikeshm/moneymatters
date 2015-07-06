@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
     DBHelper myDb;
 
     String apiUrl_AddGroup = "http://givntake.workassis.com/api/group/add/";
-
+    String apiUrl_GroupDetails = "http://givntake.workassis.com/api/group/get/" ;
     RequestQueue Rqueue;
 
     String groupId="0";
@@ -97,46 +98,193 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
 
         //edit
 
-        ArrayList<String> existingMembersPhoneList = new ArrayList<String>();
+
 
         if(!groupId.equals("0")){ //edit group
 
-            getSupportActionBar().setTitle("Edit Group");
-
             dbGroup = myDb.fetchJointGroupbyId(groupId );
 
-            nameEditText.setText(dbGroup.get("name"));
-            descriptionEditText.setText(dbGroup.get("description"));
-
-            if(dbGroup.get("isonline").equals("1")) {
-                isOnlineRadio.check(R.id.radioYes);
-            }
-            else {
-                isOnlineRadio.check(R.id.radioNo);
-            }
+            getSupportActionBar().setTitle("Edit Group");
             // note :- there is a chance to make offline group to online currently we are not allowing
             //isOnlineRadio.setEnabled(false);
             ((RadioButton) currentView.findViewById(R.id.radioYes)).setEnabled(false);
             ((RadioButton) currentView.findViewById(R.id.radioNo)).setEnabled(false);
 
 
-            if(dbGroup.get("ismonthlytask").equals("1")) {
-                groupTypeRadio.check(R.id.radioMonthlyRenewing);
+            if(dbGroup.get("isonline").equals("1")) {
+                setupOnlineGroupEditField();
             }
             else {
-                groupTypeRadio.check(R.id.radioOnGoingSingle);
+                setupOfflineGroupEditField();
             }
 
-            //usersRecyclerView
+        }
+        else{ //insert
+            generateRecylerView(null);
+        }
 
-            existingMembersPhoneList = myDb.getAllUsersPhoneInGroup(groupId);
+        backActivityIntent = new Intent(ActivityJointExpenseAddGroup.this, ActivityJointExpense.class);
+    }
+
+    private void setupOnlineGroupEditField() {
+
+        showProgress("Loading . . ");
+
+        isOnlineRadio.check(R.id.radioYes);
+
+        Map<String, String> data = new HashMap<String, String>();
+
+        data.put("id",dbGroup.get("onlineid").toString());
+
+        data.put("required","members"); //shoud be seprated with comma and space
+
+        CustomRequest jsObjRequest =   new CustomRequest
+                (Request.Method.POST, apiUrl_GroupDetails, data, new Response.Listener<JSONObject>() {
+
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Log.i("api call", "get group " + response.toString());
+
+                        JSONObject group_dataJSON = response.optJSONObject("data").optJSONObject("group");
+                        JSONArray members_dataJSON = response.optJSONObject("data").optJSONArray("members");
+
+
+                        try {
+
+                            ArrayList<String> existingMembersPhoneList = new ArrayList<String>();
+
+                            nameEditText.setText(group_dataJSON.getString("name"));
+                            descriptionEditText.setText(group_dataJSON.getString("description"));
+
+                            if(group_dataJSON.getString("ismonthlytask").equals("1")) {
+                                groupTypeRadio.check(R.id.radioMonthlyRenewing);
+                            }
+                            else {
+                                groupTypeRadio.check(R.id.radioOnGoingSingle);
+                            }
+
+                            if(members_dataJSON != null) {
+                                processOnlineGroupMembers(members_dataJSON);
+                            }
+
+                            for(int i = 0 ; i < members_dataJSON.length(); i++){
+
+                                JSONObject jsonObj = members_dataJSON.getJSONObject(i);
+
+                                Iterator<String> keysIterator = jsonObj.keys();
+                                while (keysIterator.hasNext()) {
+                                    String keyStr = (String) keysIterator.next();
+                                    String valueStr = jsonObj.getString(keyStr);
+
+                                    if(keyStr.equals("phone")){
+                                        existingMembersPhoneList.add(valueStr);
+                                    }
+                                }
+                            }
+
+                            generateRecylerView(existingMembersPhoneList);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            closeProgress();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("api call", "ERROR "+apiUrl_GroupDetails+error.getMessage());
+                        Toast.makeText(getApplicationContext(), "Error while accessing online data", Toast.LENGTH_LONG).show();
+                        closeProgress();
+                    }
+                });
+
+        Rqueue.add(jsObjRequest);
+
+
+    }
+
+
+
+    private void processOnlineGroupMembers(JSONArray members_dataJSON) {
+
+        Map<String, String> tempStorage = new HashMap<String, String>();
+        ArrayList onlineGroupExistingUsers = new ArrayList();
+
+        try {
+            for(int i = 0 ; i < members_dataJSON.length(); i++){
+
+                tempStorage = new HashMap<String, String>();
+
+                JSONObject jsonObj = members_dataJSON.getJSONObject(i);
+                Iterator<String> keysIterator = jsonObj.keys();
+                while (keysIterator.hasNext())
+                {
+                    String keyStr = (String)keysIterator.next();
+                    String valueStr = jsonObj.getString(keyStr);
+
+                    //Log.i("api call","members_data "+ keyStr + " => " + valueStr );
+
+                    String[] requiredKeys = new String[] {"user_id","name","phone","country_code"}; //,"created_date","photo"
+
+                    if( Arrays.asList(requiredKeys).contains(keyStr) ){
+                        //Log.i("api call r", keyStr + " - "+ valueStr);
+                        tempStorage.put(keyStr,valueStr );
+                    }
+
+                }
+
+                tempStorage.put("onlineid",tempStorage.get("user_id") );
+                tempStorage.remove("user_id");
+
+                //insert to db
+                myDb.updateOnlineUserGroupRelation(tempStorage, dbGroup.get("_id").toString(),getContentResolver());
+
+                Map user = myDb.getUserbyOnlineId(tempStorage.get("onlineid"));
+                onlineGroupExistingUsers.add(user.get("_id"));
+            }
+
+            myDb.cleanupOnlineGroupRelation(onlineGroupExistingUsers, dbGroup.get("_id").toString() );
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private void setupOfflineGroupEditField() {
+
+        ArrayList<String> existingMembersPhoneList = new ArrayList<String>();
+
+
+
+
+        nameEditText.setText(dbGroup.get("name"));
+        descriptionEditText.setText(dbGroup.get("description"));
+
+        if(dbGroup.get("ismonthlytask").equals("1")) {
+            groupTypeRadio.check(R.id.radioMonthlyRenewing);
+        }
+        else {
+            groupTypeRadio.check(R.id.radioOnGoingSingle);
         }
 
 
+        isOnlineRadio.check(R.id.radioNo);
+
+        existingMembersPhoneList = myDb.getAllUsersPhoneInGroup(groupId);
+
+        generateRecylerView(existingMembersPhoneList);
+
+    }
 
 
+    private void generateRecylerView(ArrayList<String> existingMembersPhoneList) {
 
-        backActivityIntent = new Intent(ActivityJointExpenseAddGroup.this, ActivityJointExpense.class);
 
         //getting all user from db
         //Cursor cursor = myDb.getAllUsers();
@@ -186,6 +334,7 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
         });
 
 
+        closeProgress();
     }
 
 
