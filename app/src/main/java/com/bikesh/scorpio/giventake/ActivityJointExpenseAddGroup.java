@@ -14,8 +14,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -186,6 +188,18 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
 
                             generateRecylerView(existingMembersPhoneList);
 
+
+
+                            ((LinearLayout) currentView.findViewById(R.id.exsistingGroupMembers)).setVisibility(View.VISIBLE);
+                            Cursor exuser = myDb.getAllUsersInGroup(dbGroup.get("_id"));
+                            String userString="";
+                            while (exuser.isAfterLast() == false) {
+                                userString = userString +  exuser.getString(exuser.getColumnIndex("name")) + ", ";
+                                exuser.moveToNext();
+                            }
+                            ((TextView)currentView.findViewById(R.id.existingMembers)).setText(userString);
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                             closeProgress();
@@ -279,6 +293,18 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
         existingMembersPhoneList = myDb.getAllUsersPhoneInGroup(groupId);
 
         generateRecylerView(existingMembersPhoneList);
+
+
+        ((LinearLayout) currentView.findViewById(R.id.exsistingGroupMembers)).setVisibility(View.VISIBLE);
+        Cursor exuser = myDb.getAllUsersInGroup(dbGroup.get("_id"));
+        String userString="";
+        while (exuser.isAfterLast() == false) {
+            userString = userString +  exuser.getString(exuser.getColumnIndex("name")) + ", ";
+            exuser.moveToNext();
+        }
+        ((TextView)currentView.findViewById(R.id.existingMembers)).setText(userString);
+
+
 
     }
 
