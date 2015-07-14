@@ -65,7 +65,7 @@ public class ActivityPersonalExpense extends ActivityBase {
         populateListViewFromDB();
 
 
-        ((ImageButton)currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+        //((ImageButton)currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
         ((ImageButton)currentView.findViewById(R.id.addExpenseGroup)).setOnClickListener(new openAddnewGroup());
 
     }
@@ -228,6 +228,7 @@ public class ActivityPersonalExpense extends ActivityBase {
     }
 
 
+    /*
     private class openAddnewEntrry implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -238,6 +239,9 @@ public class ActivityPersonalExpense extends ActivityBase {
 
         }
     }
+    */
+
+
     private class openAddnewGroup implements View.OnClickListener {
         @Override
         public void onClick(View v) {

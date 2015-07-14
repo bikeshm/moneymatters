@@ -85,7 +85,7 @@
 
 
 
-
+    <!--
     <ImageButton
         android:id="@+id/addEntry"
         android:layout_width="@dimen/floating_button_diameter"
@@ -101,6 +101,8 @@
         android:layout_toLeftOf="@+id/addExpenseGroup"
         android:layout_toStartOf="@+id/addExpenseGroup" />
 
+    -->
+    
     <ImageButton
         android:id="@+id/addExpenseGroup"
         android:layout_width="@dimen/floating_button_diameter"
