@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -75,7 +76,7 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
         Cursor entrys =  myDb.getPersonalExpense(colId, cDate);
         generateTable(entrys);
 
-        ((ImageButton)currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+        ((FloatingActionButton)currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
     }
 
 

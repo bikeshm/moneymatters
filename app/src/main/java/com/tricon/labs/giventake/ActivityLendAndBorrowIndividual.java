@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -53,7 +54,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
 
         ((TextView) currentView.findViewById(R.id.username)).setText(userName);
 
-        ((ImageButton) currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+        ((FloatingActionButton) currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
 
 
         SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy");

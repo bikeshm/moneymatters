@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -66,7 +67,7 @@ public class ActivityPersonalExpense extends ActivityBase {
 
 
         //((ImageButton)currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
-        ((ImageButton)currentView.findViewById(R.id.addExpenseGroup)).setOnClickListener(new openAddnewGroup());
+        ((FloatingActionButton)currentView.findViewById(R.id.addExpenseGroup)).setOnClickListener(new openAddnewGroup());
 
     }
 

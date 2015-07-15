@@ -1,5 +1,6 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -101,7 +102,7 @@
         android:layout_toLeftOf="@+id/addExpenseGroup"
         android:layout_toStartOf="@+id/addExpenseGroup" />
 
-    -->
+
     
     <ImageButton
         android:id="@+id/addExpenseGroup"
@@ -117,6 +118,23 @@
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/listViewFromDB"
         android:layout_alignEnd="@+id/listViewFromDB" />
+        -->
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/addExpenseGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/money_group"
+        android:layout_gravity="bottom|end"
+        app:elevation="6dp"
+        app:fabSize="mini"
+
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+
+        app:pressedTranslationZ="12dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
