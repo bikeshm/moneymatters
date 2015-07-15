@@ -12,22 +12,24 @@
 
     <string name="openDrawer"> Open Navigation Drawer </string>
     <string name="closeDrawer"> Closing Navigation Drawer </string>
-    <string name="title_activity_activity_lends_and_borrow">ActivityLendsAndBorrow</string>
-    <string name="title_activity_activity_home">ActivityHome</string>
-    <string name="title_activity_activity_lend_and_borrow">ActivityLendAndBorrow</string>
-    <string name="title_activity_activity_lend_and_borrow_personal">ActivityLendAndBorrowPersonal
+
+    <string name="title_activity_activity_lends_and_borrow">LendsAndBorrow</string>
+    <string name="title_activity_activity_home">Home</string>
+    <string name="title_activity_activity_lend_and_borrow">LendAndBorrow</string>
+    <string name="title_activity_activity_lend_and_borrow_personal">Lend And Borrow Individual
     </string>
-    <string name="title_activity_activity_add_entry">ActivityAddEntry</string>
+    <string name="title_activity_activity_add_entry">AddEntry</string>
     <string name="title_activity_activity_add_user">ActivityAddUser</string>
-    <string name="title_activity_activity_personal_expense">ActivityPersonalExpense</string>
+    <string name="title_activity_activity_personal_expense">Personal Expense</string>
     <string name="title_activity_activity_personal_expense_individual">
-        ActivityPersonalExpenseIndividual
+         Personal Expense Individual
     </string>
-    <string name="title_activity_activity_joint_expense">ActivityJointExpense</string>
-    <string name="title_activity_activity_joint_expense_individual">ActivityJointExpenseIndividual
+    <string name="title_activity_activity_joint_expense">Joint Expense</string>
+    <string name="title_activity_activity_joint_expense_individual">Joint Expense Individual
     </string>
-    <string name="title_activity_activity_add_group_entry">ActivityAddGroupEntry</string>
-    <string name="title_activity_activity_add_category">ActivityAddCategory</string>
-    <string name="title_activity_activity_register_user">ActivityRegisterUser</string>
+    <string name="title_activity_activity_add_group_entry">Add Group Entry</string>
+    <string name="title_activity_activity_add_category">Add Category</string>
+    <string name="title_activity_activity_register_user">Register User</string>
+    <string name="title_activity_activity_settings">Settings</string>
 
 </resources>

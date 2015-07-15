@@ -8,13 +8,13 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name="com.tricon.labs.giventake.GiveNTakeApplication"
+        android:name=".GiveNTakeApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.tricon.labs.giventake.ActivitySplash"
+            android:name=".ActivitySplash"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -24,69 +24,70 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tricon.labs.giventake.ActivityHome"
+            android:name=".ActivityHome"
             android:label="@string/title_activity_activity_home"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.tricon.labs.giventake.ActivityLendAndBorrow"
+            android:name=".ActivityLendAndBorrow"
             android:label="@string/title_activity_activity_lend_and_borrow"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.tricon.labs.giventake.ActivityLendAndBorrowIndividual"
+            android:name=".ActivityLendAndBorrowIndividual"
             android:label="@string/title_activity_activity_lend_and_borrow_personal"
             android:screenOrientation="portrait" >
         </activity>
-
         <activity
-            android:name="com.tricon.labs.giventake.ActivityLendAndBorrowAddEntry"
+            android:name=".ActivityLendAndBorrowAddEntry"
             android:label="@string/title_activity_activity_add_entry"
             android:screenOrientation="portrait" >
         </activity>
-
         <activity
-            android:name="com.tricon.labs.giventake.ActivityAddEntry"
+            android:name=".ActivityAddEntry"
             android:label="@string/title_activity_activity_add_entry"
             android:screenOrientation="portrait" >
         </activity>
-
         <activity
-            android:name="com.tricon.labs.giventake.ActivityJointExpenseAddGroup"
+            android:name=".ActivityJointExpenseAddGroup"
             android:label="@string/title_activity_activity_add_user"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.tricon.labs.giventake.ActivityPersonalExpense"
+            android:name=".ActivityPersonalExpense"
             android:label="@string/title_activity_activity_personal_expense"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.tricon.labs.giventake.ActivityPersonalExpenseIndividual"
+            android:name=".ActivityPersonalExpenseIndividual"
             android:label="@string/title_activity_activity_personal_expense_individual"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.tricon.labs.giventake.ActivityJointExpense"
+            android:name=".ActivityJointExpense"
             android:label="@string/title_activity_activity_joint_expense"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.tricon.labs.giventake.ActivityJointExpenseIndividual"
+            android:name=".ActivityJointExpenseIndividual"
             android:label="@string/title_activity_activity_joint_expense_individual"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.tricon.labs.giventake.ActivityJointExpenseAddEntry"
+            android:name=".ActivityJointExpenseAddEntry"
             android:label="@string/title_activity_activity_add_group_entry" >
         </activity>
         <activity
-            android:name="com.tricon.labs.giventake.ActivityAddCategory"
+            android:name=".ActivityAddCategory"
             android:label="@string/title_activity_activity_add_category" >
         </activity>
         <activity
-            android:name="com.tricon.labs.giventake.ActivityRegisterUser"
+            android:name=".ActivityRegisterUser"
             android:label="@string/title_activity_activity_register_user" >
+        </activity>
+        <activity
+            android:name=".ActivitySettings"
+            android:label="@string/title_activity_activity_settings" >
         </activity>
     </application>
 

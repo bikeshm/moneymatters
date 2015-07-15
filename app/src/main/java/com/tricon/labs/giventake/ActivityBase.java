@@ -5,30 +5,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.tricon.labs.giventake.adapters.DrawerDataAdapter;
-import com.tricon.labs.giventake.database.DBHelper;
-import com.tricon.labs.giventake.models.Country;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.tricon.labs.giventake.database.DBHelper;
+import com.tricon.labs.giventake.models.Country;
 
 import org.json.JSONObject;
 
@@ -49,61 +44,32 @@ import static com.tricon.labs.giventake.libraries.parsePhone.parsePhone;
  */
 public class ActivityBase extends AppCompatActivity {
 
-    //First We Declare Titles And Icons For Our Navigation Drawer List View
-    //This Icons And Titles Are holded in an Array as you can see
-
-    String TITLES[] = {"Dashboard","lends & Borrow","Personal Expense","Group" };
-
-    int ICONS[] = {R.drawable.img,R.drawable.img,R.drawable.img,R.drawable.img };
-
-    //Similarly we Create a String Resource for the name and email in the header view
-    //And we also create a int resource for profile picture in the header view
-
-    String NAME = "Bikesh M";
-    String EMAIL = "bikeshm@gmail.com";
-    int PROFILE = R.drawable.img;
-
-    //private Toolbar toolbar;                              // Declaring the Toolbar Object
-
-
-    RecyclerView mRecyclerView;                           // Declaring RecyclerView
-    RecyclerView.Adapter mAdapter;                        // Declaring Adapter For Recycler View
-    RecyclerView.LayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
-    DrawerLayout Drawer;                                  // Declaring DrawerLayout
-
-    ActionBarDrawerToggle mDrawerToggle;                  // Declaring Action Bar Drawer Toggle
-
-    //Activity activity;
-
-
+    DrawerLayout Drawer;
+    ActionBarDrawerToggle mDrawerToggle;
 
     Toolbar toolbar;
+
     View currentView;
 
     DBHelper myDb;
 
     ProgressDialog progressDialog;
+
     @Override
     public void setContentView(int layoutResID) {
-        //super.setContentView(view);
+
         super.setContentView(R.layout.main_template);
         if(layoutResID==R.layout.main_template){
             return;
         }
 
-        NAME=myDb.getUserField("1", "name");
-        EMAIL = myDb.getUserField("1", "phone");
-
-        //loading home activity templet in to template frame
         FrameLayout frame = (FrameLayout) findViewById(R.id.mainFrame);
         frame.removeAllViews();
 
         Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
         LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         currentView=  inflater.inflate(layoutResID, null);
-
         //currentView=  LayoutInflater.from(getApplicationContext()).inflate(layoutResID, null);
-
         frame.addView(currentView);
 
         //setting up toolbar
@@ -111,103 +77,65 @@ public class ActivityBase extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
-        mRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
-        mAdapter = new DrawerDataAdapter(TITLES,ICONS,NAME,EMAIL,PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
-        // And passing the titles,icons,header view name, header view email,
-        // and header view profile picture
-        mRecyclerView.setAdapter(mAdapter);                              // Setting the adapter to RecyclerView
+        setupDrawerLayout();
+    }
 
-        mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager
-        mRecyclerView.setLayoutManager(mLayoutManager);                 // Setting the layout Manager
+    private void setupDrawerLayout() {
 
         Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);        // Drawer object Assigned to the view
 
-
-        //mDrawerToggle = new ActionBarDrawerToggle(activity,Drawer,toolbar,R.string.openDrawer,R.string.closeDrawer){
         mDrawerToggle = new ActionBarDrawerToggle(this,Drawer,toolbar,R.string.openDrawer,R.string.closeDrawer){
 
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
-                // open I am not going to put anything here)
             }
-
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                // Code here will execute once drawer is closed
             }
-
         }; // Drawer Toggle Object Made
 
         Drawer.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
 
-        mDrawerToggle.syncState();               // Finally we set the drawer toggle sync State
+        mDrawerToggle.syncState();               // set the drawer toggle sync State
 
 
+        NavigationView view = (NavigationView) findViewById(R.id.navigation_view);
+        view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override public boolean onNavigationItemSelected(MenuItem menuItem) {
+                Toast.makeText(getApplicationContext(), menuItem.getTitle() + " pressed"+ menuItem.getItemId(), Toast.LENGTH_LONG).show();
 
-        //final GestureDetector mGestureDetector = new GestureDetector(activity, new GestureDetector.SimpleOnGestureListener() {
-        final GestureDetector mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+                menuItem.setChecked(true);
+                Drawer.closeDrawers();
 
-            @Override public boolean onSingleTapUp(MotionEvent e) {
+                if(menuItem.getTitle().equals("Home")){
+                    startActivity(new Intent(ActivityBase.this, ActivityHome.class));
+                    finish();
+                }
+                else if(menuItem.getTitle().equals("Lend & Borrow")){
+                    startActivity(new Intent(ActivityBase.this, ActivityLendAndBorrow.class));
+                    finish();
+                }
+                else if(menuItem.getTitle().equals("Personal Expense")){
+                    startActivity(new Intent(ActivityBase.this, ActivityPersonalExpense.class));
+                    finish();
+                }
+                else if(menuItem.getTitle().equals("Joint Group Expense")){
+                    startActivity(new Intent(ActivityBase.this, ActivityJointExpense.class));
+                    finish();
+                }
+
+                else if(menuItem.getTitle().equals("Settings")){
+                    startActivity(new Intent(ActivityBase.this, ActivitySettings.class));
+                    finish();
+                }
+
                 return true;
             }
         });
-
-
-        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                View child = rv.findChildViewUnder(e.getX(),e.getY());
-
-                if(child!=null && mGestureDetector.onTouchEvent(e)){
-                    Drawer.closeDrawers();
-                    Toast.makeText(ActivityBase.this, "The Item Clicked is: " + rv.getChildPosition(child), Toast.LENGTH_SHORT).show();
-
-                    Intent i;
-                    switch(rv.getChildPosition(child)){
-                        case 0:
-                            //for login function execution
-                            return false;
-                        case 1:
-                            Toast.makeText(ActivityBase.this,"Dashboard: "+rv.getChildPosition(child),Toast.LENGTH_SHORT).show();
-                            i = new Intent(getApplicationContext(), ActivityHome.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(i);
-                            break;
-                        case 2:
-                            Toast.makeText(ActivityBase.this,"FragmentLendsAndBorrow: "+rv.getChildPosition(child),Toast.LENGTH_SHORT).show();
-                            i = new Intent(getApplicationContext(), ActivityLendAndBorrow.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(i);
-
-                            break;
-
-                    }
-
-
-                    //for login function execution
-                    //if(rv.getChildPosition(child)==0){
-                    //    return false;
-                    //}
-
-                    return true;
-
-                }
-
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-            }
-        });
-
     }
+
 
 
     @Override
@@ -217,30 +145,10 @@ public class ActivityBase extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_joint_expense, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
 
 
+    //-------- Global functions --------//
 
     public String registreUserFromContact(String phone, String name) {
 
