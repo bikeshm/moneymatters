@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
 
 
-    tools:context="com.bikesh.scorpio.giventake.ActivityJointExpenseIndividual">
+    tools:context="com.tricon.labs.giventake.ActivityJointExpenseIndividual">
 
 
     <LinearLayout
