@@ -3,6 +3,7 @@ package com.tricon.labs.giventake;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -37,8 +38,8 @@ public class ActivityLendAndBorrow extends ActivityBase {
         myDb = new DBHelper(this);
         populateListViewFromDB();
 
-        ((ImageButton)currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
-        //((ImageButton)currentView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewGroup());
+        ((FloatingActionButton) currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+        //((ImageButton)currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
 
     }
 
@@ -82,17 +83,6 @@ public class ActivityLendAndBorrow extends ActivityBase {
         }
     }
 
-    /*
-    private class openAddnewGroup implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-
-            Intent i = new Intent(ActivityLendAndBorrow.this, ActivityJointExpenseAddGroup.class);
-            i.putExtra("fromActivity", "ActivityLendAndBorrow");
-            startActivity(i);
-
-        }
-    }*/
 
 
 

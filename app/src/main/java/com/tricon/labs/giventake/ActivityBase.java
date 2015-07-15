@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -46,7 +47,7 @@ import static com.tricon.labs.giventake.libraries.parsePhone.parsePhone;
 /**
  * Created by bikesh on 5/29/2015.
  */
-public class ActivityBase extends ActionBarActivity {
+public class ActivityBase extends AppCompatActivity {
 
     //First We Declare Titles And Icons For Our Navigation Drawer List View
     //This Icons And Titles Are holded in an Array as you can see
@@ -100,6 +101,8 @@ public class ActivityBase extends ActionBarActivity {
         Context darkTheme = new ContextThemeWrapper(this, R.style.AppTheme);
         LayoutInflater inflater = (LayoutInflater) darkTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         currentView=  inflater.inflate(layoutResID, null);
+
+        //currentView=  LayoutInflater.from(getApplicationContext()).inflate(layoutResID, null);
 
         frame.addView(currentView);
 
