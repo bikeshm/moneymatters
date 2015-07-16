@@ -1,8 +1,158 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.tricon.labs.giventake.ActivityLendAndBorrowAddEntry">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/datePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:editable="false"
+                android:hint="Date"/>
+
+            <EditText
+                android:id="@+id/created_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/l2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/l1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="Description : "/>
+
+            <EditText
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|left"
+                android:hint="Description"
+                android:inputType="textMultiLine"
+                android:lines="3"
+                android:maxLines="3"
+                android:minLines="3"
+                android:scrollbars="vertical"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/l3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/l2"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="Action :"/>
+
+            <Spinner
+                android:id="@+id/actionSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/l4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/l3"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/selectUserLabel"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="Giving To : "/>
+
+
+            <AutoCompleteTextView
+                android:id="@+id/fromUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Type name here"
+                />
+
+            &lt;!&ndash;
+            <Spinner
+                android:id="@+id/fromUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            &ndash;&gt;
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/l5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/grupMembersLayer"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="Amount  : "/>
+
+            <EditText
+                android:id="@+id/amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Amount"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/l6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/l5"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/saveBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save"/>
+
+            <Button
+                android:id="@+id/cancelBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.tricon.labs.giventake.ActivityLendAndBorrowAddEntry">
+
+    <include layout="@layout/toolbar"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -10,163 +160,94 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/id"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/btn_date"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0"
-                android:visibility="gone" />
+                android:layout_gravity="center_horizontal"
+                android:background="@android:color/transparent"
+                android:text="16-07-2015"
+                android:textColor="@color/colorAccent"
+                android:textSize="22sp"/>
 
-            <LinearLayout
-                android:id="@+id/l1"
+            <RadioGroup
+                android:id="@+id/rg_lend_and_borrow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="80dp"
+                <RadioButton
+                    android:id="@+id/rb_lend"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Date : " />
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="Lend"
+                    android:textSize="18sp"/>
 
-                <EditText
-                    android:id="@+id/datePicker"
-                    android:layout_width="match_parent"
+                <RadioButton
+                    android:id="@+id/rb_borrow"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:editable="false"
-                    android:hint="Date" />
+                    android:layout_weight="1"
+                    android:text="Borrow"
+                    android:textSize="18sp"/>
 
-                <EditText
-                    android:id="@+id/created_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone" />
+            </RadioGroup>
 
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/l2"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/til_user_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/l1"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:text="Description : " />
-
-                <EditText
-                    android:id="@+id/description"
+                <AutoCompleteTextView
+                    android:id="@+id/actv_user_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="top|left"
-                    android:hint="Description"
+                    android:hint="Type name here"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:textSize="18sp"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/til_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/et_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/amount"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:textSize="18sp"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/til_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/et_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|start"
+                    android:hint="@string/description"
                     android:inputType="textMultiLine"
                     android:lines="3"
                     android:maxLines="3"
                     android:minLines="3"
-                    android:scrollbars="vertical" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/l3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/l2"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:text="Action :" />
-
-                <Spinner
-                    android:id="@+id/actionSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/l4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/l3"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/selectUserLabel"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:text="Giving To : " />
-
-
-                <AutoCompleteTextView
-                    android:id="@+id/fromUser"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Type name here"
-                    />
-
-                <!--
-                <Spinner
-                    android:id="@+id/fromUser"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                -->
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/l5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/grupMembersLayer"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:text="Amount  : " />
-
-                <EditText
-                    android:id="@+id/amount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Amount" />
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/l6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/l5"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/saveBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Save" />
-
-                <Button
-                    android:id="@+id/cancelBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cancel" />
-
-            </LinearLayout>
+                    android:scrollbars="vertical"/>
+            </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
-    </ScrollView>
 
-</RelativeLayout>
+    </ScrollView>
+</LinearLayout>
