@@ -111,7 +111,7 @@ public class ActivityAddEntry extends ActivityBase {
 
 
         if (fromActivity.equals("ActivityLendAndBorrow")) {
-            backActivityIntent = new Intent(ActivityAddEntry.this, ActivityLendAndBorrow.class);
+            //backActivityIntent = new Intent(ActivityAddEntry.this, LendAndBorrow.class);
             generateDataForLendNBorrow();
 
         } else if (fromActivity.equals("ActivityLendAndBorrowPersonal")) {
@@ -122,7 +122,7 @@ public class ActivityAddEntry extends ActivityBase {
             generateDataForLendNBorrow();
 
         } else if (fromActivity.equals("ActivityPersonalExpense")) {
-            backActivityIntent = new Intent(ActivityAddEntry.this, ActivityPersonalExpense.class);
+            //backActivityIntent = new Intent(ActivityAddEntry.this, ActivityPersonalExpense.class);
             generateDataForPersonalExpense();
 
         } else if (fromActivity.equals("ActivityPersonalExpenseIndividual")) {

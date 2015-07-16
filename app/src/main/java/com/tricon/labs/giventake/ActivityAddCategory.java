@@ -64,23 +64,14 @@ public class ActivityAddCategory extends ActivityBase {
 
         if (fromActivity.equals("ActivityLendAndBorrow")) {//((TextView) addGroupView.findViewById(R.id.op)).setText("Add user");
             //removed
-            backActivityIntent = new Intent(ActivityAddCategory.this, ActivityLendAndBorrow.class);
+           // backActivityIntent = new Intent(ActivityAddCategory.this, LendAndBorrow.class);
             getSupportActionBar().setTitle("Create User");
 
         }
-        /*
-        else if (fromActivity.equals("ActivitySplash")) {
-            ((Button) currentView.findViewById(R.id.cancelBtn)).setVisibility(View.GONE);
-            ((LinearLayout) currentView.findViewById(R.id.passwordLayer)).setVisibility(View.VISIBLE);
-
-            getSupportActionBar().setTitle("Register");
-            backActivityIntent = new Intent(ActivityAddCategory.this, ActivityHome.class);
-
-        }*/
         else if (fromActivity.equals("ActivityPersonalExpense")) {
             ((LinearLayout) currentView.findViewById(R.id.emailLayer)).setVisibility(View.GONE);
             ((LinearLayout) currentView.findViewById(R.id.phoneLayer)).setVisibility(View.GONE);
-            backActivityIntent = new Intent(ActivityAddCategory.this, ActivityPersonalExpense.class);
+            //backActivityIntent = new Intent(ActivityAddCategory.this, ActivityPersonalExpense.class);
             getSupportActionBar().setTitle("Create Collection");
 
             if(groupId!=null){
@@ -97,42 +88,7 @@ public class ActivityAddCategory extends ActivityBase {
 
 
         }
-        /*
-        else if (fromActivity.equals("ActivityJointExpense")) {
-            getSupportActionBar().setTitle("Create a Group");
 
-            ((LinearLayout) currentView.findViewById(R.id.isOnlineLayer)).setVisibility(View.VISIBLE);
-            ((LinearLayout) currentView.findViewById(R.id.groupTypeLayer)).setVisibility(View.VISIBLE);
-            ((LinearLayout) currentView.findViewById(R.id.grupMembersLayer)).setVisibility(View.VISIBLE);
-
-
-            ((LinearLayout) currentView.findViewById(R.id.emailLayer)).setVisibility(View.GONE);
-            ((LinearLayout) currentView.findViewById(R.id.phoneLayer)).setVisibility(View.GONE);
-
-            backActivityIntent = new Intent(ActivityAddCategory.this, ActivityJointExpense.class);
-
-            //getting all user from db
-            //Cursor cursor = myDb.getAllUsers();
-
-            //getting all user from contact
-            Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
-
-            //Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.listview_item_with_checkbox_template, cursor);
-
-            //((ListView) currentView.findViewById(R.id.users)).setAdapter(adapter);
-                /.*
-                recyclerView = (RecyclerView) findViewById(R.id.users);
-                recyclerView.setHasFixedSize(true);
-
-                LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-                recyclerView.setLayoutManager(layoutManager);
-                *./
-            adapter = new Adapter_RecyclerViewList(cursor, this);
-            recyclerView.setAdapter(adapter);
-
-
-        }
-        */
         else {
             throw new IllegalArgumentException("Invalid  ");
         }
@@ -164,28 +120,7 @@ public class ActivityAddCategory extends ActivityBase {
             data.put("description", ((EditText) currentView.findViewById(R.id.description)).getText().toString());
 
 
-            /* //removed user registration from lend and borrow
-            if(fromActivity.equals("ActivityLendAndBorrow") ){ //|| fromActivity.equals("ActivitySplash") ) {
 
-
-                data.put("email",  ((EditText) currentView.findViewById(R.id.email) ).getText().toString() );
-                data.put("phone", parsePhone(((EditText) currentView.findViewById(R.id.phone)).getText().toString()) );
-
-                //if (((LinearLayout) currentView.findViewById(R.id.passwordLayer)).getVisibility()==View.VISIBLE){
-                //    data.put("password", md5(((EditText) currentView.findViewById(R.id.phone)).getText().toString()) );
-                //}
-
-                if (myDb.insertUser(data)==1) {
-                    Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
-
-                    goBack();
-
-                } else {
-                    Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
-                }
-            }
-            else
-            */
             if(fromActivity.equals("ActivityPersonalExpense")) {
 
                 Log.i("saving colection", "in");
@@ -223,113 +158,7 @@ public class ActivityAddCategory extends ActivityBase {
 
             }
 
-           /*
-            else  if(fromActivity.equals("ActivityJointExpense")) {
 
-                int ismonthlytask=0;
-
-                ArrayList<String> members =new ArrayList<String>(adapter.CheckBoxSelected);
-
-                HashMap<String, Map<String, String>> members1 = new HashMap<String,  Map<String, String>>(adapter.selectedUsers1);
-
-
-
-                /.*
-                CheckBox cb;
-                ListView mainListView =((ListView) currentView.findViewById(R.id.users));
-                for (int x = 0; x<mainListView.getChildCount();x++){
-                    cb = (CheckBox)mainListView.getChildAt(x).findViewById(R.id.item_name);
-
-                    if(cb.isChecked()){
-                        Log.i ( "selected", ((TextView) mainListView.getChildAt(x).findViewById(R.id.item_id)).getText().toString()  );
-                        members.add( Integer.parseInt( ((TextView) mainListView.getChildAt(x).findViewById(R.id.item_id)).getText().toString()  )  );
-                    }
-                }
-                *./
-
-
-                int id = ((RadioGroup) currentView.findViewById(R.id.groupType)).getCheckedRadioButtonId();
-                if (id == -1){
-                    //no item selected
-                }
-                else {
-                    if (id == R.id.radioMonthlyRenewing) {
-                        ismonthlytask=1;
-                    }
-                }
-
-                id = ((RadioGroup) currentView.findViewById(R.id.isOnline)).getCheckedRadioButtonId();
-                if (members1.size() == 0){
-                    //no item selected
-                    Toast.makeText(getApplicationContext(), "Select Group members", Toast.LENGTH_SHORT).show();
-                }
-                else {
-
-                    //for(int i=0;i<members1.size();i++) {
-
-                    //CheckBoxSelected.remove(rid);
-                    //getUserFromContactId
-                    //members.get(i);
-                    //}
-
-                    for (Map.Entry<String, Map<String, String>> entry : members1.entrySet())
-                    {
-                        Log.i("kv pair", "Key -> " + entry.getKey() + " value -> " + entry.getValue().get("name"));
-
-                        members.add( ""+registreUserFromContact(entry.getValue().get("phone"),entry.getValue().get("name")) );
-                    }
-
-                    members.add("1"); // adding root user id
-
-                    data.put("members_count", "" + members.size());
-                    data.put("ismonthlytask",""+ismonthlytask);
-
-                    if (id == R.id.radioNo){  //selected offline save to local db
-
-                        if (myDb.insertJointGroup(data)==1) {
-
-                            Toast.makeText(getApplicationContext(), "Group created", Toast.LENGTH_SHORT).show();
-
-                            //getting group details
-                            Map<String, String> result = new HashMap<String, String>();
-
-
-                            result=myDb.getJointGroup(data);
-
-
-
-
-
-                            //insert user relation
-                            if(result.size()>0){
-                                if(myDb.insertUserGroupRelation( Integer.parseInt(result.get("_id")), members)==1){
-                                    Toast.makeText(getApplicationContext(), "Data saved", Toast.LENGTH_SHORT).show();
-                                }
-                                else {
-                                    Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-
-                            goBack();
-
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
-                        }
-
-                    } else{ //selected  online save groupdetails to local online group table and  parse
-
-                    }
-                }
-
-
-
-
-
-
-
-
-            }
-            */
 
 
         }
