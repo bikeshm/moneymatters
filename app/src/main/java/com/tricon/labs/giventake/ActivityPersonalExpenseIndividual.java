@@ -76,7 +76,7 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
         Cursor entrys =  myDb.getPersonalExpense(colId, cDate);
         generateTable(entrys);
 
-        ((FloatingActionButton)currentView.findViewById(R.id.addEntry)).setOnClickListener(new openAddnewEntrry());
+        ((FloatingActionButton)currentView.findViewById(R.id.addExpenseGroup)).setOnClickListener(new openAddnewEntrry());
     }
 
 
