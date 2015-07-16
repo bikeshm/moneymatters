@@ -93,24 +93,6 @@
 
 
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/addUser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/add_user_group"
-        android:layout_gravity="bottom|end"
-        app:elevation="6dp"
-        app:fabSize="mini"
-
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="20dp"
-
-        app:pressedTranslationZ="12dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-
     <!--
     <ImageButton
         android:id="@+id/addEntry"

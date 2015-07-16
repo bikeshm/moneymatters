@@ -28,11 +28,7 @@
             android:label="@string/title_activity_activity_home"
             android:screenOrientation="portrait" >
         </activity>
-        <activity
-            android:name=".ActivityLendAndBorrow"
-            android:label="@string/title_activity_activity_lend_and_borrow"
-            android:screenOrientation="portrait" >
-        </activity>
+
         <activity
             android:name=".ActivityLendAndBorrowIndividual"
             android:label="@string/title_activity_activity_lend_and_borrow_personal"
@@ -53,21 +49,13 @@
             android:label="@string/title_activity_activity_add_user"
             android:screenOrientation="portrait" >
         </activity>
-        <activity
-            android:name=".ActivityPersonalExpense"
-            android:label="@string/title_activity_activity_personal_expense"
-            android:screenOrientation="portrait" >
-        </activity>
+
         <activity
             android:name=".ActivityPersonalExpenseIndividual"
             android:label="@string/title_activity_activity_personal_expense_individual"
             android:screenOrientation="portrait" >
         </activity>
-        <activity
-            android:name=".ActivityJointExpense"
-            android:label="@string/title_activity_activity_joint_expense"
-            android:screenOrientation="portrait" >
-        </activity>
+
         <activity
             android:name=".ActivityJointExpenseIndividual"
             android:label="@string/title_activity_activity_joint_expense_individual"

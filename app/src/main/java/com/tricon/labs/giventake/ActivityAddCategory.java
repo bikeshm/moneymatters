@@ -90,7 +90,7 @@ public class ActivityAddCategory extends ActivityBase {
         }
 
         else {
-            throw new IllegalArgumentException("Invalid  ");
+            //throw new IllegalArgumentException("Invalid  ");
         }
 
 

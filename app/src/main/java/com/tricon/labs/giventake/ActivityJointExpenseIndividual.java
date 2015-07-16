@@ -129,7 +129,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(ActivityJointExpenseIndividual.this,ActivityJointExpense.class));
+        //startActivity(new Intent(ActivityJointExpenseIndividual.this,ActivityJointExpense.class));
     }
 
 

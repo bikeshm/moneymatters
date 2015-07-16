@@ -13,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -73,7 +72,7 @@ public class ActivityBase extends AppCompatActivity {
         frame.addView(currentView);
 
         //setting up toolbar
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
         setSupportActionBar(toolbar);
 
 
@@ -108,13 +107,13 @@ public class ActivityBase extends AppCompatActivity {
 
                 menuItem.setChecked(true);
                 Drawer.closeDrawers();
-
+/*
                 if(menuItem.getTitle().equals("Home")){
                     startActivity(new Intent(ActivityBase.this, ActivityHome.class));
                     finish();
                 }
                 else if(menuItem.getTitle().equals("Lend & Borrow")){
-                    startActivity(new Intent(ActivityBase.this, ActivityLendAndBorrow.class));
+                    startActivity(new Intent(ActivityBase.this, LendAndBorrow.class));
                     finish();
                 }
                 else if(menuItem.getTitle().equals("Personal Expense")){
@@ -130,6 +129,7 @@ public class ActivityBase extends AppCompatActivity {
                     startActivity(new Intent(ActivityBase.this, ActivitySettings.class));
                     finish();
                 }
+                */
 
                 return true;
             }

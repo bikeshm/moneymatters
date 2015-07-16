@@ -1,48 +1,48 @@
-package com.tricon.labs.giventake;
+package com.tricon.labs.giventake.Fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.ViewGroup;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
-import com.tricon.labs.giventake.adapters.Adapter_CustomSimpleCursor;
-import com.tricon.labs.giventake.libraries.CustomRequest;
-import com.tricon.labs.giventake.database.DBHelper;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import static com.tricon.labs.giventake.libraries.functions.getInternetType;
+import com.tricon.labs.giventake.R;
 
 
+public class FragmentGroupExpense extends Fragment {
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        //retrieving data from Savedinstance when orientation changes
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //return super.onCreateView(inflater, container, savedInstanceState);
+
+        View v =  inflater.inflate(R.layout.fragment_group_expense,container,false);
+        return v;
+
+    }
+
+
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        //Saving data while orientation changes
+        super.onSaveInstanceState(outState);
+    }
+}
+
+
+/*
 public class ActivityJointExpense extends ActivityBase {
 
     //View currentView;
-    ListView listView;
+    ListView mLVCategories;
 
 
     Map<String, String> dbUser = new HashMap<String, String>();
@@ -63,24 +63,24 @@ public class ActivityJointExpense extends ActivityBase {
 
     boolean registerUserFlag= false;
 
-    DBHelper myDb;
+    DBHelper mDBHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //loading templet xml
-        setContentView(R.layout.activity_joint_expense);
+        setContentView(R.layout.fragment_group_expense);
 
 
-        listView = (ListView) currentView.findViewById(R.id.listViewFromDB);
-        listView.setOnItemClickListener(new listItemClicked());
-        listView.setOnItemLongClickListener(new listItemLongClicked() );
+        mLVCategories = (ListView) currentView.findViewById(R.id.listViewFromDB);
+        mLVCategories.setOnItemClickListener(new listItemClicked());
+        mLVCategories.setOnItemLongClickListener(new listItemLongClicked() );
 
 
         ((FloatingActionButton)currentView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewGroup());
 
 
-        myDb = new DBHelper(this);
+        mDBHelper = new DBHelper(this);
 
 
 
@@ -107,7 +107,7 @@ public class ActivityJointExpense extends ActivityBase {
 
         showProgress();
 
-        dbUser=myDb.getUser(1);
+        dbUser=mDBHelper.getUser(1);
 
         //chking user updated in db with online user id
         //if(dbUser.get("onlineid").equals("0")) {
@@ -147,7 +147,7 @@ public class ActivityJointExpense extends ActivityBase {
                                         Map<String, String> updateData = new HashMap<String, String>();
                                         updateData.put("_id", dbUser.get("_id"));
                                         updateData.put("onlineid", response.optJSONObject("data").optString("user_id"));
-                                        myDb.updateUser(updateData);
+                                        mDBHelper.updateUser(updateData);
 
                                         dbUser.put("onlineid", response.optJSONObject("data").optString("user_id"));
                                     }
@@ -181,12 +181,12 @@ public class ActivityJointExpense extends ActivityBase {
                                             incommingGroup.put("onlineid",incommingGroup.get("group_id") );
                                             incommingGroup.put("isonline","1" );
                                             //insert to db
-                                            myDb.insertOnlineGroup(incommingGroup);
+                                            mDBHelper.insertOnlineGroup(incommingGroup);
 
                                             onlineExistingGroups.add(incommingGroup.get("onlineid"));
                                         }
 
-                                        myDb.cleanupOnlineGroup(onlineExistingGroups);
+                                        mDBHelper.cleanupOnlineGroup(onlineExistingGroups);
 
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -223,17 +223,17 @@ public class ActivityJointExpense extends ActivityBase {
 
         //Todo :- 1. insted of listing all user just list the user who all are having amt balance
         //Todo :- need to implement pagination
-        //Cursor cursor = myDb.getAllJointGroups();
-        Cursor cursor =myDb.getAllJointGroupsWithData();
+        //Cursor cursor = mDBHelper.getAllJointGroups();
+        Cursor cursor =mDBHelper.getAllJointGroupsWithData();
 
 
 
-        listView.setAdapter(new Adapter_CustomSimpleCursor(this,        // Context
+        mLVCategories.setAdapter(new Adapter_CustomSimpleCursor(this,        // Context
                 R.layout.listview_item_template,    // Row layout template
                 cursor                    // cursor (set of DB records to map)
         ));
 
-        Map<String, String> finalResult = myDb.getAllGroupTotalSpendGiveGet();
+        Map<String, String> finalResult = mDBHelper.getAllGroupTotalSpendGiveGet();
 
         ((TextView)currentView.findViewById(R.id.totalspend)).setText(": "+finalResult.get("total"));
         ((TextView)currentView.findViewById(R.id.amtToGive)).setText(": " + finalResult.get("togive"));
@@ -263,7 +263,7 @@ public class ActivityJointExpense extends ActivityBase {
 
     private class openAddnewGroup implements View.OnClickListener {
         @Override
-        public void onClick(View v) {
+        public void onClick(View mRootView) {
 
             Intent i = new Intent(ActivityJointExpense.this, ActivityJointExpenseAddGroup.class);
             i.putExtra("fromActivity", "ActivityJointExpense");
@@ -325,8 +325,8 @@ public class ActivityJointExpense extends ActivityBase {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (myDb != null) {
-            myDb.close();
+        if (mDBHelper != null) {
+            mDBHelper.close();
         }
     }
 
@@ -344,7 +344,7 @@ public class ActivityJointExpense extends ActivityBase {
 
         CharSequence[] options  = { "Cancel" };
 
-        Map<String, String> dbGroup = myDb.fetchJointGroupbyId(groupId );
+        Map<String, String> dbGroup = mDBHelper.fetchJointGroupbyId(groupId );
 
 
 
@@ -389,7 +389,7 @@ public class ActivityJointExpense extends ActivityBase {
                 //populateListViewFromDB();
 
                 if(dbGroup.get("onlineid").equals("0")){ //offline
-                    myDb.deleteGroup( dbGroup.get("_id") );
+                    mDBHelper.deleteGroup( dbGroup.get("_id") );
                     populateListViewFromDB();
 
                 }
@@ -400,7 +400,7 @@ public class ActivityJointExpense extends ActivityBase {
                     Map<String, String> data = new HashMap<String, String>();
 
                     data.put("id", dbGroup.get("onlineid") );
-                    data.put("current_user_id",  myDb.getUserField("1", "onlineid") );
+                    data.put("current_user_id",  mDBHelper.getUserField("1", "onlineid") );
                     //data.put("owner", dbGroup.get("owner") );
 
                     deleteOnlienGroup( data );
@@ -423,9 +423,9 @@ public class ActivityJointExpense extends ActivityBase {
 
                 //Toast.makeText(getApplicationContext(),menuItems[which], Toast.LENGTH_LONG).show();
 
-                //myDb.deleteEntry(dbrowId);
+                //mDBHelper.deleteEntry(dbrowId);
 
-                //Cursor entrys =  myDb.getUserEntrys(userId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
+                //Cursor entrys =  mDBHelper.getUserEntrys(userId,((TextView)currentView.findViewById(R.id.dateChanger)).getText().toString() );
                 //generateTable(entrys);
 
                 //deleteGroupEntry(rowId, rowOnlineId, rowUseronlineId);
@@ -475,3 +475,6 @@ public class ActivityJointExpense extends ActivityBase {
     }
 
 }
+
+
+*/

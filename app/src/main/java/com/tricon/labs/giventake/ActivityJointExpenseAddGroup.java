@@ -125,7 +125,7 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
             generateRecylerView(null);
         }
 
-        backActivityIntent = new Intent(ActivityJointExpenseAddGroup.this, ActivityJointExpense.class);
+        //backActivityIntent = new Intent(ActivityJointExpenseAddGroup.this, ActivityJointExpense.class);
     }
 
     private void setupOnlineGroupEditField() {

@@ -109,7 +109,7 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
 
 
         if (fromActivity.equals("ActivityLendAndBorrow")) {
-            backActivityIntent = new Intent(ActivityLendAndBorrowAddEntry.this, ActivityLendAndBorrow.class);
+            //backActivityIntent = new Intent(ActivityLendAndBorrowAddEntry.this, LendAndBorrow.class);
             generateDataForLendNBorrow();
 
         } else if (fromActivity.equals("ActivityLendAndBorrowPersonal")) {

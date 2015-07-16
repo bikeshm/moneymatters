@@ -524,7 +524,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public Cursor getAllCollection() {
+    public Cursor getCategories() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from collectiontable", null);
         if (res != null) {

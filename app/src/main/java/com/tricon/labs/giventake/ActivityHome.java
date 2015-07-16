@@ -1,126 +1,102 @@
 package com.tricon.labs.giventake;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.tricon.labs.giventake.database.DBHelper;
+import com.tricon.labs.giventake.Fragments.FragmentGroupExpense;
+import com.tricon.labs.giventake.Fragments.FragmentLendAndBorrow;
+import com.tricon.labs.giventake.Fragments.FragmentPersonalExpense;
+import com.tricon.labs.giventake.adapters.ViewPagerAdapter;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
 
-public class ActivityHome extends ActivityBase {
+public class ActivityHome extends AppCompatActivity {
 
-    DBHelper myDb;
+    private ViewPager mVPExpenseModule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
+        setSupportActionBar(toolbar);
 
-        //setting up toolbar
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        //setSupportActionBar(toolbar);
+        mVPExpenseModule = (ViewPager) findViewById(R.id.vp_expense_module);
+        setupViewPager(mVPExpenseModule);
 
+        mVPExpenseModule.addOnPageChangeListener(new pageChangeListener());
 
-        myDb = new DBHelper(this);
+        TabLayout tlExpenseModule = (TabLayout) findViewById(R.id.tl_expense_module);
+        tlExpenseModule.setupWithViewPager(mVPExpenseModule);
 
-        ((LinearLayout) currentView.findViewById(R.id.lendAndBorrow)).setOnClickListener(new linkClicked(1));
-        ((LinearLayout) currentView.findViewById(R.id.personalExpense)).setOnClickListener(new linkClicked(2));
-        ((LinearLayout) currentView.findViewById(R.id.jointExpense)).setOnClickListener(new linkClicked(3));
+        tlExpenseModule.setTabMode(TabLayout.MODE_SCROLLABLE);
 
-
-        Map<String, String> finalResult = myDb.getFinalResult();
-        ((TextView)currentView.findViewById(R.id.amt_togive)).setText(" " + finalResult.get("amt_toGive"));
-        ((TextView)currentView.findViewById(R.id.amt_toget)).setText(" " + finalResult.get("amt_toGet"));
-
-        Map<String, String> jointfinalResult = myDb.getAllGroupTotalSpendGiveGet();
-        ((TextView)currentView.findViewById(R.id.joint_amtSpend)).setText(" "+jointfinalResult.get("total"));
-        ((TextView)currentView.findViewById(R.id.joint_amtGet)).setText(" " + jointfinalResult.get("toget"));
-        ((TextView)currentView.findViewById(R.id.joint_amtGive)).setText(" " + jointfinalResult.get("togive"));
-
-
-
-        SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy");
-        String cDate = dmy.format(new Date());
-        float amtHolder;
-        amtHolder = myDb.getMonthTotalOfPersonalExpense(cDate );
-        ((TextView)currentView.findViewById(R.id.personalExpenseTotal)).setText(" " + amtHolder);
-
-
-        Log.i("dbpath", getDatabasePath("GivnTake.db").getAbsolutePath());
-        Log.i("dbpath", Environment.getExternalStorageDirectory().toString() );
-
-
+        findViewById(R.id.btn_create).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i;
+                switch (mVPExpenseModule.getCurrentItem()) {
+                    case 0:
+                        i = new Intent(ActivityHome.this, ActivityAddCategory.class);
+                        startActivity(i);
+                        break;
+                    case 1:
+                        i = new Intent(ActivityHome.this, ActivityLendAndBorrowAddEntry.class);
+                        startActivity(i);
+                        break;
+                    case 2:
+                        i = new Intent(ActivityHome.this, ActivityJointExpenseAddGroup.class);
+                        startActivity(i);
+                        break;
+                }
+            }
+        });
     }
 
 
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-    private class linkClicked implements View.OnClickListener {
-        int item;
+        adapter.addFrag(new FragmentPersonalExpense(), "Personal exp");
+        adapter.addFrag(new FragmentLendAndBorrow(), "Lend and borrow");
+        adapter.addFrag(new FragmentGroupExpense(), "Group exp");
 
-        public linkClicked(int i) {
-            item = i;
+        viewPager.setAdapter(adapter);
+    }
+
+    private class pageChangeListener implements ViewPager.OnPageChangeListener {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         }
 
         @Override
-        public void onClick(View v) {
-            switch (item){
+        public void onPageSelected(int position) {
+
+            switch (position) {
+                case 0:
+                    ((FloatingActionButton) findViewById(R.id.btn_create)).setImageResource(R.drawable.money_group);
+                    break;
                 case 1:
-                    startActivity(new Intent(ActivityHome.this, ActivityLendAndBorrow.class));
+
+                    ((FloatingActionButton) findViewById(R.id.btn_create)).setImageResource(R.drawable.add_user_24);
                     break;
                 case 2:
-                    startActivity(new Intent(ActivityHome.this, ActivityPersonalExpense.class));
-                    break;
-                case 3:
-                    startActivity(new Intent(ActivityHome.this, ActivityJointExpense.class));
-                    break;
 
+                    ((FloatingActionButton) findViewById(R.id.btn_create)).setImageResource(R.drawable.add_user_group);
+                    break;
             }
+        }
 
+        @Override
+        public void onPageScrollStateChanged(int state) {
         }
     }
 
-
-    @Override
-    public void onBackPressed() {
-
-        new AlertDialog.Builder(this)
-            .setTitle("Close")
-            .setMessage("Do you really want to Close?")
-            .setIcon(android.R.drawable.ic_dialog_alert)
-            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                public void onClick(DialogInterface dialog, int whichButton) {
-
-                    Intent a = new Intent(Intent.ACTION_MAIN);
-                    a.addCategory(Intent.CATEGORY_HOME);
-                    a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(a);
-
-                }})
-            .setNegativeButton(android.R.string.no, null).show();
-
-    }
-
-
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (myDb != null) {
-            myDb.close();
-        }
-    }
 }
+

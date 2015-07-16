@@ -82,7 +82,7 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(ActivityPersonalExpenseIndividual.this, ActivityPersonalExpense.class));
+        //startActivity(new Intent(ActivityPersonalExpenseIndividual.this, ActivityPersonalExpense.class));
         finish();
     }
 

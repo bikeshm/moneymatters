@@ -13,7 +13,6 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -80,7 +79,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(ActivityLendAndBorrowIndividual.this,ActivityLendAndBorrow.class));
+        //startActivity(new Intent(ActivityLendAndBorrowIndividual.this,LendAndBorrow.class));
         finish();
     }
 

@@ -175,7 +175,7 @@ public class ActivityAddEntry extends ActivityBase {
         ((LinearLayout) currentView.findViewById(R.id.l3) ).setVisibility(View.GONE);
         ((TextView)currentView.findViewById(R.id.selectUserLabel)).setText("Select Collection : ");
 
-        Cursor cursor = myDb.getAllCollection();
+        Cursor cursor = myDb.getCategories();
         generate_FromuserSpinner(cursor, "db");
 
 
