@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -200,7 +199,7 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
         public void onClick(View v) {
             Toast.makeText(getApplicationContext(), "clicked" + rowId, Toast.LENGTH_LONG).show();
 
-            Intent i = new Intent(ActivityPersonalExpenseIndividual.this, ActivityAddEntry.class);
+            Intent i = new Intent(ActivityPersonalExpenseIndividual.this, ActivityPersonalExpenseAddEntry.class);
             i.putExtra("fromActivity", "ActivityPersonalExpenseIndividual");
             i.putExtra("ID", ""+colId );
             i.putExtra("Name",  colName );
@@ -289,7 +288,7 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
         @Override
         public void onClick(View v) {
 
-            Intent i = new Intent(ActivityPersonalExpenseIndividual.this, ActivityAddEntry.class);
+            Intent i = new Intent(ActivityPersonalExpenseIndividual.this, ActivityPersonalExpenseAddEntry.class);
             i.putExtra("fromActivity", "ActivityPersonalExpenseIndividual");
             i.putExtra("ID", ""+colId );
             i.putExtra("Name",  colName );
@@ -333,10 +332,6 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }

@@ -40,7 +40,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ActivityAddEntry"
+            android:name=".ActivityPersonalExpenseAddEntry"
             android:label="@string/title_activity_activity_add_entry"
             android:screenOrientation="portrait" >
         </activity>

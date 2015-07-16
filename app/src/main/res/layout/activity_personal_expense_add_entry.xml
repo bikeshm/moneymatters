@@ -1,128 +1,114 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tricon.labs.giventake.ActivityAddEntry">
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/id"
-        android:text="0"
-        android:visibility="gone"
-         />
+    tools:context="com.tricon.labs.giventake.ActivityPersonalExpenseAddEntry">
 
     <LinearLayout
+        android:id="@+id/l1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/l1">
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="Date : "
-            />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/datePicker"
-            android:hint="Date"
-            android:clickable="true"
-            android:editable="false" />
+            android:text="Date : " />
 
         <EditText
+            android:id="@+id/datePicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:editable="false"
+            android:hint="Date" />
+
+        <EditText
+            android:id="@+id/created_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/created_date"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
     </LinearLayout>
 
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/l2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/l1"
-        android:id="@+id/l2">
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="Description : "
-            />
+            android:text="Description : " />
 
         <EditText
             android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top|left"
+            android:hint="Description"
             android:inputType="textMultiLine"
             android:lines="3"
-            android:minLines="3"
             android:maxLines="3"
-            android:gravity="top|left"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:scrollbars="vertical"
-            android:hint="Description"/>
+            android:minLines="3"
+            android:scrollbars="vertical" />
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/l3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/l2"
-        android:id="@+id/l3">
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="Action :"
-            />
+            android:text="Action :" />
 
         <Spinner
             android:id="@+id/actionSpinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <!-- reusing this in Lend and borow and personal expense -->
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/l4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/l3"
-        android:id="@+id/l4">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/selectUserLabel"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="Giving To : "
-            />
+            android:text="Giving To : " />
 
         <Spinner
             android:id="@+id/fromUser"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-         />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 
     <!-- Face 2 implementation -->
     <LinearLayout
+        android:id="@+id/isSplitLayer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/isSplitLayer"
-        android:visibility="gone"
         android:layout_below="@+id/l4"
-        >
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="Is Split "
-            />
+            android:text="Is Split " />
 
         <RadioGroup
             android:id="@+id/isSplit"
@@ -136,9 +122,9 @@
                 android:id="@+id/isSplitradioNo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No"
+                android:layout_marginRight="10dp"
                 android:checked="true"
-                android:layout_marginRight="10dp"/>
+                android:text="No" />
 
             <RadioButton
                 android:id="@+id/isSplitradioYes"
@@ -153,71 +139,66 @@
 
     <!-- Face 2 implementation -->
     <LinearLayout
+        android:id="@+id/grupMembersLayer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/grupMembersLayer"
         android:layout_below="@+id/isSplitLayer"
-        android:visibility="gone" >
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Members "
-            />
+            android:text="Select Members " />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_Users"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            />
+            android:layout_height="150dp" />
 
     </LinearLayout>
 
 
-
-
-
     <LinearLayout
+        android:id="@+id/l5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_below="@+id/grupMembersLayer"
-        android:id="@+id/l5">
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="Amount  : "
-            />
+            android:text="Amount  : " />
+
         <EditText
+            android:id="@+id/amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/amount"
-            android:hint="Amount"/>
+            android:hint="Amount" />
 
     </LinearLayout>
 
 
     <LinearLayout
+        android:id="@+id/l6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_below="@+id/l5"
         android:gravity="center"
-        android:id="@+id/l6"
-        android:layout_below="@+id/l5" >
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/saveBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save"/>
+            android:text="Save" />
 
         <Button
             android:id="@+id/cancelBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel"/>
+            android:text="Cancel" />
 
     </LinearLayout>
 
