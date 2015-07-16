@@ -1,3 +1,4 @@
+/*
 package com.tricon.labs.giventake;
 
 import android.content.Intent;
@@ -361,5 +362,103 @@ public class ActivityLendAndBorrowAddEntry extends ActivityBase {
         if (myDb != null) {
             myDb.close();
         }
+    }
+}
+*/
+
+package com.tricon.labs.giventake;
+
+
+import android.app.DatePickerDialog;
+import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.RadioGroup;
+
+import com.tricon.labs.giventake.database.DBHelper;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
+
+    private DBHelper mDBHelper;
+
+    Button mBtnDate;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_lend_and_borrow_add_entry);
+
+        //setup toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(android.support.v7.appcompat.R.drawable.abc_ic_clear_mtrl_alpha);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        mDBHelper = DBHelper.getInstance(this);
+
+        mBtnDate = (Button) findViewById(R.id.btn_date);
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.rg_lend_and_borrow);
+        TextInputLayout tilUserName = (TextInputLayout) findViewById(R.id.til_user_name);
+        TextInputLayout tilAmount = (TextInputLayout) findViewById(R.id.til_amount);
+        TextInputLayout tilDescription = (TextInputLayout) findViewById(R.id.til_description);
+        AutoCompleteTextView actvUserName = (AutoCompleteTextView) findViewById(R.id.actv_user_name);
+        EditText etAmount = (EditText) findViewById(R.id.et_amount);
+        EditText etDescription = (EditText) findViewById(R.id.et_description);
+
+        //initial date values
+        SimpleDateFormat dmy = new SimpleDateFormat("dd-MM-yyyy");
+        String dmyDate = dmy.format(new Date());
+
+        mBtnDate.setText(dmyDate);
+
+        mBtnDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDatePicker();
+            }
+        });
+    }
+
+    public void openDatePicker() {
+        //To show current date in the datepicker
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                selectedmonth++;
+                String actualMonth = "" + selectedmonth;
+                if (selectedmonth < 10) {
+                    actualMonth = "0" + actualMonth;
+                }
+
+                String actualDay = "" + selectedday;
+                if (selectedday < 10) {
+                    actualDay = "0" + actualDay;
+                }
+
+                mBtnDate.setText(actualDay + "-" + actualMonth + "-" + selectedyear);
+            }
+        }, year, month, day).show();
     }
 }
