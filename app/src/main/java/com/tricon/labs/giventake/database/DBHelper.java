@@ -14,6 +14,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.tricon.labs.giventake.models.Category;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -531,6 +533,39 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToFirst();
         }
         return res;
+    }
+
+
+    public ArrayList<Category> getCategoriesListsByMonth(String selectedDate) {
+
+        ArrayList<Category> list = new ArrayList<>();
+        Category category;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String sql = "select  C._id , C.name, total(P.amt)  as totalamount from personaltable P left join collectiontable C on C._id = P.collection_id where STRFTIME('%m-%Y', created_date) = '"+selectedDate+"' group by P.collection_id  ";
+        Log.i("sql",sql);
+        Cursor res = db.rawQuery(sql, null);
+        if (res != null) {
+            res.moveToFirst();
+
+            while (res.isAfterLast() == false) {
+
+                category=new Category();
+
+                category.id =  res.getInt(0);
+                category.name =  res.getString(1);
+                category.toalAmount =  res.getFloat(2);
+
+                list.add(category);
+
+                res.moveToNext();
+            }
+
+        }
+        db.close();
+        res.close();
+        return list;
     }
 
     public Cursor getAllCollectionByMonth(String month) {

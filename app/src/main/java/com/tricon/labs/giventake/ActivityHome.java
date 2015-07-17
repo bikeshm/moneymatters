@@ -9,10 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.tricon.labs.giventake.Fragments.FragmentGroupExpense;
 import com.tricon.labs.giventake.Fragments.FragmentLendAndBorrow;
 import com.tricon.labs.giventake.Fragments.FragmentPersonalExpense;
-import com.tricon.labs.giventake.adapters.ViewPagerAdapter;
+import com.tricon.labs.giventake.adapters.AdapterViewPager;
 
 
 public class ActivityHome extends AppCompatActivity {
@@ -61,11 +60,11 @@ public class ActivityHome extends AppCompatActivity {
 
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        AdapterViewPager adapter = new AdapterViewPager(getSupportFragmentManager());
 
         adapter.addFrag(new FragmentPersonalExpense(), "Personal exp");
         adapter.addFrag(new FragmentLendAndBorrow(), "Lend and borrow");
-        adapter.addFrag(new FragmentGroupExpense(), "Group exp");
+        //adapter.addFrag(new FragmentGroupExpense(), "Group exp"); //next face
 
         viewPager.setAdapter(adapter);
     }

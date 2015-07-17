@@ -31,7 +31,7 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
 
 
     //View personalExpenseIndividualView;
-    String fromActivity=null;
+    //String fromActivity=null;
     int  colId=0;
     String colName="";
 
@@ -47,11 +47,11 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
         Bundle extras = getIntent().getExtras();
 
         if(extras == null) {
-            fromActivity= null;
+            //fromActivity= null;
         } else {
-            fromActivity= extras.getString("fromActivity");
-            colId = Integer.parseInt(extras.getString("colId"));
-            colName = extras.getString("colName");
+            //fromActivity= extras.getString("fromActivity");
+            colId = Integer.parseInt(extras.getString("ID"));
+            colName = extras.getString("NAME");
         }
 
 

@@ -334,13 +334,13 @@ public class ActivityJointExpense extends ActivityBase {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-            generatePopupmenu(id+"");
+            generatePopupMenu(id+"");
 
             return true;
         }
     }
 
-    public void generatePopupmenu(String groupId) {
+    public void generatePopupMenu(String groupId) {
 
         CharSequence[] options  = { "Cancel" };
 
