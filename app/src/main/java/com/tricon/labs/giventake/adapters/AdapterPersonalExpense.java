@@ -1,6 +1,5 @@
 package com.tricon.labs.giventake.adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.TextView;
 import com.tricon.labs.giventake.R;
 import com.tricon.labs.giventake.models.Category;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +18,7 @@ public class AdapterPersonalExpense extends BaseAdapter {
 
     List<Category> categories;
 
-    public AdapterPersonalExpense( List<Category> categoriesList) {
+    public AdapterPersonalExpense(List<Category> categoriesList) {
         categories = categoriesList;
     }
 
@@ -41,36 +39,40 @@ public class AdapterPersonalExpense extends BaseAdapter {
     }
 
     @Override
-
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        // Get the data item for this position
-
-        Category category = (Category) getItem(position);
+        ViewHolderItem viewHolder;
 
         // Check if an existing view is being reused, otherwise inflate the view
-
         if (convertView == null) {
 
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_personal_expense_item, parent, false);
 
+            // setting up the ViewHolder
+            viewHolder = new ViewHolderItem();
+            viewHolder.tvName = (TextView) convertView.findViewById(R.id.tv_name);
+            viewHolder.tvTotalAmount = (TextView) convertView.findViewById(R.id.tv_amount);
+
+            // storing the holder with the view.
+            convertView.setTag(viewHolder);
+
+        } else {
+            viewHolder = (ViewHolderItem) convertView.getTag();
         }
 
-        // Lookup view for data population
+        // Get the data item for this position
+        Category category = (Category) getItem(position);
 
-        TextView tvName = (TextView) convertView.findViewById(R.id.tv_name);
-
-        TextView tvToalAmount = (TextView) convertView.findViewById(R.id.tv_amount);
-
-        // Populate the data into the template view using the data object
-
-        tvName.setText(category.name);
-
-        tvToalAmount.setText(category.toalAmount + "");
-
-        // Return the completed view to render on screen
+        viewHolder.tvName.setText(category.name);
+        viewHolder.tvTotalAmount.setText(category.totalAmount + "");
 
         return convertView;
+    }
+
+    //View holder class
+    static class ViewHolderItem {
+        TextView tvName;
+        TextView tvTotalAmount;
 
     }
 

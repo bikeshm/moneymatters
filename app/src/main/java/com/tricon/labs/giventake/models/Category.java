@@ -6,6 +6,6 @@ package com.tricon.labs.giventake.models;
 public class Category {
     public int id;
     public String name;
-    public Float toalAmount;
+    public Float totalAmount;
 
 }

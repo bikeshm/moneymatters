@@ -555,7 +555,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
                 category.id =  res.getInt(0);
                 category.name =  res.getString(1);
-                category.toalAmount =  res.getFloat(2);
+                category.totalAmount =  res.getFloat(2);
 
                 list.add(category);
 
