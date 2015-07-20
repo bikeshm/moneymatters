@@ -1,6 +1,6 @@
 package com.tricon.labs.giventake;
 
-import android.app.AlertDialog;
+/*import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -32,8 +32,8 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
 
     //View personalExpenseIndividualView;
     //String fromActivity=null;
-    int  colId=0;
-    String colName="";
+    int colId = 0;
+    String colName = "";
 
     DBHelper myDb;
 
@@ -46,7 +46,7 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
 
         Bundle extras = getIntent().getExtras();
 
-        if(extras == null) {
+        if (extras == null) {
             //fromActivity= null;
         } else {
             //fromActivity= extras.getString("fromActivity");
@@ -61,8 +61,8 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
         SimpleDateFormat dbmy = new SimpleDateFormat("yyyy-MM");
         String cdbDate = dbmy.format(new Date());
 
-        TextView dateChanger= (TextView)currentView.findViewById(R.id.dateChanger);
-        TextView dateChangerForDb= (TextView)currentView.findViewById(R.id.dateChangerForDb);
+        TextView dateChanger = (TextView) currentView.findViewById(R.id.dateChanger);
+        TextView dateChangerForDb = (TextView) currentView.findViewById(R.id.dateChangerForDb);
 
         dateChanger.setOnClickListener(new CustomDatePicker(ActivityPersonalExpenseIndividual.this, dateChanger, dateChangerForDb, true));
 
@@ -72,10 +72,10 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
         dateChangerForDb.addTextChangedListener(new dateChange());
 
 
-        Cursor entrys =  myDb.getPersonalExpense(colId, cDate);
+        Cursor entrys = myDb.getPersonalExpense(colId, cDate);
         generateTable(entrys);
 
-        ((FloatingActionButton)currentView.findViewById(R.id.addExpenseGroup)).setOnClickListener(new openAddnewEntrry());
+        ((FloatingActionButton) currentView.findViewById(R.id.addExpenseGroup)).setOnClickListener(new openAddnewEntrry());
     }
 
 
@@ -98,12 +98,12 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
 
         TableLayout tableLayout = (TableLayout) currentView.findViewById(R.id.tableLayout);
         TableRow tr, th;
-        boolean colorFlag=false;
+        boolean colorFlag = false;
         TextView tv;
-        String fields[]={"created_date", "description",  "amt"};
+        String fields[] = {"created_date", "description", "amt"};
 
         //setting headder
-        String tablehead[]={"Date", "Description", "Amt"};
+        String tablehead[] = {"Date", "Description", "Amt"};
         tableLayout.removeAllViews();
         th = new TableRow(this);
         th.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
@@ -111,11 +111,11 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
         tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
 
-        Log.i("bm info", "" + colId+ " cc "+ cursor.getCount());
+        Log.i("bm info", "" + colId + " cc " + cursor.getCount());
         Log.i("bm info", "" + tablehead.length);
 
 
-        for (int i=0 ;i< tablehead.length; i++) {
+        for (int i = 0; i < tablehead.length; i++) {
             tv = generateTextview();
             tv.setText(tablehead[i]);
             tv.setTypeface(null, Typeface.BOLD);
@@ -124,36 +124,34 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
         tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
         //----
 
-        while(cursor.isAfterLast() == false){
+        while (cursor.isAfterLast() == false) {
 
             tr = new TableRow(this);
             tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
             tr.setClickable(true);
             tr.setOnClickListener(new tableRowClicked(Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id")))));
-            tr.setOnLongClickListener(new tableRowLongClicked ( Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id"))) ));
+            tr.setOnLongClickListener(new tableRowLongClicked(Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id")))));
 
             Log.i("bm info", "" + fields.length);
 
-            for (int i=0 ;i<fields.length; i++) {
+            for (int i = 0; i < fields.length; i++) {
 
                 tv = generateTextview();
 
                 //changing date format
-                if(fields[i].equals("created_date")){
+                if (fields[i].equals("created_date")) {
 
                     try {
 
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//set format of date you receiving from db
-                        Date date = (Date) sdf.parse(  cursor.getString(cursor.getColumnIndex(fields[i]))  );
+                        Date date = (Date) sdf.parse(cursor.getString(cursor.getColumnIndex(fields[i])));
                         SimpleDateFormat newDate = new SimpleDateFormat("dd-MM-yyyy");//set format of new date
-                        tv.setText(""+ newDate.format(date) );
-                    }
-                    catch(ParseException pe) {
+                        tv.setText("" + newDate.format(date));
+                    } catch (ParseException pe) {
                         tv.setText(cursor.getString(cursor.getColumnIndex(fields[i])));
                     }
-                }
-                else {
+                } else {
                     tv.setText(cursor.getString(cursor.getColumnIndex(fields[i])));
                 }
 
@@ -162,13 +160,12 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
 
             cursor.moveToNext();
 
-            if(colorFlag){
+            if (colorFlag) {
                 tr.setBackgroundColor(Color.rgb(240, 242, 242));
-                colorFlag=false;
-            }
-            else {
+                colorFlag = false;
+            } else {
                 tr.setBackgroundColor(Color.rgb(234, 237, 237));
-                colorFlag=true;
+                colorFlag = true;
             }
             // Add row to TableLayout.
             tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
@@ -176,7 +173,7 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
 
         float amtHolder;
         amtHolder = myDb.getMonthTotalOfPersonalExpenseIndividual(colId, ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString());
-        ((TextView)currentView.findViewById(R.id.monthlyTotal)).setText(": "+amtHolder);
+        ((TextView) currentView.findViewById(R.id.monthlyTotal)).setText(": " + amtHolder);
 
     }
 
@@ -190,9 +187,10 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
 
 
     private class tableRowClicked implements View.OnClickListener {
-        int rowId=0;
+        int rowId = 0;
+
         public tableRowClicked(int id) {
-            rowId=id;
+            rowId = id;
         }
 
         @Override
@@ -201,9 +199,9 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
 
             Intent i = new Intent(ActivityPersonalExpenseIndividual.this, ActivityPersonalExpenseAddEntry.class);
             i.putExtra("fromActivity", "ActivityPersonalExpenseIndividual");
-            i.putExtra("ID", ""+colId );
-            i.putExtra("Name",  colName );
-            i.putExtra("rowId",  rowId+"" );
+            i.putExtra("ID", "" + colId);
+            i.putExtra("Name", colName);
+            i.putExtra("rowId", rowId + "");
             startActivity(i);
 
 
@@ -211,25 +209,25 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
     }
 
     private class tableRowLongClicked implements View.OnLongClickListener {
-        int rowId=0;
-        public tableRowLongClicked(int id)  {
-            rowId=id;
+        int rowId = 0;
+
+        public tableRowLongClicked(int id) {
+            rowId = id;
         }
 
         @Override
         public boolean onLongClick(View v) {
 
-            Toast.makeText(getApplicationContext(),"Long pressed ", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Long pressed ", Toast.LENGTH_LONG).show();
             generatePopupmenu(rowId);
             return true;
         }
     }
 
-
     public void generatePopupmenu(int rowId) {
 
-        final CharSequence[] options = { "Delete","Cancel" };
-        final String dbrowId = rowId+"";
+        final CharSequence[] options = {"Delete", "Cancel"};
+        final String dbrowId = rowId + "";
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ActivityPersonalExpenseIndividual.this);
         //builder.setTitle("Add Photo!");
@@ -244,14 +242,12 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
 
                     myDb.deletePersonalExpense(dbrowId);
 
-                    Cursor entrys =  myDb.getPersonalExpense(colId, ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString() );
+                    Cursor entrys = myDb.getPersonalExpense(colId, ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString());
 
                     generateTable(entrys);
 
 
-
-                }
-                else if (options[item].equals("Cancel")) {
+                } else if (options[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
             }
@@ -260,23 +256,20 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
         builder.show();
     }
 
-
-
-
-
-
     private class dateChange implements TextWatcher {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) { }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
 
         @Override
         public void afterTextChanged(Editable s) {
-            Toast.makeText(getApplicationContext(),""+((TextView)currentView.findViewById(R.id.dateChangerForDb)).getText(),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "" + ((TextView) currentView.findViewById(R.id.dateChangerForDb)).getText(), Toast.LENGTH_LONG).show();
 
-            Cursor entrys =  myDb.getPersonalExpense(colId, ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString() );
+            Cursor entrys = myDb.getPersonalExpense(colId, ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString());
 
             generateTable(entrys);
 
@@ -290,33 +283,12 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
 
             Intent i = new Intent(ActivityPersonalExpenseIndividual.this, ActivityPersonalExpenseAddEntry.class);
             i.putExtra("fromActivity", "ActivityPersonalExpenseIndividual");
-            i.putExtra("ID", ""+colId );
-            i.putExtra("Name",  colName );
+            i.putExtra("ID", "" + colId);
+            i.putExtra("Name", colName);
             startActivity(i);
 
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -342,6 +314,113 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
         super.onDestroy();
         if (myDb != null) {
             myDb.close();
+        }
+    }
+}*/
+
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.tricon.labs.giventake.interfaces.EntryClickedListener;
+import com.tricon.labs.giventake.models.PersonalExpenseEntry;
+
+import java.util.List;
+
+public class ActivityPersonalExpenseIndividual extends AppCompatActivity implements EntryClickedListener {
+
+    private Button mBtnDate;
+    private TextView mTVMonthlyTotal;
+
+    private List<PersonalExpenseEntry> mEntries;
+
+    private String mCategoryId;
+    private String mCategoryName;
+    private String mDate;
+
+    private static final int REQUEST_UPDATE = 10;
+    private static final int REQUEST_CREATE = 20;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_personal_expense_individual);
+
+        //setup toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(android.support.v7.appcompat.R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        //get extras
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            mCategoryId = extras.getString("CATEGORYID", "");
+            mCategoryName = extras.getString("CATEGORYNAME", "");
+            mDate = extras.getString("DATE", "");
+        }
+
+        //set actionbar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setTitle(mCategoryName);
+        }
+
+        //setup views
+        mBtnDate = (Button) findViewById(R.id.btn_date);
+        mTVMonthlyTotal = (TextView) findViewById(R.id.tv_monthly_total);
+        RecyclerView rvEntries = (RecyclerView) findViewById(R.id.rv_entries);
+
+        rvEntries.setHasFixedSize(true);
+        rvEntries.setLayoutManager(new LinearLayoutManager(this));
+
+        //set listeners
+        findViewById(R.id.btn_create).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityPersonalExpenseIndividual.this, ActivityPersonalExpenseAddEntry.class);
+                intent.putExtra("ENTRY", new PersonalExpenseEntry());
+                intent.putExtra("SPECIFICENTRY", true);
+                startActivityForResult(intent, REQUEST_CREATE);
+            }
+        });
+
+        //fetch entries
+        new FetchEntriesTask().execute();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onEntryClicked(int position) {
+        Intent intent = new Intent(ActivityPersonalExpenseIndividual.this, ActivityPersonalExpenseAddEntry.class);
+        intent.putExtra("ENTRY", mEntries.get(position));
+        startActivityForResult(intent, REQUEST_UPDATE);
+    }
+
+    private class FetchEntriesTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
         }
     }
 }

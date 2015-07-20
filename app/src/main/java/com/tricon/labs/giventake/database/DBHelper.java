@@ -21,6 +21,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.tricon.labs.giventake.libraries.functions.getContactbyphone;
@@ -118,17 +120,15 @@ public class DBHelper extends SQLiteOpenHelper {
     //common or global function
 
     // insert
-    public int commonInsert(Map<String, String> data, String table) {
+    public long commonInsert(Map<String, String> data, String table) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
         for (Map.Entry<String, String> entry : data.entrySet()) {
             contentValues.put(entry.getKey(), entry.getValue());
         }
-
-        db.insert(table, null, contentValues);
-        db.close();
-        return 1;
+        long res = db.insert(table, null, contentValues);
+        return res;
     }
 
     public int commonUpdate(Map<String, String> data, String table) {
@@ -195,12 +195,11 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("select " + field + " from " + table + " where _id=" + id + "", null);
         if (res != null) {
             res.moveToFirst();
-            while (res.isAfterLast() == false) {
+            if (!res.isAfterLast()) {
                 return res.getString(res.getColumnIndex(field));
             }
+            res.close();
         }
-
-        res.close();
         return "";
     }
 
@@ -208,7 +207,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //Map<String, String> map = new HashMap<String, String>();
     //map.put("name", "demo");
-    public int insertUser(Map<String, String> data) {
+    public long insertUser(Map<String, String> data) {
 
         return commonInsert(data, "usertable");
     }
@@ -229,7 +228,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public Map getUser(long id) {
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from usertable where _id=" + id + "", null);
 
@@ -239,14 +238,12 @@ public class DBHelper extends SQLiteOpenHelper {
         return data;
     }
 
-    public Map fetchUserData(Cursor res) {
-        Map<String, String> data = new HashMap<String, String>();
+    public Map<String, String> fetchUserData(Cursor res) {
+        Map<String, String> data = new HashMap<>();
 
         if (res != null) {
             res.moveToFirst();
-
-
-            while (res.isAfterLast() == false) {
+            while (!res.isAfterLast()) {
 
                 //Log.i("DB", res.getString(res.getColumnIndex("name")) );
                 data.put("_id", res.getString(res.getColumnIndex("_id")));
@@ -258,8 +255,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 data.put("phone", res.getString(res.getColumnIndex("phone")));
                 data.put("description", res.getString(res.getColumnIndex("description")));
                 data.put("country_code", res.getString(res.getColumnIndex("country_code")));
-
-
                 res.moveToNext();
             }
         }
@@ -284,7 +279,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Map getUserbyOnlineId(String onlineId) {
 
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from usertable where onlineid=" + onlineId + "", null);
 
@@ -301,7 +296,9 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToFirst();
 
             if (res.getCount() > 0) {
-                return res.getString(res.getColumnIndex("phone"));
+                String userPhone = res.getString(res.getColumnIndex("phone"));
+                res.close();
+                return userPhone;
             }
         }
         return null;
@@ -314,7 +311,9 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToFirst();
 
             if (res.getCount() > 0) {
-                return res.getString(res.getColumnIndex("country_code"));
+                String countryCode = res.getString(res.getColumnIndex("country_code"));
+                res.close();
+                return countryCode;
             }
         }
         return null;
@@ -331,8 +330,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public int getNumRowsUsertable() {
         SQLiteDatabase db = this.getReadableDatabase();
-        int numRows = (int) DatabaseUtils.queryNumEntries(db, USER_TABLE_NAME);
-        return numRows;
+        return (int) DatabaseUtils.queryNumEntries(db, USER_TABLE_NAME);
     }
 
     //get all users except me
@@ -412,7 +410,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //------------------------------------------------------------------------------------------------------------
 
 
-    public int insertEntry(Map<String, String> data) {
+    public long insertEntry(Map<String, String> data) {
         return commonInsert(data, "lendandborrowtable");
     }
 
@@ -447,17 +445,16 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public float getMonthTotalOfGive(long userId, String createdDate) {
         SQLiteDatabase db = this.getReadableDatabase();
-        float amt = 0;
+        float amt;
         Cursor res = db.rawQuery("select TOTAL(amt) from lendandborrowtable where from_user = " + userId + " and STRFTIME('%m-%Y', created_date) = '" + createdDate + "'", null);
 
         if (res != null) {
             res.moveToFirst();
             amt = res.getFloat(0);
+            res.close();
         } else {
             amt = 0;
         }
-
-        res.close();
 
         return amt;
     }
@@ -470,11 +467,10 @@ public class DBHelper extends SQLiteOpenHelper {
         if (res != null) {
             res.moveToFirst();
             amt = res.getFloat(0);
+            res.close();
         } else {
             amt = 0;
         }
-
-        res.close();
 
         return amt;
     }
@@ -489,9 +485,8 @@ public class DBHelper extends SQLiteOpenHelper {
         if (res != null) {
             res.moveToFirst();
             balance = res.getFloat(0);
+            res.close();
         }
-
-        res.close();
         db.close();
 
         return balance;
@@ -506,9 +501,8 @@ public class DBHelper extends SQLiteOpenHelper {
         if (res != null) {
             res.moveToFirst();
             prevBalance = res.getFloat(0);
+            res.close();
         }
-
-        res.close();
 
         return prevBalance;
     }
@@ -530,16 +524,15 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToFirst();
             data.put("amt_toGet", "" + res.getFloat(0));
             data.put("amt_toGive", "" + ((res.getFloat(1) < 0) ? (res.getFloat(1) * -1) : 0));
+            res.close();
         }
-
-        res.close();
 
         return data;
     }
 
     //===========================================================================================================================
 
-    public int insertCollection(Map<String, String> data) {
+    public long insertCollection(Map<String, String> data) {
         return commonInsert(data, "collectiontable");
     }
 
@@ -579,6 +572,33 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public HashSet<String> getAllCategories() {
+        HashSet<String> categories = new HashSet<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor categoryCursor = db.rawQuery("select name from " + COLLECTION_TABLE_NAME, null);
+        while (categoryCursor.moveToNext()) {
+            categories.add(categoryCursor.getString(0).trim().toLowerCase());
+        }
+        categoryCursor.close();
+
+        return categories;
+    }
+
+    public int getCategoryIdFromCategoryName(String categoryName) {
+        int categoryId = -1;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor categoryCursor = db.rawQuery("select _id from " + COLLECTION_TABLE_NAME + " WHERE upper(name) = upper(?)",
+                new String[]{categoryName});
+        if (categoryCursor.moveToNext()) {
+            categoryId = categoryCursor.getInt(0);
+        }
+        categoryCursor.close();
+
+        return categoryId;
+    }
+
 
     public ArrayList<Category> getCategoriesListsByMonth(String selectedDate) {
 
@@ -587,29 +607,27 @@ public class DBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String sql = "select  C._id , C.name, total(P.amt)  as totalamount from personaltable P left join collectiontable C on C._id = P.collection_id where STRFTIME('%m-%Y', created_date) = '"+selectedDate+"' group by P.collection_id  ";
-        Log.i("sql",sql);
+        String sql = "select  C._id , C.name, total(P.amt)  as totalamount from personaltable P left join collectiontable C on C._id = P.collection_id where STRFTIME('%m-%Y', created_date) = '" + selectedDate + "' group by P.collection_id  ";
+        Log.i("sql", sql);
         Cursor res = db.rawQuery(sql, null);
         if (res != null) {
             res.moveToFirst();
 
-            while (res.isAfterLast() == false) {
+            while (!res.isAfterLast()) {
 
-                category=new Category();
+                category = new Category();
 
-                category.id =  res.getInt(0);
-                category.name =  res.getString(1);
-                category.totalAmount =  res.getFloat(2);
+                category.id = res.getInt(0);
+                category.name = res.getString(1);
+                category.totalAmount = res.getFloat(2);
 
                 list.add(category);
 
                 res.moveToNext();
             }
-
             res.close();
         }
-        //db.close();
-
+        db.close();
         return list;
     }
 
@@ -629,15 +647,15 @@ public class DBHelper extends SQLiteOpenHelper {
         if (res != null) {
             res.moveToFirst();
             balance = res.getFloat(0);
+            res.close();
         }
 
-        res.close();
         db.close();
         return balance;
     }
     //===========================================================================================================================
 
-    public int insertPersonalExpense(Map<String, String> data) {
+    public long insertPersonalExpense(Map<String, String> data) {
         return commonInsert(data, "personaltable");
     }
 
@@ -671,17 +689,17 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public float getMonthTotalOfPersonalExpenseIndividual(long collectionId, String createdDate) {
         SQLiteDatabase db = this.getReadableDatabase();
-        float amt = 0;
+        float amt;
         Cursor res = db.rawQuery("select TOTAL(amt) from personaltable where collection_id = " + collectionId + " and STRFTIME('%m-%Y', created_date) = '" + createdDate + "'", null);
 
         if (res != null) {
             res.moveToFirst();
             amt = res.getFloat(0);
+            res.close();
         } else {
             amt = 0;
         }
 
-        res.close();
         db.close();
         return amt;
     }
@@ -694,11 +712,11 @@ public class DBHelper extends SQLiteOpenHelper {
         if (res != null) {
             res.moveToFirst();
             amt = res.getFloat(0);
+            res.close();
         } else {
             amt = 0;
         }
 
-        res.close();
         db.close();
         return amt;
     }
@@ -707,7 +725,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //===========================================================================================================================
 
 
-    public int insertJointGroup(Map<String, String> data) {
+    public long insertJointGroup(Map<String, String> data) {
         return commonInsert(data, JOINTGROUP_TABLE_NAME);
     }
 
@@ -754,7 +772,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Cursor getJointGroupbyOnlineId(String onlineId) {
 
-        Map<String, String> data = new HashMap<String, String>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from " + JOINTGROUP_TABLE_NAME + " where onlineid=" + onlineId + "", null);
 
@@ -785,12 +802,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
         Cursor res = getJointGroupbyId(groupId);
 
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>();
 
         if (res != null) {
             res.moveToFirst();
 
-            while (res.isAfterLast() == false) {
+            while (!res.isAfterLast()) {
 
                 //Log.i("DB", res.getString(res.getColumnIndex("name")) );
                 data.put("_id", res.getString(res.getColumnIndex("_id")));
@@ -806,6 +823,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 data.put("balanceamt", res.getString(res.getColumnIndex("balanceamt")));
                 res.moveToNext();
             }
+            res.close();
         }
 
         return data;
@@ -820,14 +838,13 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
-
     //---
     public Cursor getAllJointGroupsWithData() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = null;
         Map<String, String> data = new HashMap<String, String>();
 
-        SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy");
+        SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy", Locale.US);
 
 
         String sql = " select G._id,  G.name, G.totalamt,G.members_count,G.balanceamt," +
@@ -849,7 +866,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public Map<String, String> getJointGroup(Map<String, String> data) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Map<String, String> result = new HashMap<String, String>();
+        Map<String, String> result = new HashMap<>();
 
 
         //data.put("name",  ((EditText) addGroupView.findViewById(R.id.name) ).getText().toString() );
@@ -878,16 +895,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if (res != null) {
             res.moveToFirst();
-
             for (Map.Entry<String, String> entry : data.entrySet()) {
                 result.put(entry.getKey(), res.getString(res.getColumnIndex(entry.getKey())));
 
             }
-
+            res.close();
         }
-
-
-        res.close();
         db.close();
         return result;
     }
@@ -901,8 +914,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public int insertUserGroupRelation(String groupId, ArrayList<String> members) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues;
-
-
         for (int i = 0; i < members.size(); i++) {
 
             if (isRelationExist(members.get(i), groupId) == 0) {
@@ -914,8 +925,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 db.insert(JOINT_USER_GROUP_RELATION_TABLE_NAME, null, contentValues);
             }
         }
-
-
         db.close();
         return 1;
     }
@@ -961,21 +970,14 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public int isRelationExist(String userId, String groupId) {
-
-
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from " + JOINT_USER_GROUP_RELATION_TABLE_NAME + " where user_id='" + userId + "' and joint_group_id = '" + groupId + "'", null);
 
         if (res != null) {
             res.moveToFirst();
-
+            res.close();
             return res.getCount();
         }
-
-
-        res.close();
-
-
         return 0;
     }
 
@@ -992,38 +994,38 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public ArrayList<String> getAllUsersIdsInGroup(String groupId) {
 
-        ArrayList<String> userIds = new ArrayList<String>();
+        ArrayList<String> userIds = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select user_id from " + JOINT_USER_GROUP_RELATION_TABLE_NAME + " where joint_group_id = " + groupId, null);
         if (res != null) {
             res.moveToFirst();
 
-            while (res.isAfterLast() == false) {
+            while (!res.isAfterLast()) {
 
                 userIds.add(res.getString(res.getColumnIndex("user_id")));
                 res.moveToNext();
             }
-
+            res.close();
         }
         return userIds;
     }
 
     public ArrayList<String> getAllUsersPhoneInGroup(String groupId) {
 
-        ArrayList<String> userIds = new ArrayList<String>();
+        ArrayList<String> userIds = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select phone from usertable where _id in ( select user_id from " + JOINT_USER_GROUP_RELATION_TABLE_NAME + " where joint_group_id = " + groupId + ")", null);
         if (res != null) {
             res.moveToFirst();
 
-            while (res.isAfterLast() == false) {
+            while (!res.isAfterLast()) {
 
                 userIds.add(res.getString(res.getColumnIndex("phone")));
                 res.moveToNext();
             }
-
+            res.close();
         }
         return userIds;
     }
@@ -1094,8 +1096,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Map<String, String> getAllGroupTotalSpendGiveGet() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = null;
-        Map<String, String> data = new HashMap<String, String>();
+        Cursor res;
+        Map<String, String> data = new HashMap<>();
 
         data.put("total", "0");
         data.put("togive", "0");
@@ -1113,10 +1115,9 @@ public class DBHelper extends SQLiteOpenHelper {
             data.put("total", "" + String.format("%.2f", res.getFloat(0)));
             data.put("togive", "" + String.format("%.2f", res.getFloat(1)));
             data.put("toget", "" + String.format("%.2f", ((res.getFloat(2) >= 0) ? res.getFloat(2) : (res.getFloat(2) * -1))));
+            res.close();
         }
 
-
-        res.close();
         db.close();
         return data;
     }
@@ -1128,7 +1129,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy");
+        SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy", Locale.US);
 
         Cursor c = getJointGroupbyId(groupId);
 
@@ -1152,7 +1153,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public Map<String, String> getGroupEntry(Map<String, String> data) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Map<String, String> result = new HashMap<String, String>();
+        Map<String, String> result = new HashMap<>();
 
         String where = "where";
         for (Map.Entry<String, String> entry : data.entrySet()) {
@@ -1181,10 +1182,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 result.put(entry.getKey(), res.getString(res.getColumnIndex(entry.getKey())));
 
             }
-
+            res.close();
         }
 
-        res.close();
         db.close();
         return result;
     }
@@ -1196,7 +1196,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Cursor getGroupEntrys(String groupId, String month) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = null;
+        Cursor res;
 
         if (month != null) {
             month = "  and STRFTIME('%m-%Y', created_date) = '" + month + "'";
@@ -1219,8 +1219,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Map<String, String> getGroupEntryTotalPerHead(String groupId, String month) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = null;
-        Map<String, String> data = new HashMap<String, String>();
+        Cursor res;
+        Map<String, String> data = new HashMap<>();
 
         data.put("total", "0");
         data.put("perhead", "0");
@@ -1231,20 +1231,16 @@ public class DBHelper extends SQLiteOpenHelper {
             month = "";
         }
 
-
         res = db.rawQuery("select Total(amt), " +
                 " Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id = " + groupId + "  ) " +
                 " from " + JOINTENTRY_TABLE_NAME + " where  joint_group_id = " + groupId + month, null);
-
 
         if (res != null) {
             res.moveToFirst();
             data.put("total", "" + String.format("%.2f", res.getFloat(0)));
             data.put("perhead", "" + String.format("%.2f", res.getFloat(1)));
+            res.close();
         }
-
-
-        res.close();
         db.close();
         return data;
     }
@@ -1282,15 +1278,14 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public Map getOnlineGroup(String online_id) {
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from " + JOINTGROUP_TABLE_NAME + " where onlineid='" + online_id + "'", null);
 
         if (res != null) {
             res.moveToFirst();
 
-            while (res.isAfterLast() == false) {
-
+            if (!res.isAfterLast()) {
                 //Log.i("DB", res.getString(res.getColumnIndex("name")) );
                 data.put("_id", res.getString(res.getColumnIndex("_id")));
                 data.put("onlineid", res.getString(res.getColumnIndex("onlineid")));
@@ -1302,11 +1297,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 data.put("totalamt", res.getString(res.getColumnIndex("totalamt")));
                 data.put("balanceamt", res.getString(res.getColumnIndex("balanceamt")));
                 res.moveToNext();
-                break;
             }
+            res.close();
         }
 
-        res.close();
         return data;
     }
 
@@ -1320,9 +1314,9 @@ public class DBHelper extends SQLiteOpenHelper {
             if (res.getCount() > 0) {
                 return true;
             }
+            res.close();
         }
 
-        res.close();
         return false;
     }
 
@@ -1352,28 +1346,28 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         String userId = "0";
-        Cursor userdata = getUserByPhone(onlineUserdata.get("phone").toString());
+        Cursor userdata = getUserByPhone(onlineUserdata.get("phone"));
         if (userdata.getCount() > 0) {
             //user already in user table
             userId = userdata.getString(userdata.getColumnIndex("_id"));
         } else {
-            Map<String, String> newUser = new HashMap<String, String>();
+            Map<String, String> newUser = new HashMap<>();
 
             //Log.i("api call", "checking contact "+ onlineUserdata.get("phone").toString());
 
-            String name = getContactbyphone(onlineUserdata.get("phone").toString(), ContentResolver);
+            String name = getContactbyphone(onlineUserdata.get("phone"), ContentResolver);
             if (name != null) {
                 newUser.put("name", name);
                 //Log.i("api call", "exist in contact ");
             } else {
-                newUser.put("name", onlineUserdata.get("name").toString());
+                newUser.put("name", onlineUserdata.get("name"));
                 //Log.i("api call", "Not exist in contact ");
             }
 
-            newUser.put("onlineid", onlineUserdata.get("onlineid").toString());
-            newUser.put("phone", onlineUserdata.get("phone").toString());
+            newUser.put("onlineid", onlineUserdata.get("onlineid"));
+            newUser.put("phone", onlineUserdata.get("phone"));
 
-            newUser.put("country_code", onlineUserdata.get("country_code").toString());
+            newUser.put("country_code", onlineUserdata.get("country_code"));
 
 
             //Log.i("api call", "inserting user in db ");
@@ -1434,9 +1428,9 @@ public class DBHelper extends SQLiteOpenHelper {
             if (res.getCount() > 0) {
                 return true;
             }
+            res.close();
         }
 
-        res.close();
         return false;
     }
 
@@ -1452,7 +1446,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         Log.i("api call", entryData.toString());
 
-        if (isOnlineEntryExist(entryData.get("onlineid").toString())) {
+        if (isOnlineEntryExist(entryData.get("onlineid"))) {
             Log.i("api call", "updating online entry");
             commonUpdateWhere(entryData, "onlineid", JOINTENTRY_TABLE_NAME);
         } else {

@@ -1,5 +1,6 @@
 package com.tricon.labs.giventake;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -15,21 +16,23 @@ import android.widget.Toast;
 import com.tricon.labs.giventake.database.DBHelper;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
-public class ActivityAddCategory extends AppCompatActivity {
+public class ActivityEditCategory extends AppCompatActivity {
 
     private TextInputLayout mTILCategory;
     private EditText mETCategory;
-    private EditText mETDescription;
+
+    private HashSet<String> mCategories = new HashSet<>();
 
     private DBHelper mDBHelper;
 
-    private static int GROUP_ID = 0;
+    private String CATEGORY_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_category);
+        setContentView(R.layout.activity_edit_category);
 
         //setup toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
@@ -48,16 +51,11 @@ public class ActivityAddCategory extends AppCompatActivity {
         //setup views
         mTILCategory = (TextInputLayout) findViewById(R.id.til_category);
         mETCategory = (EditText) findViewById(R.id.et_category);
-        mETDescription = (EditText) findViewById(R.id.et_description);
 
         //get data from intent
         Bundle extras = getIntent().getExtras();
-
-        if (extras != null) {
-            GROUP_ID = extras.getInt("GROUPID", 0);
-            mETCategory.setText(extras.getString("NAME", ""));
-            mETDescription.setText(extras.getString("DESCRIPTION", ""));
-        }
+        CATEGORY_ID = extras.getString("CATEGORYID", "0");
+        mETCategory.setText(extras.getString("CATEGORYNAME", ""));
 
         //get database instance
         mDBHelper = DBHelper.getInstance(this);
@@ -70,6 +68,15 @@ public class ActivityAddCategory extends AppCompatActivity {
                 return false;
             }
         });
+
+        //get all categories from db
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                mCategories = mDBHelper.getAllCategories();
+                return null;
+            }
+        }.execute();
     }
 
     @Override
@@ -101,34 +108,43 @@ public class ActivityAddCategory extends AppCompatActivity {
     }
 
     private void saveData() {
-        String category = mETCategory.getText().toString().trim();
-        String description = mETDescription.getText().toString().trim();
+        final String category = mETCategory.getText().toString().trim();
 
         if (TextUtils.isEmpty(category)) {
             mTILCategory.setError("Category Required");
+            mETCategory.setText("");
             return;
         }
 
-        HashMap<String, String> data = new HashMap<>();
-
-        data.put("name", category);
-        data.put("description", description);
-
-        if (GROUP_ID == 0) {
-            if (mDBHelper.insertCollection(data) == 1) {
-                Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
-                Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            data.put("_id", "1");
-            if (mDBHelper.updateCollection(data) == 1) {
-                Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
-                Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
-            }
+        if (mCategories.contains(category.toLowerCase())) {
+            Toast.makeText(this, "Category Already Exist", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        //save data in database
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                HashMap<String, String> data = new HashMap<>();
+                data.put("name", category);
+                data.put("description", "");
+                data.put("_id", CATEGORY_ID);
+                if (mDBHelper.updateCollection(data) == 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Boolean success) {
+                if (success) {
+                    Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute();
     }
 }

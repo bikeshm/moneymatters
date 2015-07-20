@@ -34,7 +34,7 @@ public class ActivityHome extends AppCompatActivity {
         TabLayout tlExpenseModule = (TabLayout) findViewById(R.id.tl_expense_module);
         tlExpenseModule.setupWithViewPager(mVPExpenseModule);
 
-        tlExpenseModule.setTabMode(TabLayout.MODE_SCROLLABLE);
+        //tlExpenseModule.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         findViewById(R.id.btn_create).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,7 +42,7 @@ public class ActivityHome extends AppCompatActivity {
                 Intent i;
                 switch (mVPExpenseModule.getCurrentItem()) {
                     case 0:
-                        i = new Intent(ActivityHome.this, ActivityAddCategory.class);
+                        i = new Intent(ActivityHome.this, ActivityPersonalExpenseAddEntry.class);
                         startActivity(i);
                         break;
                     case 1:
