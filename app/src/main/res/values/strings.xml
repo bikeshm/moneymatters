@@ -30,5 +30,6 @@
     <string name="action_done">DONE</string>
     <string name="total_expenses">Total Expense</string>
     <string name="date">Date</string>
+    <string name="title_activity_lend_and_borrow_add_entry">Add Lend and Borrow</string>
 
 </resources>

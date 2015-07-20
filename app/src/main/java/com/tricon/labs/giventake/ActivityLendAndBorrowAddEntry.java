@@ -370,10 +370,15 @@ package com.tricon.labs.giventake;
 
 
 import android.app.DatePickerDialog;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -381,17 +386,28 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
+import com.tricon.labs.giventake.adapters.AdapterCategoryList;
+import com.tricon.labs.giventake.adapters.AdapterContactList;
 import com.tricon.labs.giventake.database.DBHelper;
+import com.tricon.labs.giventake.models.Contact;
+import com.tricon.labs.giventake.models.Person;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
+import static com.tricon.labs.giventake.libraries.functions.getContactList;
 
 public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
 
     private DBHelper mDBHelper;
 
     Button mBtnDate;
+
+    List<Contact> mContacts;
+
+    AutoCompleteTextView mACTVUserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -419,9 +435,13 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
         TextInputLayout tilUserName = (TextInputLayout) findViewById(R.id.til_user_name);
         TextInputLayout tilAmount = (TextInputLayout) findViewById(R.id.til_amount);
         TextInputLayout tilDescription = (TextInputLayout) findViewById(R.id.til_description);
-        AutoCompleteTextView actvUserName = (AutoCompleteTextView) findViewById(R.id.actv_user_name);
+        mACTVUserName = (AutoCompleteTextView) findViewById(R.id.actv_user_name);
         EditText etAmount = (EditText) findViewById(R.id.et_amount);
         EditText etDescription = (EditText) findViewById(R.id.et_description);
+
+        //set autocomplete threshold
+        mACTVUserName.setThreshold(1);
+        new FetchUserFromContactTask().execute();
 
         //initial date values
         SimpleDateFormat dmy = new SimpleDateFormat("dd-MM-yyyy");
@@ -435,6 +455,43 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
                 openDatePicker();
             }
         });
+    }
+
+
+    private class FetchUserFromContactTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            //getting user from contact
+            mContacts = getContactList(getApplicationContext());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            mACTVUserName.setAdapter(new AdapterContactList(ActivityLendAndBorrowAddEntry.this, mContacts));
+        }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_activity_lend_and_borrow_add_entry, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_done:
+                //saveData();
+                break;
+
+            default:
+                break;
+        }
+        return true;
     }
 
     public void openDatePicker() {

@@ -2,6 +2,7 @@ package com.tricon.labs.giventake.libraries;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -9,12 +10,18 @@ import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.tricon.labs.giventake.database.DBHelper;
+import com.tricon.labs.giventake.models.Category;
+import com.tricon.labs.giventake.models.Contact;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Map;
 
+import static com.tricon.labs.giventake.libraries.parsePhone.parsePhone;
 import static com.tricon.labs.giventake.libraries.parsePhone.parsePhoneGetAll;
 
 /**
@@ -161,7 +168,7 @@ public class functions {
 
 
 
-    public static String getContactbyphone(String phone,ContentResolver ContentResolver ) {
+    public static String getContactByPhone(String phone, ContentResolver ContentResolver) {
 
 
         Map<String, String> parsedPhone = parsePhoneGetAll(phone);
@@ -191,6 +198,51 @@ public class functions {
 
 
 
+    public static ArrayList<Contact> getContactList(Context context){
+
+        ArrayList<Contact> list = new ArrayList<>();
+        Contact contact;
+
+        String APP_SETTINGS_PREFERENCES = "APPSWTTINGSPREFERENCES" ;
+        SharedPreferences sharedpreferences;
+        sharedpreferences = context.getSharedPreferences(APP_SETTINGS_PREFERENCES, Context.MODE_PRIVATE);
+
+
+        //hardcoding now
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString("CountryCode", "IN");
+        editor.commit();
+        //---
+
+        String[] projection    = new String[] {
+                ContactsContract.CommonDataKinds.Phone._ID,
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER,
+                ContactsContract.CommonDataKinds.Phone.TYPE};
+
+        Cursor cursor =  context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+
+            while (!cursor.isAfterLast()) {
+
+                contact = new Contact();
+
+                contact.id    = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID));
+                contact.name  = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                contact.phone = parsePhone(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)), sharedpreferences.getString("CountryCode", "IN") );
+
+                list.add(contact);
+
+                cursor.moveToNext();
+            }
+            cursor.close();
+        }
+
+
+        return list;
+    }
 
 
 

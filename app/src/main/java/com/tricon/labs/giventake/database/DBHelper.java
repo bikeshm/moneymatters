@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.tricon.labs.giventake.libraries.functions.getContactbyphone;
+import static com.tricon.labs.giventake.libraries.functions.getContactByPhone;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -1355,7 +1355,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             //Log.i("api call", "checking contact "+ onlineUserdata.get("phone").toString());
 
-            String name = getContactbyphone(onlineUserdata.get("phone"), ContentResolver);
+            String name = getContactByPhone(onlineUserdata.get("phone"), ContentResolver);
             if (name != null) {
                 newUser.put("name", name);
                 //Log.i("api call", "exist in contact ");
