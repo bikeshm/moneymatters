@@ -1,439 +1,382 @@
 package com.tricon.labs.giventake;
 
-import android.content.ContentResolver;
-import android.content.Intent;
-import android.database.Cursor;
+import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
-import android.view.KeyEvent;
+import android.os.Handler;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tricon.labs.giventake.adapters.Adapter_CustomSimpleCursor;
-import com.tricon.labs.giventake.adapters.CustomDatePicker;
+import com.tricon.labs.giventake.adapters.AdapterCategoryList;
 import com.tricon.labs.giventake.database.DBHelper;
+import com.tricon.labs.giventake.models.PersonalExpenseEntry;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 
-import static com.tricon.labs.giventake.libraries.parsePhone.parsePhone;
+public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
 
+    private Button mBtnDate;
+    private TextInputLayout mTILCategory;
+    private AutoCompleteTextView mACTVCategory;
+    private EditText mETAmount;
+    private EditText mETDescription;
+    private ProgressDialog mPDSaveData;
 
-public class ActivityPersonalExpenseAddEntry extends ActivityBase {
+    //set to store unique categories for autocomplete text view
+    private HashSet<String> mCategories;
 
-    String fromActivity = null;
-    long ID = 0;
-    String Name = "", rowId = null;
+    private DBHelper mDBHelper;
 
-    String onlineId = null;
-    //DBHelper myDb;
+    private PersonalExpenseEntry mPersonalExpenseEntry;
 
-    boolean actionFlag = false; //if false giving or borrowing
-
-    Intent backActivityIntent = null;
-
-    EditText datePicker, created_date_forDB;
-
-
-    DBHelper myDb;
+    private boolean creatingEntryForSpecificCategory = false;
+    private static final int CREATE_ENTRY = 1;
+    private static final int EDIT_ENTRY = 2;
+    private static int ENTRY_TYPE = CREATE_ENTRY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_expense_add_entry);
 
+        //setup toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(android.support.v7.appcompat.R.drawable.abc_ic_clear_mtrl_alpha);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 
-        myDb = new DBHelper(this);
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+        }
+
+        //setup views
+        mBtnDate = (Button) findViewById(R.id.btn_date);
+        mTILCategory = (TextInputLayout) findViewById(R.id.til_category);
+        mACTVCategory = (AutoCompleteTextView) findViewById(R.id.actv_category);
+        mETAmount = (EditText) findViewById(R.id.et_amount);
+        mETDescription = (EditText) findViewById(R.id.et_description);
+
+        //set progress dialog
+        mPDSaveData = new ProgressDialog(this);
+        mPDSaveData.setCancelable(false);
+        mPDSaveData.setIndeterminate(true);
+        mPDSaveData.setMessage("Saving Data...");
+
+        //set autocomplete threshold
+        mACTVCategory.setThreshold(1);
+
+        //get data from intent
         Bundle extras = getIntent().getExtras();
 
-        if (extras == null) {
-            fromActivity = null;
-        } else {
-            fromActivity = extras.getString("fromActivity");
+        //if extras is not null, that means user is either creating entry under specific category or editing previous entry.
+        if (extras != null) {
+            mPersonalExpenseEntry = extras.getParcelable("ENTRY");
+            creatingEntryForSpecificCategory = extras.getBoolean("SPECIFICENTRY", false);
 
-            if (extras.getString("ID") != null)
-                ID = Long.parseLong(extras.getString("ID"));
+            //if creating Entry For a Specific Category then disable autocomplete text view
+            mACTVCategory.setEnabled(!creatingEntryForSpecificCategory);
 
-            rowId = extras.getString("rowId", null);
-            Name = extras.getString("Name");
-
-            onlineId = extras.getString("onlineId", null);
-        }
-
-
-        //implementing date picker
-
-        datePicker = ((EditText) currentView.findViewById(R.id.datePicker));
-        //created_date is hidden field for serving date to db (YY-mm-dd format)
-        created_date_forDB = ((EditText) currentView.findViewById(R.id.created_date));
-
-        //initial date values
-        SimpleDateFormat dmy = new SimpleDateFormat("dd-MM-yyyy");
-        String dmyDate = dmy.format(new Date());
-        datePicker.setText(dmyDate);
-
-        SimpleDateFormat tmpdmy = new SimpleDateFormat("yyyy-MM-dd");
-        String tmpdmyDate = tmpdmy.format(new Date());
-        created_date_forDB.setText(tmpdmyDate);
-
-        //setting datepicker adapter
-        datePicker.setOnClickListener(new CustomDatePicker(ActivityPersonalExpenseAddEntry.this, datePicker, created_date_forDB, false));
-        //----implementing date picker
-
-
-        if (fromActivity.equals("ActivityLendAndBorrow")) {
-            //backActivityIntent = new Intent(ActivityAddEntry.this, LendAndBorrow.class);
-            generateDataForLendNBorrow();
-
-        } else if (fromActivity.equals("ActivityLendAndBorrowPersonal")) {
-            backActivityIntent = new Intent(ActivityPersonalExpenseAddEntry.this, ActivityLendAndBorrowIndividual.class);
-            backActivityIntent.putExtra("fromActivity", "ActivityLendAndBorrow");
-            backActivityIntent.putExtra("userId", "" + ID);
-            backActivityIntent.putExtra("userName", Name);
-            generateDataForLendNBorrow();
-
-        } else if (fromActivity.equals("ActivityPersonalExpense")) {
-            //backActivityIntent = new Intent(ActivityAddEntry.this, ActivityPersonalExpense.class);
-            generateDataForPersonalExpense();
-
-        } else if (fromActivity.equals("ActivityPersonalExpenseIndividual")) {
-            backActivityIntent = new Intent(ActivityPersonalExpenseAddEntry.this, ActivityPersonalExpenseIndividual.class);
-            backActivityIntent.putExtra("colId", "" + ID);
-            backActivityIntent.putExtra("colName", Name);
-            generateDataForPersonalExpense();
-
-        } else {
-            throw new IllegalArgumentException("Invalid  ");
-        }
-
-
-        ((Button) currentView.findViewById(R.id.saveBtn)).setOnClickListener(new saveData());
-        ((Button) currentView.findViewById(R.id.cancelBtn)).setOnClickListener(new cancelActivity());
-
-    }
-
-
-    private void generateDataForJointExpenseIndividual() {
-        ((LinearLayout) currentView.findViewById(R.id.l3)).setVisibility(View.GONE);
-
-        //===================face 2
-        //((LinearLayout) addEntryView.findViewById(R.id.isSplitLayer) ).setVisibility(View.VISIBLE);
-        //((LinearLayout) addEntryView.findViewById(R.id.grupMembersLayer) ).setVisibility(View.VISIBLE);
-        //=====================face 2
-        Map<String, String> data = new HashMap<String, String>();
-        data.put("dataFrom", "db");
-        ((TextView) currentView.findViewById(R.id.selectUserLabel)).setText("Spend By");
-        Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, myDb.getAllUsersInGroup(ID + ""), data);
-        ((Spinner) currentView.findViewById(R.id.fromUser)).setAdapter(adapter);
-
-
-        ((RadioGroup) currentView.findViewById(R.id.isSplit)).setOnCheckedChangeListener(new isSplitChanged());
-
-        //recyclerView.setOnKeyListener(new recyclerViewKeyListener());
-
-    }
-
-    private void generateDataForPersonalExpense() {
-
-        ((LinearLayout) currentView.findViewById(R.id.l3)).setVisibility(View.GONE);
-        ((TextView) currentView.findViewById(R.id.selectUserLabel)).setText("Select Collection : ");
-
-        Cursor cursor = myDb.getCategories();
-        generate_FromuserSpinner(cursor, "db");
-
-
-        if (rowId != null) {
-            generateEditData(myDb.getPersonalExpense(rowId));
-        }
-
-
-    }
-
-    private void generate_FromuserSpinner(Cursor cursor, String dataFrom) {
-
-        Map<String, String> data = new HashMap<String, String>();
-
-        data.put("dataFrom", dataFrom);
-
-        Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.custom_spinner_item_template, cursor, data);
-
-        ((Spinner) currentView.findViewById(R.id.fromUser)).setAdapter(adapter);
-
-        //// TODO: 6/3/2015 :-
-        //setting passed/selected user name in spinner
-
-        int cpos = 0;
-
-
-        if (dataFrom.equals("contact")) {
-
-            String phone = myDb.getUserPhone(ID + "");
-
-            for (int i = 0; i < adapter.getCount(); i++) {
-                cursor.moveToPosition(i);
-                String temp = (parsePhone(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)), myDb.getdefaultContryCode()));//cursor.getString(cursor.getColumnIndex("phone"));
-                if (temp.equals(phone)) {
-                    cpos = i;
-                    break;
-                }
+            if (!creatingEntryForSpecificCategory) {
+                ENTRY_TYPE = EDIT_ENTRY;
             }
         } else {
+            mPersonalExpenseEntry = new PersonalExpenseEntry();
+        }
 
-            for (int i = 0; i < adapter.getCount(); i++) {
-                cursor.moveToPosition(i);
-                Double temp = Double.parseDouble(cursor.getString(cursor.getColumnIndex("_id")));
-                if (temp == ID) {
-                    cpos = i;
-                    break;
+        //set data in views
+        mBtnDate.setText(mPersonalExpenseEntry.date);
+        mACTVCategory.setText(mPersonalExpenseEntry.category);
+        mETAmount.setText(mPersonalExpenseEntry.amount + "");
+        mETDescription.setText(mPersonalExpenseEntry.description);
+
+        //get database instance
+        mDBHelper = DBHelper.getInstance(this);
+
+        if (!creatingEntryForSpecificCategory) {
+            //fetch unique categories from database
+            new FetchCategoriesTask().execute();
+        }
+
+        //bind listeners
+        mBtnDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDatePicker();
+            }
+        });
+
+        if (!creatingEntryForSpecificCategory) {
+            mACTVCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    mACTVCategory.setText((String) parent.getAdapter().getItem(position));
                 }
-            }
+            });
+            mACTVCategory.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
-        }
-
-        ((Spinner) currentView.findViewById(R.id.fromUser)).setSelection(cpos);
-
-    }
-
-
-    private void generateDataForLendNBorrow() {
-
-
-        String[] entryAction = {"Giving to", "Borrow from",};
-        // getting options from xml string array
-        ArrayAdapter<String> actionSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, entryAction);
-        ((Spinner) findViewById(R.id.actionSpinner)).setAdapter(actionSpinnerArrayAdapter);
-        ((Spinner) findViewById(R.id.actionSpinner)).setOnItemSelectedListener(new selectedAction());
-
-
-        //Cursor cursor = myDb.getAllUsers();
-
-        //getting user from contact
-        //Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
-        Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
-
-        generate_FromuserSpinner(cursor, "contact");
-
-
-        //clicked on the table row
-        if (rowId != null) {
-            generateEditData(myDb.getEntryById(rowId));
-        }
-
-    }
-
-
-    private void generateEditData(Cursor currentEntry) {
-        //created_date DATE, description text, from_user INTEGER, to_user INTEGER,
-
-        ((EditText) currentView.findViewById(R.id.id)).setText(rowId);
-        datePicker.setText(formatDate(currentEntry.getString(currentEntry.getColumnIndex("created_date")), "ddmmyy"));
-        created_date_forDB.setText(currentEntry.getString(currentEntry.getColumnIndex("created_date")));
-
-        ((EditText) currentView.findViewById(R.id.description)).setText(currentEntry.getString(currentEntry.getColumnIndex("description")));
-        ((EditText) currentView.findViewById(R.id.amount)).setText(currentEntry.getString(currentEntry.getColumnIndex("amt")));
-
-
-        //for lennd and borrow
-        if (currentEntry.getColumnIndex("from_user") > 0) {
-            if (currentEntry.getInt(currentEntry.getColumnIndex("from_user")) == 1) {
-                ((Spinner) currentView.findViewById(R.id.actionSpinner)).setSelection(0);
-            } else {
-                ((Spinner) currentView.findViewById(R.id.actionSpinner)).setSelection(1);
-            }
-        }
-
-    }
-
-
-    private class selectedAction implements android.widget.AdapterView.OnItemSelectedListener {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            if (id == 0) {
-                ((TextView) currentView.findViewById(R.id.selectUserLabel)).setText("Give to ");
-                actionFlag = false;
-            } else {
-                ((TextView) currentView.findViewById(R.id.selectUserLabel)).setText("Borrow from ");
-                actionFlag = true;
-            }
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-        }
-    }
-
-
-    //todo :- insert user to local db from contact while saving the data
-
-    private class saveData implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-
-
-            Map<String, String> data = new HashMap<String, String>();
-
-            //common field
-            data.put("created_date", ((EditText) currentView.findViewById(R.id.created_date)).getText().toString());
-            data.put("description", ((EditText) currentView.findViewById(R.id.description)).getText().toString());
-
-
-            try {
-                data.put("amt", Float.parseFloat(((EditText) currentView.findViewById(R.id.amount)).getText().toString()) + "");
-            } catch (Exception e) {
-                data.put("amt", "0");
-            }
-
-
-            if (fromActivity.equals("ActivityLendAndBorrowPersonal") || fromActivity.equals("ActivityLendAndBorrow")) {
-
-
-                ContentResolver cr = getContentResolver();
-
-                View spinnerView = (((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedView());
-
-
-                if (spinnerView == null) {
-                    Toast.makeText(getApplicationContext(), "Select a User", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                String userId = registreUserFromContact(
-                        ((TextView) spinnerView.findViewById(R.id.item_phone)).getText().toString(),
-                        ((TextView) spinnerView.findViewById(R.id.item_name)).getText().toString()
-                );
-
-                Log.i("Phone id", userId);
-
-                if (actionFlag == false) {
-                    data.put("from_user", "1");
-                    data.put("to_user", userId);
-                } else {
-                    data.put("from_user", userId);
-                    data.put("to_user", "1");
-                }
-
-                String recodId = ((EditText) currentView.findViewById(R.id.id)).getText().toString();
-
-                if (recodId.equals("0")) {
-                    if (myDb.insertEntry(data) == 1) {
-                        Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
-
-                        backActivityIntent = new Intent(ActivityPersonalExpenseAddEntry.this, ActivityLendAndBorrowIndividual.class);
-                        backActivityIntent.putExtra("fromActivity", "ActivityLendAndBorrow");
-                        backActivityIntent.putExtra("userId", "" + userId);
-                        backActivityIntent.putExtra("userName", ((TextView) spinnerView.findViewById(R.id.item_name)).getText().toString());
-
-                        goBack();
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        showAutoCompleteDropDown();
                     }
-                } else { //update
-                    data.put("_id", recodId);
-
-                    if (myDb.updateEntry(data) == 1) {
-                        Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
-
-                        goBack();
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
-                    }
-
-
                 }
-
-            }
-
-
-            if (fromActivity.equals("ActivityPersonalExpense") || fromActivity.equals("ActivityPersonalExpenseIndividual")) {
-                data.put("collection_id", ((Spinner) currentView.findViewById(R.id.fromUser)).getSelectedItemId() + "");
-
-                if (rowId == null) {
-                    if (myDb.insertPersonalExpense(data) == 1) {
-                        Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
-
-                        goBack();
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    data.put("_id", rowId);
-                    if (myDb.updatePersonalExpense(data) == 1) {
-                        Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
-
-                        goBack();
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
-                    }
-
+            });
+            mACTVCategory.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    mTILCategory.setError(null);
+                    return false;
                 }
-
-            }
-
-
+            });
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_activity_personal_expense_add_entry, menu);
+        return true;
+    }
 
-    private class cancelActivity implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            goBack();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_done:
+                saveData();
+                break;
+
+            default:
+                break;
         }
+        return true;
     }
-
-    private void goBack() {
-        startActivity(backActivityIntent);
-        finish();
-    }
-
-
-    private class isSplitChanged implements RadioGroup.OnCheckedChangeListener {
-        @Override
-        public void onCheckedChanged(RadioGroup group, int checkedId) {
-            Toast.makeText(getApplicationContext(), "" + checkedId, Toast.LENGTH_LONG).show();
-
-            if (checkedId == R.id.isSplitradioYes) {
-                ((LinearLayout) currentView.findViewById(R.id.grupMembersLayer)).setVisibility(View.VISIBLE);
-                ((EditText) currentView.findViewById(R.id.amount)).setEnabled(false);
-            } else {
-                ((LinearLayout) currentView.findViewById(R.id.grupMembersLayer)).setVisibility(View.GONE);
-                ((EditText) currentView.findViewById(R.id.amount)).setEnabled(true);
-            }
-        }
-    }
-
-    private class recyclerViewKeyListener implements View.OnKeyListener {
-        @Override
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-
-            Toast.makeText(getApplicationContext(), "keyup", Toast.LENGTH_LONG).show();
-
-            return false;
-        }
-    }
-
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (myDb != null) {
-            myDb.close();
+        if (mDBHelper != null) {
+            mDBHelper.close();
+        }
+    }
+
+    public void openDatePicker() {
+        //To show current date in the datepicker
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                selectedmonth++;
+                String actualMonth = "" + selectedmonth;
+                if (selectedmonth < 10) {
+                    actualMonth = "0" + actualMonth;
+                }
+
+                String actualDay = "" + selectedday;
+                if (selectedday < 10) {
+                    actualDay = "0" + actualDay;
+                }
+
+                mBtnDate.setText(actualDay + "-" + actualMonth + "-" + selectedyear);
+            }
+        }, year, month, day).show();
+    }
+
+
+    private void saveData() {
+        String newCategory = mACTVCategory.getText().toString().trim().toLowerCase();
+
+        if (TextUtils.isEmpty(newCategory)) {
+            mTILCategory.setError("Category Required");
+            mACTVCategory.setText("");
+            return;
+        }
+
+        //if category is not present in database then create new category in database and then save entry, otherwise save entry
+        if (!mCategories.contains(newCategory)) {
+            new SaveCategoryTask(newCategory).execute();
+        } else {
+            saveEntry(newCategory);
+        }
+    }
+
+    private void saveEntry(String newCategory) {
+        String newDate = mBtnDate.getText().toString().trim();
+        double newAmount = Double.parseDouble(mETAmount.getText().toString().trim());
+        String newDescription = mETDescription.getText().toString().trim();
+
+        //if there is any change in any field then save the entry otherwise finish the activity
+        if ((!mPersonalExpenseEntry.category.equals(newCategory))
+                || (!mPersonalExpenseEntry.date.equals(newDate))
+                || (mPersonalExpenseEntry.amount != newAmount)
+                || (!mPersonalExpenseEntry.description.equals(newDescription))) {
+
+            new SaveEntryTask(newCategory, newDescription, newDate, newAmount).execute();
+
+        } else {
+            finish();
+        }
+    }
+
+    private void showAutoCompleteDropDown() {
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                mACTVCategory.showDropDown();
+            }
+        }, 500);
+    }
+
+    private class FetchCategoriesTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            mCategories = mDBHelper.getAllCategories();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            mACTVCategory.setAdapter(new AdapterCategoryList(ActivityPersonalExpenseAddEntry.this, mCategories));
+        }
+    }
+
+    private class SaveCategoryTask extends AsyncTask<Void, Void, Boolean> {
+
+        private String mCategory;
+
+        SaveCategoryTask(String category) {
+            this.mCategory = category;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mPDSaveData.setMessage("Saving Category");
+            mPDSaveData.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... category) {
+            Map<String, String> categoryData = new HashMap<>();
+            categoryData.put("name", mCategory);
+            categoryData.put("description", "");
+
+            return mDBHelper.insertCollection(categoryData) == 1;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            mPDSaveData.dismiss();
+            if (success) {
+                //put category in category map after saving in db
+                mCategories.add(mCategory);
+
+                //start save entry task
+                saveEntry(mCategory);
+            } else {
+                Toast.makeText(ActivityPersonalExpenseAddEntry.this,
+                        "Something went wrong while saving category.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class SaveEntryTask extends AsyncTask<Void, Void, Boolean> {
+
+        private String mCategoryName;
+        private String mDescription;
+        private String mDate;
+        private double mAmount;
+
+        SaveEntryTask(String categoryName, String description, String date, double amount) {
+            this.mCategoryName = categoryName;
+            this.mDescription = description;
+            this.mDate = date;
+            this.mAmount = amount;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mPDSaveData.setMessage("Saving Entry");
+            mPDSaveData.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            Map<String, String> entryData = new HashMap<>();
+
+            //get category id from category name
+            int categoryId = mDBHelper.getCategoryIdFromCategoryName(mCategoryName);
+
+            if (categoryId != -1) {
+                //convert date into "YYYY MM DD" format
+                SimpleDateFormat localDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+                SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                try {
+                    mDate = dbDateFormat.format(localDateFormat.parse(mDate));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                entryData.put("collection_id", categoryId + "");
+                entryData.put("created_date", mDate);
+                entryData.put("description", mDescription);
+                entryData.put("amt", mAmount + "");
+
+                if (ENTRY_TYPE == CREATE_ENTRY) {
+                    return mDBHelper.insertPersonalExpense(entryData) > 0;
+                } else {
+                    entryData.put("_id", mPersonalExpenseEntry.entryId + "");
+                    return mDBHelper.updatePersonalExpense(entryData) == 1;
+                }
+            }
+
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            mPDSaveData.dismiss();
+            if (success) {
+                Toast.makeText(ActivityPersonalExpenseAddEntry.this,
+                        "Data saved successfully",
+                        Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(ActivityPersonalExpenseAddEntry.this,
+                        "Something went wrong while saving entry.",
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
