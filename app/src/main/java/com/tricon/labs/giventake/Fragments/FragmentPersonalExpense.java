@@ -15,7 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tricon.labs.giventake.ActivityAddCategory;
+import com.tricon.labs.giventake.ActivityEditCategory;
 import com.tricon.labs.giventake.ActivityPersonalExpenseIndividual;
 import com.tricon.labs.giventake.R;
 import com.tricon.labs.giventake.adapters.AdapterPersonalExpense;
@@ -26,7 +26,6 @@ import com.tricon.labs.giventake.models.Category;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-
 
 
 //Todo :- need to implement pagination
@@ -44,11 +43,12 @@ public class FragmentPersonalExpense extends Fragment {
     List<Category> mCategoriesList;
     AdapterPersonalExpense mAdapter;
 
-    Button btnDate;
+    Button mBtnDate;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mRootView =  inflater.inflate(R.layout.fragment_personal_expense,container,false);
+        mRootView = inflater.inflate(R.layout.fragment_personal_expense, container, false);
 
         mDBHelper = DBHelper.getInstance(getActivity());
 
@@ -56,20 +56,19 @@ public class FragmentPersonalExpense extends Fragment {
 
         Calendar calenderInstance = Calendar.getInstance();
 
-        String dayString = ((calenderInstance.get(Calendar.MONTH) + 1) < 10 ? "0" : "")+(calenderInstance.get(Calendar.MONTH) + 1);
+        String dayString = ((calenderInstance.get(Calendar.MONTH) + 1) < 10 ? "0" : "") + (calenderInstance.get(Calendar.MONTH) + 1);
 
-        mSelectedDate = dayString+"-"+calenderInstance.get(Calendar.YEAR);
-
+        mSelectedDate = dayString + "-" + calenderInstance.get(Calendar.YEAR);
 
 
         mLVCategories.setOnItemClickListener(new listItemClicked());
         mLVCategories.setOnItemLongClickListener(new listItemLongClicked());
 
-        btnDate = ((Button) mRootView.findViewById(R.id.btn_date));
+        mBtnDate = ((Button) mRootView.findViewById(R.id.btn_date));
 
-        btnDate.setText(calenderInstance.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US) + " - " + calenderInstance.get(Calendar.YEAR));
+        mBtnDate.setText(calenderInstance.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US) + " - " + calenderInstance.get(Calendar.YEAR));
 
-        btnDate.setOnClickListener(new View.OnClickListener() {
+        mBtnDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openMonthPicker();
@@ -83,18 +82,18 @@ public class FragmentPersonalExpense extends Fragment {
 
     private void openMonthPicker() {
 
-        final MonthYearPicker monthPicker= new MonthYearPicker(getActivity());
+        final MonthYearPicker monthPicker = new MonthYearPicker(getActivity());
 
         monthPicker.build(new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                btnDate.setText(monthPicker.getSelectedMonthName() + "-" + monthPicker.getSelectedYear());
+                mBtnDate.setText(monthPicker.getSelectedMonthName() + "-" + monthPicker.getSelectedYear());
 
-                String dayString = ((monthPicker.getSelectedMonth() + 1) < 10 ? "0" : "")+(monthPicker.getSelectedMonth() + 1);
+                String dayString = ((monthPicker.getSelectedMonth() + 1) < 10 ? "0" : "") + (monthPicker.getSelectedMonth() + 1);
 
-                mSelectedDate =dayString+"-"+monthPicker.getSelectedYear();
+                mSelectedDate = dayString + "-" + monthPicker.getSelectedYear();
 
                 mCategoriesList.clear();
                 mCategoriesList.addAll(mDBHelper.getCategoriesListsByMonth(mSelectedDate));
@@ -113,7 +112,7 @@ public class FragmentPersonalExpense extends Fragment {
     public void onResume() {
         super.onResume();
 
-        mCategoriesList =mDBHelper.getCategoriesListsByMonth(mSelectedDate);
+        mCategoriesList = mDBHelper.getCategoriesListsByMonth(mSelectedDate);
         mAdapter = new AdapterPersonalExpense(mCategoriesList);
         mLVCategories.setAdapter(mAdapter);
 
@@ -131,10 +130,9 @@ public class FragmentPersonalExpense extends Fragment {
 
         mAdapter.notifyDataSetChanged();
 
-        ((TextView) mRootView.findViewById(R.id.tv_monthly_total)).setText(": " +  mDBHelper.getMonthTotalOfPersonalExpense(mSelectedDate) );
+        ((TextView) mRootView.findViewById(R.id.tv_monthly_total)).setText(": " + mDBHelper.getMonthTotalOfPersonalExpense(mSelectedDate));
 
     }
-
 
 
     private class listItemClicked implements android.widget.AdapterView.OnItemClickListener {
@@ -145,8 +143,8 @@ public class FragmentPersonalExpense extends Fragment {
 
             Intent i = new Intent(getActivity(), ActivityPersonalExpenseIndividual.class);
 
-            i.putExtra("ID", selectedCategory.id+"" );
-            i.putExtra("NAME", selectedCategory.name );
+            i.putExtra("CATEGORYID", selectedCategory.id + "");
+            i.putExtra("CATEGORYNAME", selectedCategory.name);
             startActivity(i);
         }
     }
@@ -156,16 +154,15 @@ public class FragmentPersonalExpense extends Fragment {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-            generatePopupMenu(mCategoriesList.get(position).id + "");
+            generatePopupMenu(mCategoriesList.get(position));
             return true;
         }
     }
 
 
-    public void generatePopupMenu(String rowId) {
+    public void generatePopupMenu(final Category category) {
 
-        final CharSequence[] options = { "Edit","Delete"};
-        final String dbRowId = rowId+"";
+        final CharSequence[] options = {"Edit", "Delete"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -186,18 +183,17 @@ public class FragmentPersonalExpense extends Fragment {
 
                                 public void onClick(DialogInterface dialog, int whichButton) {
 
-                                    Toast.makeText(getActivity(),"id"+dbRowId, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), "id" + category.id, Toast.LENGTH_LONG).show();
 
                                     //delete collection
-                                    if( mDBHelper.deleteCollection(dbRowId) ==1){
+                                    if (mDBHelper.deleteCollection(category.id + "") == 1) {
                                         Log.i("delete collection", "collection deleted");
 
                                         //delete all the entrys in that collection
-                                        if( mDBHelper.deleteCollectionEntrys(dbRowId) ==1){
-                                            Log.i("delete collection","deleted all the collection entrys");
-                                        }
-                                        else{
-                                            Log.i("delete collection","Not deleted collection entrys");
+                                        if (mDBHelper.deleteCollectionEntrys(category.id + "") == 1) {
+                                            Log.i("delete collection", "deleted all the collection entrys");
+                                        } else {
+                                            Log.i("delete collection", "Not deleted collection entrys");
                                         }
 
                                         //reloading the data
@@ -206,26 +202,25 @@ public class FragmentPersonalExpense extends Fragment {
 
                                         populateListViewFromDB();
 
+                                    } else {
+                                        Log.i("delete collection", "collection Not deleted ");
                                     }
-                                    else{
-                                        Log.i("delete collection","collection Not deleted ");
-                                    }
 
 
-
-                                }})
+                                }
+                            })
                             .setNegativeButton(android.R.string.no, null).show();
 
 
-                }
-                else if (options[item].equals("Edit")) {
+                } else if (options[item].equals("Edit")) {
                     //dialog.dismiss();
 
-                    Toast.makeText(getActivity(),"id"+dbRowId, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "id" + category.id, Toast.LENGTH_LONG).show();
 
-                    Intent i = new Intent(getActivity(), ActivityAddCategory.class);
+                    Intent i = new Intent(getActivity(), ActivityEditCategory.class);
 
-                    i.putExtra("ID", dbRowId);
+                    i.putExtra("CATEGORYID", category.id + "");
+                    i.putExtra("CATEGORYNAME", category.name);
                     startActivity(i);
 
                 }

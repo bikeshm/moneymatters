@@ -12,7 +12,7 @@
     <string name="title_activity_activity_home">Home</string>
     <string name="title_activity_activity_lend_and_borrow">LendAndBorrow</string>
     <string name="title_activity_activity_lend_and_borrow_personal">Lend And Borrow Individual</string>
-    <string name="title_activity_activity_add_entry">AddEntry</string>
+    <string name="title_activity_activity_add_entry">Add Personal Expense</string>
     <string name="title_activity_activity_add_user">ActivityAddUser</string>
     <string name="title_activity_activity_personal_expense">Personal Expense</string>
     <string name="title_activity_activity_personal_expense_individual">Personal Expense Individual</string>
@@ -28,5 +28,7 @@
     <string name="amount">Amount</string>
 
     <string name="action_done">DONE</string>
+    <string name="total_expenses">Total Expense</string>
+    <string name="date">Date</string>
 
 </resources>

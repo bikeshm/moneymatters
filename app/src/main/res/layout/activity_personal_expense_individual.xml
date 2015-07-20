@@ -1,127 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.tricon.labs.giventake.ActivityPersonalExpenseIndividual">
 
+    <include
+        android:id="@+id/widget_toolbar"
+        layout="@layout/toolbar" />
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/l1"
-        android:paddingLeft="20dp" >
-
-        <TextView android:text="Month-Year  : "
+    <Button
+        android:id="@+id/btn_date"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/username"
-            android:text=""
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/dateChanger"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:minWidth="100dp"/>
-
-        <TextView
-            android:id="@+id/dateChangerForDb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            />
-
-    </LinearLayout>
-
-
-
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/widget_toolbar"
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/transparent"
+        android:textColor="@color/colorAccent"
+        android:textSize="14sp" />
 
     <LinearLayout
-        android:id="@+id/l2"
+        android:id="@+id/ll_total_expense"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="left"
+        android:layout_below="@+id/btn_date"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="10dp"
+        android:orientation="horizontal">
 
-        android:paddingLeft="20dp"
-        android:layout_below="@+id/l1">
-
-
-
-
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:text="@string/total_expenses"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
-            <TextView
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:text="Total amount spend "/>
-
-            <TextView
-                android:id="@+id/monthlyTotal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=": 3700.00"/>
-
-        </LinearLayout>
-
+        <TextView
+            android:id="@+id/tv_monthly_total"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
-    <ScrollView
+    <View
+        android:id="@+id/separator1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/ll_total_expense"
+        android:layout_marginBottom="5dp"
+        android:background="@android:color/black" />
+
+    <LinearLayout
+        android:id="@+id/ll_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/separator1"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:orientation="horizontal"
+        android:weightSum="4">
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="@string/date"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center_horizontal"
+            android:text="@string/description"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="@string/amount"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/separator2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/ll_header"
+        android:layout_marginBottom="5dp"
+        android:background="@android:color/black" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_entries"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="15dp"
-        android:paddingBottom="15dp"
-        android:layout_below="@+id/l2"
-        android:id="@+id/scrollView">
-
-        <TableLayout
-            android:id="@+id/tableLayout"
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:shrinkColumns="1"
-            android:stretchColumns="1"
-            android:background="#DFD080"
-            android:paddingBottom="2dp"
-            >
-
-        </TableLayout>
-
-    </ScrollView>
-
-
-
-
+        android:layout_below="@+id/separator2"
+        android:background="@android:color/transparent"
+        android:clipToPadding="false"
+        android:listSelector="@android:color/transparent"
+        android:paddingBottom="70dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
+        android:scrollbars="none" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/addExpenseGroup"
+        android:id="@+id/btn_create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/add_24"
-        android:layout_gravity="bottom|end"
-        app:elevation="6dp"
-        app:fabSize="mini"
-
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="20dp"
-
-        app:pressedTranslationZ="12dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-
-
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/add_24"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        app:fabSize="mini"
+        app:pressedTranslationZ="12dp" />
 </RelativeLayout>
+

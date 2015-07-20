@@ -67,7 +67,7 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                finish();
             }
         });
 
