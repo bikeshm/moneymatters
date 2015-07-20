@@ -42,6 +42,10 @@ import java.util.Map;
 
 public class ActivityJointExpenseAddGroup extends ActivityBase {
 
+    /*
+
+    Face 2
+
     String fromActivity=null;
     Intent backActivityIntent=null;
     UserCheckBoxRecycler adapter_userCheckBoxRecycler;
@@ -58,13 +62,14 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
     EditText nameEditText, descriptionEditText, UsersFilter;
     RadioGroup isOnlineRadio,groupTypeRadio;
     RecyclerView usersRecyclerView;
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joint_expense_add_group);
 
-
+/*
         nameEditText        = ((EditText) currentView.findViewById(R.id.name) );
         descriptionEditText = ((EditText) currentView.findViewById(R.id.description));
         isOnlineRadio       = ((RadioGroup) currentView.findViewById(R.id.isOnline));
@@ -328,7 +333,7 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(layoutManager);
-            */
+            *./
 
 
         //adapter = new Adapter_RecyclerViewList(cursor, this);
@@ -633,6 +638,9 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
         if (myDb != null) {
             myDb.close();
         }
+    }
+
+    */
     }
 
 }
