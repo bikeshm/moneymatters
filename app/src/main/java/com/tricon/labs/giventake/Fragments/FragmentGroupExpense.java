@@ -42,7 +42,7 @@ public class FragmentGroupExpense extends Fragment {
 public class ActivityJointExpense extends ActivityBase {
 
     //View currentView;
-    ListView mLVCategories;
+    ListView mLVPersons;
 
 
     Map<String, String> dbUser = new HashMap<String, String>();
@@ -72,9 +72,9 @@ public class ActivityJointExpense extends ActivityBase {
         setContentView(R.layout.fragment_group_expense);
 
 
-        mLVCategories = (ListView) currentView.findViewById(R.id.listViewFromDB);
-        mLVCategories.setOnItemClickListener(new listItemClicked());
-        mLVCategories.setOnItemLongClickListener(new listItemLongClicked() );
+        mLVPersons = (ListView) currentView.findViewById(R.id.listViewFromDB);
+        mLVPersons.setOnItemClickListener(new listItemClicked());
+        mLVPersons.setOnItemLongClickListener(new listItemLongClicked() );
 
 
         ((FloatingActionButton)currentView.findViewById(R.id.addUser)).setOnClickListener(new openAddnewGroup());
@@ -228,7 +228,7 @@ public class ActivityJointExpense extends ActivityBase {
 
 
 
-        mLVCategories.setAdapter(new Adapter_CustomSimpleCursor(this,        // Context
+        mLVPersons.setAdapter(new Adapter_CustomSimpleCursor(this,        // Context
                 R.layout.listview_item_template,    // Row layout template
                 cursor                    // cursor (set of DB records to map)
         ));

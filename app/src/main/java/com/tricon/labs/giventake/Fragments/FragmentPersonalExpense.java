@@ -60,9 +60,7 @@ public class FragmentPersonalExpense extends Fragment {
 
         mSelectedDate = dayString+"-"+calenderInstance.get(Calendar.YEAR);
 
-        mCategoriesList =mDBHelper.getCategoriesListsByMonth(mSelectedDate);
-        mAdapter = new AdapterPersonalExpense(mCategoriesList);
-        mLVCategories.setAdapter(mAdapter);
+
 
         mLVCategories.setOnItemClickListener(new listItemClicked());
         mLVCategories.setOnItemLongClickListener(new listItemLongClicked());
@@ -114,6 +112,10 @@ public class FragmentPersonalExpense extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        mCategoriesList =mDBHelper.getCategoriesListsByMonth(mSelectedDate);
+        mAdapter = new AdapterPersonalExpense(mCategoriesList);
+        mLVCategories.setAdapter(mAdapter);
 
         populateListViewFromDB();
     }

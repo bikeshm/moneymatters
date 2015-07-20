@@ -47,8 +47,8 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
             fromActivity= null;
         } else {
             fromActivity= extras.getString("fromActivity");
-            fromUserId = Integer.parseInt(extras.getString("fromUserId"));
-            userName = extras.getString("userName");
+            fromUserId = Integer.parseInt(extras.getString("ID"));
+            userName = extras.getString("NAME");
         }
 
         ((TextView) currentView.findViewById(R.id.username)).setText(userName);

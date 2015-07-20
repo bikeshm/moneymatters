@@ -15,6 +15,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.tricon.labs.giventake.models.Category;
+import com.tricon.labs.giventake.models.Person;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -355,14 +356,57 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public Cursor getLendAndBorrowList() {
+
+    public ArrayList<Person> getLendAndBorrowList() {
+
+        ArrayList<Person> list = new ArrayList<>();
+        Person person;
+
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from usertable where _id != 1 and ( _id in ( select from_user from " + LENDANDBORROW_TABLE_NAME + " ) or _id in (select to_user from  " + LENDANDBORROW_TABLE_NAME + " ) )", null);
+
+        /*
+        Cursor res = db.rawQuery("select * from usertable " +
+                " where _id != 1 " +
+                "and ( _id in ( select from_user from " + LENDANDBORROW_TABLE_NAME + " ) or _id in (select to_user from  " + LENDANDBORROW_TABLE_NAME + " ) )", null);
+
+        */
+
+        String sql="select U._id, U.name, " +
+                "( (select TOTAL(amt) from lendandborrowtable where from_user = U._id)-(select TOTAL(amt) from lendandborrowtable where to_user =  U._id) ) as balance"  +
+                " from usertable U   where U._id != 1  and ( U._id in ( select from_user from lendandborrowtable ) or U._id in (select to_user from  lendandborrowtable ) )";
+
+        Cursor res = db.rawQuery(sql, null);
+
         if (res != null) {
             res.moveToFirst();
+
+            while (res.isAfterLast() == false) {
+
+                person=new Person();
+
+                person.id =   res.getInt(0);
+                person.name =  res.getString(1);
+
+                if( res.getFloat(2) < 0 ){
+                    person.totalAmount = res.getFloat(2)*-1;
+                    person.status="I will Get";
+                }
+                else {
+                    person.totalAmount = res.getFloat(2);
+                    person.status="I will give";
+                }
+
+
+                list.add(person);
+
+                res.moveToNext();
+            }
+
+            res.close();
         }
-        return res;
-        //return null;
+        //db.close();
+
+        return list;
     }
 
     //------------------------------------------------------------------------------------------------------------
@@ -562,9 +606,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 res.moveToNext();
             }
 
+            res.close();
         }
-        db.close();
-        res.close();
+        //db.close();
+
         return list;
     }
 
