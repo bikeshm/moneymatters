@@ -8,6 +8,7 @@ package com.tricon.labs.giventake.database;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
@@ -28,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static com.tricon.labs.giventake.libraries.functions.getContactByPhone;
+import static com.tricon.labs.giventake.libraries.parsePhone.parsePhone;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -410,8 +412,16 @@ public class DBHelper extends SQLiteOpenHelper {
     public long insertEntry(Map<String, String> data) {
         return commonInsert(data, "lendandborrowtable");
     }
+    public long insertLendAndBorrowEntry(Map<String, String> data) {
+        return commonInsert(data, "lendandborrowtable");
+    }
+
 
     public int updateEntry(Map<String, String> data) {
+        return commonUpdate(data, "lendandborrowtable");
+    }
+
+    public int updateLendAndBorrowEntry(Map<String, String> data) {
         return commonUpdate(data, "lendandborrowtable");
     }
 
@@ -1510,4 +1520,53 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
     }
+
+
+
+
+    //---------------------------------------------------------------------------------/
+
+
+    public long registerUserFromContact(String phone, String name) {
+
+
+        /*
+        //Context context,
+        String APP_SETTINGS_PREFERENCES = "APPSWTTINGSPREFERENCES" ;
+        SharedPreferences sharedpreferences;
+        sharedpreferences = context.getSharedPreferences(APP_SETTINGS_PREFERENCES, Context.MODE_PRIVATE);
+
+        String countryCode = sharedpreferences.getString("CountryCode", "IN");
+
+        phone=parsePhone(phone,countryCode);
+        */
+
+        //Locale.getDefault().getCountry()
+        long userId=0;
+
+        Log.i("Phone n", phone);
+
+        Cursor cursorUser = getUserByPhone(phone);
+
+        Log.i("Phone is exsist", cursorUser.getCount() + "");
+
+        if(cursorUser.getCount()==0){
+
+            Map<String, String> data = new HashMap<String, String>();
+            data.put("name",  name );
+            data.put("phone", phone );
+
+            userId=insertUser(data);
+
+        }
+        else{
+            if(cursorUser.moveToFirst()) {
+                userId = cursorUser.getLong(cursorUser.getColumnIndex("_id"));
+            }
+        }
+
+        return userId;
+    }
+
+
 }

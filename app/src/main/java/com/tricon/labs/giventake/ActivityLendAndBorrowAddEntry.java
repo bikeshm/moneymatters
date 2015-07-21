@@ -370,32 +370,45 @@ package com.tricon.labs.giventake;
 
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.tricon.labs.giventake.adapters.AdapterCategoryList;
 import com.tricon.labs.giventake.adapters.AdapterContactList;
 import com.tricon.labs.giventake.database.DBHelper;
 import com.tricon.labs.giventake.models.Contact;
+import com.tricon.labs.giventake.models.LendAndBorrowEntry;
 import com.tricon.labs.giventake.models.Person;
+import com.tricon.labs.giventake.models.PersonalExpenseEntry;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static com.tricon.labs.giventake.libraries.functions.getContactList;
 
@@ -403,16 +416,36 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
 
     private DBHelper mDBHelper;
 
-    Button mBtnDate;
+    private Button mBtnDate;
 
-    List<Contact> mContacts;
+    private List<Contact> mContacts;
 
-    AutoCompleteTextView mACTVUserName;
+    private AutoCompleteTextView mACTVUserName;
+    private EditText mETAmount;
+    private EditText mETDescription;
+    RadioGroup mRadioGroup;
+    RadioButton mRBLend;
+
+    private Contact mSelectedContact = null;
+
+    private AdapterContactList mAdapter;
+
+    private LendAndBorrowEntry mLendAndBorrowEntry;
+
+    private ProgressDialog mPDSaveData;
+
+    private boolean isEditEntry = false;
+
+    private static final int CREATE_ENTRY = 1;
+    private static final int EDIT_ENTRY = 2;
+    private static int ENTRY_TYPE = CREATE_ENTRY;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lend_and_borrow_add_entry);
+
 
         //setup toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
@@ -428,20 +461,43 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
 
         getSupportActionBar().setHomeButtonEnabled(true);
 
+
+
+
+
         mDBHelper = DBHelper.getInstance(this);
 
         mBtnDate = (Button) findViewById(R.id.btn_date);
-        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.rg_lend_and_borrow);
-        TextInputLayout tilUserName = (TextInputLayout) findViewById(R.id.til_user_name);
-        TextInputLayout tilAmount = (TextInputLayout) findViewById(R.id.til_amount);
+        mRadioGroup = (RadioGroup) findViewById(R.id.rg_lend_and_borrow);
+        mRBLend = (RadioButton) findViewById(R.id.rb_lend);
+
         TextInputLayout tilDescription = (TextInputLayout) findViewById(R.id.til_description);
         mACTVUserName = (AutoCompleteTextView) findViewById(R.id.actv_user_name);
-        EditText etAmount = (EditText) findViewById(R.id.et_amount);
-        EditText etDescription = (EditText) findViewById(R.id.et_description);
+        mETAmount = (EditText) findViewById(R.id.et_amount);
+        mETDescription = (EditText) findViewById(R.id.et_description);
 
         //set autocomplete threshold
         mACTVUserName.setThreshold(1);
         new FetchUserFromContactTask().execute();
+
+        //get data from intent
+        Bundle extras = getIntent().getExtras();
+
+        //if extras is not null, that means user is either creating entry under specific category or editing previous entry.
+        if (extras != null) {
+            mLendAndBorrowEntry = extras.getParcelable("ENTRY");
+            isEditEntry = extras.getBoolean("EDITENTRY", false);
+
+            //if creating Entry For a Specific Category then disable autocomplete text view
+            mACTVUserName.setEnabled(isEditEntry);
+
+            if (isEditEntry) {
+                ENTRY_TYPE = EDIT_ENTRY;
+            }
+        } else {
+            mLendAndBorrowEntry = new LendAndBorrowEntry();
+        }
+
 
         //initial date values
         SimpleDateFormat dmy = new SimpleDateFormat("dd-MM-yyyy");
@@ -455,6 +511,37 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
                 openDatePicker();
             }
         });
+
+
+        mACTVUserName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mSelectedContact = mAdapter.getItem(position);
+                mACTVUserName.setText(mSelectedContact.name);
+            }
+        });
+
+
+        mACTVUserName.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                if (mSelectedContact != null && mSelectedContact.name.equals(mACTVUserName.getText().toString()) != true) {
+                    mSelectedContact = null;
+                }
+                return false;
+            }
+        });
+
+
+
+
+        //set progress dialog
+        mPDSaveData = new ProgressDialog(this);
+        mPDSaveData.setCancelable(false);
+        mPDSaveData.setIndeterminate(true);
+        mPDSaveData.setMessage("Saving Data...");
+
     }
 
 
@@ -470,7 +557,8 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            mACTVUserName.setAdapter(new AdapterContactList(ActivityLendAndBorrowAddEntry.this, mContacts));
+            mAdapter = new AdapterContactList(ActivityLendAndBorrowAddEntry.this, mContacts);
+            mACTVUserName.setAdapter(mAdapter);
         }
     }
 
@@ -485,7 +573,7 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                //saveData();
+                saveData();
                 break;
 
             default:
@@ -518,4 +606,153 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
             }
         }, year, month, day).show();
     }
+
+
+    private void saveData() {
+
+        TextInputLayout tilUserName = (TextInputLayout) findViewById(R.id.til_user_name);
+        TextInputLayout tilAmount = (TextInputLayout) findViewById(R.id.til_amount);
+
+        String userName = mACTVUserName.getText().toString().trim();
+
+
+        if (TextUtils.isEmpty(userName)) {
+            tilUserName.setError("Nmae required");
+            return;
+        } else {
+            tilUserName.setError(null);
+        }
+
+        if (TextUtils.isEmpty(mETAmount.getText().toString())) {
+            tilAmount.setError("Amount required");
+            return;
+        } else {
+            tilAmount.setError(null);
+        }
+
+        if (mSelectedContact == null) {
+            tilUserName.setError("Invalid contact");
+            return;
+        } else {
+            tilUserName.setError(null);
+        }
+
+
+        int userId = (int) mDBHelper.registerUserFromContact(mSelectedContact.phone, mSelectedContact.name);
+
+        if (userId == 0) {
+            tilUserName.setError("invalid name");
+            return;
+        } else {
+            tilUserName.setError(null);
+        }
+
+        saveEntry(userId);
+    }
+
+
+    private void saveEntry(int userId) {
+        String newDate = mBtnDate.getText().toString().trim();
+
+        int newFromUser, newToUser;
+
+        if (mRadioGroup.getCheckedRadioButtonId() == mRBLend.getId()) {
+            newFromUser = 1;
+            newToUser = userId;
+        } else {
+            newFromUser = userId;
+            newToUser = 1;
+        }
+
+        double newAmount = Double.parseDouble(mETAmount.getText().toString().trim());
+        String newDescription = mETDescription.getText().toString().trim();
+
+        //if there is any change in any field then save the entry otherwise finish the activity
+        if ((mLendAndBorrowEntry.fromUser != newFromUser)
+                || (mLendAndBorrowEntry.toUser != newToUser)
+                || (!mLendAndBorrowEntry.date.equals(newDate))
+                || (mLendAndBorrowEntry.amount != newAmount)
+                || (!mLendAndBorrowEntry.description.equals(newDescription))) {
+
+            new SaveEntryTask(newDate, newFromUser, newToUser, newAmount, newDescription).execute();
+
+        } else {
+            finish();
+        }
+    }
+
+
+    private class SaveEntryTask extends AsyncTask<Void, Void, Boolean> {
+
+        private String mDate;
+        int mFromUser;
+        int mToUser;
+        private double mAmount;
+        private String mDescription;
+
+
+        SaveEntryTask(String date, int fromUser, int toUser, double amount, String description) {
+
+            this.mDate = date;
+            this.mFromUser = fromUser;
+            this.mToUser = toUser;
+            this.mAmount = amount;
+            this.mDescription = description;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mPDSaveData.setMessage("Saving Entry");
+            mPDSaveData.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            Map<String, String> entryData = new HashMap<>();
+
+            //convert date into "yyyy MM dd" format
+            SimpleDateFormat localDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+            SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            try {
+                mDate = dbDateFormat.format(localDateFormat.parse(mDate));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            entryData.put("created_date", mDate);
+            entryData.put("description", mDescription);
+            entryData.put("amt", mAmount + "");
+            entryData.put("from_user", mFromUser+"");
+            entryData.put("to_user", mToUser+"" );
+
+            if (ENTRY_TYPE == CREATE_ENTRY) {
+
+                return mDBHelper.insertLendAndBorrowEntry(entryData) >0 ;
+
+            } else {
+
+                entryData.put("_id", mLendAndBorrowEntry.entryId + "");
+
+                return mDBHelper.updateLendAndBorrowEntry(entryData) > 0;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            mPDSaveData.dismiss();
+            if (success) {
+                Toast.makeText(ActivityLendAndBorrowAddEntry.this,
+                        "Data saved successfully",
+                        Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(ActivityLendAndBorrowAddEntry.this,
+                        "Something went wrong while saving entry.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
 }

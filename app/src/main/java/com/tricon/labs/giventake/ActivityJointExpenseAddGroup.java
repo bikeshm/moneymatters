@@ -438,7 +438,7 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
                 {
                     Log.i("kv pair", "Key -> " + entry.getKey() + " value -> " + entry.getValue().get("name"));
 
-                    members.add( ""+registreUserFromContact(entry.getValue().get("phone"),entry.getValue().get("name")) );
+                    members.add( ""+registerUserFromContact(entry.getValue().get("phone"),entry.getValue().get("name")) );
 
                     membersDataJSON = membersDataJSON + "{'name' : '"+ entry.getValue().get("name") +"', 'phone' : '"+entry.getValue().get("phone")+"'},";
 

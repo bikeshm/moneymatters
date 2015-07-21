@@ -150,38 +150,6 @@ public class ActivityBase extends AppCompatActivity {
 
     //-------- Global functions --------//
 
-    public String registreUserFromContact(String phone, String name) {
-
-        //Locale.getDefault().getCountry()
-        String user_id=null;
-
-        phone=parsePhone(phone,myDb.getdefaultContryCode());
-
-        Log.i("Phone n", phone);
-
-        Cursor cursorDbuser = myDb.getUserByPhone(phone);
-
-        Log.i("Phone is exsist", cursorDbuser.getCount() + "");
-
-        if(cursorDbuser.getCount()==0){
-
-            Map<String, String> data = new HashMap<String, String>();
-            data.put("name",  name );
-            data.put("phone", phone );
-
-
-            if (myDb.insertUser(data)==1) {
-                cursorDbuser = myDb.getUserByPhone(phone);
-                user_id= cursorDbuser.getString(cursorDbuser.getColumnIndex("_id"));
-            }
-        }
-        else{
-            //return user id
-            user_id= cursorDbuser.getString(cursorDbuser.getColumnIndex("_id"));
-        }
-
-        return user_id;
-    }
 
 
 
