@@ -16,30 +16,39 @@ import com.tricon.labs.giventake.adapters.AdapterLendAndBorrow;
 import com.tricon.labs.giventake.database.DBHelper;
 import com.tricon.labs.giventake.models.Person;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 
 public class FragmentLendAndBorrow extends Fragment {
 
-    private DBHelper mDBHelper;
-    private View mRootView;
+    private TextView mTVGive;
+    private TextView mTVGet;
 
-    ListView mLVPersons;
-    List<Person> mPersonList;
-    AdapterLendAndBorrow mAdapter;
+    private DBHelper mDBHelper;
+    private List<Person> mPersonList = new ArrayList<>();
+    private AdapterLendAndBorrow mAdapter;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mRootView = inflater.inflate(R.layout.fragment_lend_and_borrow, container, false);
+        //setup views
+        View mRootView = inflater.inflate(R.layout.fragment_lend_and_borrow, container, false);
+        mTVGive = (TextView) mRootView.findViewById(R.id.amt_togive);
+        mTVGet = (TextView) mRootView.findViewById(R.id.amt_toget);
+        ListView mLVPersons = (ListView) mRootView.findViewById(R.id.lv_persons);
 
-        mLVPersons = (ListView) mRootView.findViewById(R.id.lv_persons);
+        //get db instance
+        mDBHelper = new DBHelper(getActivity());
 
+        //set list view adapter
+        mAdapter = new AdapterLendAndBorrow(mPersonList);
+        mLVPersons.setAdapter(mAdapter);
+
+        //set listeners
         mLVPersons.setOnItemClickListener(new listItemClicked());
-
-
 
         return mRootView;
     }
@@ -48,13 +57,6 @@ public class FragmentLendAndBorrow extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        mDBHelper = new DBHelper(getActivity());
-
-        mPersonList = mDBHelper.getLendAndBorrowList();
-        mAdapter = new AdapterLendAndBorrow(mPersonList);
-        mLVPersons.setAdapter(mAdapter);
-
         populateListViewFromDB();
     }
 
@@ -67,21 +69,20 @@ public class FragmentLendAndBorrow extends Fragment {
             i.putExtra("ID", "" + Person.id);
             i.putExtra("NAME", "" + Person.name);
             startActivity(i);
-
         }
     }
 
     private void populateListViewFromDB() {
-
         //Todo :- need to implement pagination
 
+        mPersonList.clear();
+        mPersonList.addAll(mDBHelper.getLendAndBorrowList());
         mAdapter.notifyDataSetChanged();
 
         Map<String, String> finalResult = mDBHelper.getFinalResult();
 
-        ((TextView) mRootView.findViewById(R.id.amt_togive)).setText(": " + finalResult.get("amt_toGive"));
-        ((TextView) mRootView.findViewById(R.id.amt_toget)).setText(": " + finalResult.get("amt_toGet"));
-
+        mTVGive.setText(": " + finalResult.get("amt_toGive"));
+        mTVGet.setText(": " + finalResult.get("amt_toGet"));
     }
 
 

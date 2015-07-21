@@ -16,7 +16,9 @@ import android.util.Log;
 
 import com.tricon.labs.giventake.models.Category;
 import com.tricon.labs.giventake.models.Person;
+import com.tricon.labs.giventake.models.PersonalExpenseEntry;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -141,10 +143,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 contentValues.put(entry.getKey(), entry.getValue());
             }
         }
-
-        db.update(table, contentValues, "_id = ? ", new String[]{data.get("_id")});
-        db.close();
-        return 1;
+        return db.update(table, contentValues, "_id = ? ", new String[]{data.get("_id")});
     }
 
     public int commonUpdateWhere(Map<String, String> data, String where, String table) {
@@ -354,7 +353,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-
     public ArrayList<Person> getLendAndBorrowList() {
 
         ArrayList<Person> list = new ArrayList<>();
@@ -369,8 +367,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         */
 
-        String sql="select U._id, U.name, " +
-                "( (select TOTAL(amt) from lendandborrowtable where from_user = U._id)-(select TOTAL(amt) from lendandborrowtable where to_user =  U._id) ) as balance"  +
+        String sql = "select U._id, U.name, " +
+                "( (select TOTAL(amt) from lendandborrowtable where from_user = U._id)-(select TOTAL(amt) from lendandborrowtable where to_user =  U._id) ) as balance" +
                 " from usertable U   where U._id != 1  and ( U._id in ( select from_user from lendandborrowtable ) or U._id in (select to_user from  lendandborrowtable ) )";
 
         Cursor res = db.rawQuery(sql, null);
@@ -380,18 +378,17 @@ public class DBHelper extends SQLiteOpenHelper {
 
             while (res.isAfterLast() == false) {
 
-                person=new Person();
+                person = new Person();
 
-                person.id =   res.getInt(0);
-                person.name =  res.getString(1);
+                person.id = res.getInt(0);
+                person.name = res.getString(1);
 
-                if( res.getFloat(2) < 0 ){
-                    person.totalAmount = res.getFloat(2)*-1;
-                    person.status="I will Get";
-                }
-                else {
+                if (res.getFloat(2) < 0) {
+                    person.totalAmount = res.getFloat(2) * -1;
+                    person.status = "I will Get";
+                } else {
                     person.totalAmount = res.getFloat(2);
-                    person.status="I will give";
+                    person.status = "I will give";
                 }
 
 
@@ -676,31 +673,44 @@ public class DBHelper extends SQLiteOpenHelper {
         return commonDelete(id, "personaltable");
     }
 
-    public Cursor getPersonalExpense(long collectionId, String month) {
+    public ArrayList<PersonalExpenseEntry> getPersonalExpense(int collectionId, String categoryName, String month) {
+        ArrayList<PersonalExpenseEntry> entries = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Log.i("bm info", "select * from personaltable where collection_id = " + collectionId + "  and STRFTIME('%m-%Y', created_date) = '" + month + "'");
-        Cursor res = db.rawQuery("select * from personaltable where collection_id = " + collectionId + "  and STRFTIME('%m-%Y', created_date) = '" + month + "'", null);
-        if (res != null) {
-            res.moveToFirst();
+
+        //Log.i("bm info", "select * from personaltable where collection_id = " + collectionId + "  and STRFTIME('%m-%Y', created_date) = '" + month + "'");
+        Cursor personalExpenseCursor = db.rawQuery("select * from personaltable where collection_id = " + collectionId + "  and STRFTIME('%m-%Y', created_date) = '" + month + "'", null);
+        while (personalExpenseCursor.moveToNext()) {
+            int entryId = personalExpenseCursor.getInt(personalExpenseCursor.getColumnIndex("_id"));
+
+            String date = personalExpenseCursor.getString(personalExpenseCursor.getColumnIndex("created_date"));
+            //convert date into "dd MM yyyy" format
+            SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            SimpleDateFormat localDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+            try {
+                date = localDateFormat.format(dbDateFormat.parse(date));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+            String description = personalExpenseCursor.getString(personalExpenseCursor.getColumnIndex("description"));
+            double amount = personalExpenseCursor.getDouble(personalExpenseCursor.getColumnIndex("amt"));
+            entries.add(new PersonalExpenseEntry(entryId, collectionId, categoryName, date, description, amount));
         }
-        return res;
+        personalExpenseCursor.close();
+
+        return entries;
     }
 
 
-    public float getMonthTotalOfPersonalExpenseIndividual(long collectionId, String createdDate) {
+    public double getMonthTotalOfPersonalExpenseIndividual(int collectionId, String createdDate) {
         SQLiteDatabase db = this.getReadableDatabase();
-        float amt;
-        Cursor res = db.rawQuery("select TOTAL(amt) from personaltable where collection_id = " + collectionId + " and STRFTIME('%m-%Y', created_date) = '" + createdDate + "'", null);
-
-        if (res != null) {
-            res.moveToFirst();
-            amt = res.getFloat(0);
-            res.close();
-        } else {
-            amt = 0;
+        double amt = 0;
+        Cursor cursor = db.rawQuery("select TOTAL(amt) from personaltable where collection_id = " + collectionId + " and STRFTIME('%m-%Y', created_date) = '" + createdDate + "'", null);
+        if (cursor.moveToNext()) {
+            amt = cursor.getDouble(0);
         }
-
-        db.close();
+        cursor.close();
         return amt;
     }
 

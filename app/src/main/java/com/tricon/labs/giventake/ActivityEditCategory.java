@@ -129,7 +129,7 @@ public class ActivityEditCategory extends AppCompatActivity {
                 data.put("name", category);
                 data.put("description", "");
                 data.put("_id", CATEGORY_ID);
-                if (mDBHelper.updateCollection(data) == 1) {
+                if (mDBHelper.updateCollection(data) > 0) {
                     return true;
                 } else {
                     return false;

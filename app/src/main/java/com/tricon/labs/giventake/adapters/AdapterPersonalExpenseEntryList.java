@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.tricon.labs.giventake.R;
 import com.tricon.labs.giventake.interfaces.EntryClickedListener;
+import com.tricon.labs.giventake.interfaces.EntryLongClickedListener;
 import com.tricon.labs.giventake.models.PersonalExpenseEntry;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class AdapterPersonalExpenseEntryList extends RecyclerView.Adapter<Adapte
         return mEntries.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         TextView tvDate;
         TextView tvDescription;
@@ -58,6 +59,7 @@ public class AdapterPersonalExpenseEntryList extends RecyclerView.Adapter<Adapte
             llEntry = (LinearLayout) itemView.findViewById(R.id.ll_entry);
 
             llEntry.setOnClickListener(this);
+            llEntry.setOnLongClickListener(this);
         }
 
         @Override
@@ -70,6 +72,19 @@ public class AdapterPersonalExpenseEntryList extends RecyclerView.Adapter<Adapte
                 default:
                     break;
             }
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            switch (v.getId()) {
+                case R.id.ll_entry:
+                    ((EntryLongClickedListener) v.getContext()).onEntryLongClicked(getAdapterPosition());
+                    break;
+
+                default:
+                    break;
+            }
+            return false;
         }
     }
 }

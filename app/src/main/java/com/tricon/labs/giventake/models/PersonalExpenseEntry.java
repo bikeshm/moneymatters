@@ -9,6 +9,7 @@ import java.util.Locale;
 
 public class PersonalExpenseEntry implements Parcelable {
     public int entryId;
+    public int categoryId;
     public String category;
     public String date;
     public String description;
@@ -17,15 +18,17 @@ public class PersonalExpenseEntry implements Parcelable {
     public PersonalExpenseEntry() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         this.entryId = -1;
+        this.categoryId = -1;
         this.category = "";
         this.date = simpleDateFormat.format(new Date());
         this.description = "";
         this.amount = 0;
     }
 
-    public PersonalExpenseEntry(int entryId, String category, String date, String description, double amount) {
+    public PersonalExpenseEntry(int entryId, int categoryId, String category, String date, String description, double amount) {
         this.entryId = entryId;
-        this.category = category.toLowerCase();
+        this.categoryId = categoryId;
+        this.category = category;
         this.date = date;
         this.description = description;
         this.amount = amount;
@@ -39,6 +42,7 @@ public class PersonalExpenseEntry implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(entryId);
+        dest.writeInt(categoryId);
         dest.writeString(category);
         dest.writeString(date);
         dest.writeString(description);
@@ -47,6 +51,7 @@ public class PersonalExpenseEntry implements Parcelable {
 
     public PersonalExpenseEntry(Parcel in) {
         entryId = in.readInt();
+        categoryId = in.readInt();
         category = in.readString();
         date = in.readString();
         description = in.readString();

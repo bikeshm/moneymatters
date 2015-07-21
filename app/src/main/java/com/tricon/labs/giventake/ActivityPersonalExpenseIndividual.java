@@ -1,60 +1,8 @@
 package com.tricon.labs.giventake;
 
-/*import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.tricon.labs.giventake.adapters.CustomDatePicker;
-import com.tricon.labs.giventake.database.DBHelper;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-
-public class ActivityPersonalExpenseIndividual extends ActivityBase {
-
-
-    //View personalExpenseIndividualView;
-    //String fromActivity=null;
-    int colId = 0;
-    String colName = "";
-
-    DBHelper myDb;
-
+/*
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_personal_expense_individual);
-
-        myDb = new DBHelper(this);
-
-        Bundle extras = getIntent().getExtras();
-
-        if (extras == null) {
-            //fromActivity= null;
-        } else {
-            //fromActivity= extras.getString("fromActivity");
-            colId = Integer.parseInt(extras.getString("ID"));
-            colName = extras.getString("NAME");
-        }
-
-
         SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy");
         String cDate = dmy.format(new Date());
 
@@ -70,190 +18,6 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
         dateChangerForDb.setText(cdbDate);
 
         dateChangerForDb.addTextChangedListener(new dateChange());
-
-
-        Cursor entrys = myDb.getPersonalExpense(colId, cDate);
-        generateTable(entrys);
-
-        ((FloatingActionButton) currentView.findViewById(R.id.addExpenseGroup)).setOnClickListener(new openAddnewEntrry());
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        //startActivity(new Intent(ActivityPersonalExpenseIndividual.this, ActivityPersonalExpense.class));
-        finish();
-    }
-
-    //Todo :- handle back click , and goto prev activity page
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        //Cursor entrys =  myDb.getPersonalExpense(colId, ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString());
-        //generateTable(entrys);
-    }
-
-    private void generateTable(Cursor cursor) {
-
-        TableLayout tableLayout = (TableLayout) currentView.findViewById(R.id.tableLayout);
-        TableRow tr, th;
-        boolean colorFlag = false;
-        TextView tv;
-        String fields[] = {"created_date", "description", "amt"};
-
-        //setting headder
-        String tablehead[] = {"Date", "Description", "Amt"};
-        tableLayout.removeAllViews();
-        th = new TableRow(this);
-        th.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-        tr = new TableRow(this);
-        tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-
-
-        Log.i("bm info", "" + colId + " cc " + cursor.getCount());
-        Log.i("bm info", "" + tablehead.length);
-
-
-        for (int i = 0; i < tablehead.length; i++) {
-            tv = generateTextview();
-            tv.setText(tablehead[i]);
-            tv.setTypeface(null, Typeface.BOLD);
-            tr.addView(tv);
-        }
-        tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
-        //----
-
-        while (cursor.isAfterLast() == false) {
-
-            tr = new TableRow(this);
-            tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-
-            tr.setClickable(true);
-            tr.setOnClickListener(new tableRowClicked(Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id")))));
-            tr.setOnLongClickListener(new tableRowLongClicked(Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id")))));
-
-            Log.i("bm info", "" + fields.length);
-
-            for (int i = 0; i < fields.length; i++) {
-
-                tv = generateTextview();
-
-                //changing date format
-                if (fields[i].equals("created_date")) {
-
-                    try {
-
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//set format of date you receiving from db
-                        Date date = (Date) sdf.parse(cursor.getString(cursor.getColumnIndex(fields[i])));
-                        SimpleDateFormat newDate = new SimpleDateFormat("dd-MM-yyyy");//set format of new date
-                        tv.setText("" + newDate.format(date));
-                    } catch (ParseException pe) {
-                        tv.setText(cursor.getString(cursor.getColumnIndex(fields[i])));
-                    }
-                } else {
-                    tv.setText(cursor.getString(cursor.getColumnIndex(fields[i])));
-                }
-
-                tr.addView(tv);
-            }
-
-            cursor.moveToNext();
-
-            if (colorFlag) {
-                tr.setBackgroundColor(Color.rgb(240, 242, 242));
-                colorFlag = false;
-            } else {
-                tr.setBackgroundColor(Color.rgb(234, 237, 237));
-                colorFlag = true;
-            }
-            // Add row to TableLayout.
-            tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
-        }
-
-        float amtHolder;
-        amtHolder = myDb.getMonthTotalOfPersonalExpenseIndividual(colId, ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString());
-        ((TextView) currentView.findViewById(R.id.monthlyTotal)).setText(": " + amtHolder);
-
-    }
-
-    private TextView generateTextview() {
-        TextView tv = new TextView(this);
-        tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-        tv.setPadding(5, 5, 5, 5);
-        tv.setClickable(false);
-        return tv;
-    }
-
-
-    private class tableRowClicked implements View.OnClickListener {
-        int rowId = 0;
-
-        public tableRowClicked(int id) {
-            rowId = id;
-        }
-
-        @Override
-        public void onClick(View v) {
-            Toast.makeText(getApplicationContext(), "clicked" + rowId, Toast.LENGTH_LONG).show();
-
-            Intent i = new Intent(ActivityPersonalExpenseIndividual.this, ActivityPersonalExpenseAddEntry.class);
-            i.putExtra("fromActivity", "ActivityPersonalExpenseIndividual");
-            i.putExtra("ID", "" + colId);
-            i.putExtra("Name", colName);
-            i.putExtra("rowId", rowId + "");
-            startActivity(i);
-
-
-        }
-    }
-
-    private class tableRowLongClicked implements View.OnLongClickListener {
-        int rowId = 0;
-
-        public tableRowLongClicked(int id) {
-            rowId = id;
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-
-            Toast.makeText(getApplicationContext(), "Long pressed ", Toast.LENGTH_LONG).show();
-            generatePopupmenu(rowId);
-            return true;
-        }
-    }
-
-    public void generatePopupmenu(int rowId) {
-
-        final CharSequence[] options = {"Delete", "Cancel"};
-        final String dbrowId = rowId + "";
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityPersonalExpenseIndividual.this);
-        //builder.setTitle("Add Photo!");
-
-
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-
-                if (options[item].equals("Delete")) {
-
-                    myDb.deletePersonalExpense(dbrowId);
-
-                    Cursor entrys = myDb.getPersonalExpense(colId, ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString());
-
-                    generateTable(entrys);
-
-
-                } else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-
-        builder.show();
     }
 
     private class dateChange implements TextWatcher {
@@ -275,53 +39,14 @@ public class ActivityPersonalExpenseIndividual extends ActivityBase {
 
         }
     }
-
-
-    private class openAddnewEntrry implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-
-            Intent i = new Intent(ActivityPersonalExpenseIndividual.this, ActivityPersonalExpenseAddEntry.class);
-            i.putExtra("fromActivity", "ActivityPersonalExpenseIndividual");
-            i.putExtra("ID", "" + colId);
-            i.putExtra("Name", colName);
-            startActivity(i);
-
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_personal_expense_individual, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (myDb != null) {
-            myDb.close();
-        }
-    }
 }*/
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -329,25 +54,31 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.tricon.labs.giventake.adapters.AdapterPersonalExpenseEntryList;
+import com.tricon.labs.giventake.database.DBHelper;
 import com.tricon.labs.giventake.interfaces.EntryClickedListener;
+import com.tricon.labs.giventake.interfaces.EntryLongClickedListener;
+import com.tricon.labs.giventake.libraries.MonthYearPicker;
 import com.tricon.labs.giventake.models.PersonalExpenseEntry;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityPersonalExpenseIndividual extends AppCompatActivity implements EntryClickedListener {
+public class ActivityPersonalExpenseIndividual extends AppCompatActivity implements EntryClickedListener, EntryLongClickedListener {
 
     private Button mBtnDate;
     private TextView mTVMonthlyTotal;
 
-    private List<PersonalExpenseEntry> mEntries;
+    private List<PersonalExpenseEntry> mEntries = new ArrayList<>();
+    private AdapterPersonalExpenseEntryList mAdapter;
 
-    private String mCategoryId;
+    private DBHelper mDBHelper;
+
+    private int mCategoryId;
     private String mCategoryName;
     private String mDate;
-
-    private static final int REQUEST_UPDATE = 10;
-    private static final int REQUEST_CREATE = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -366,61 +97,155 @@ public class ActivityPersonalExpenseIndividual extends AppCompatActivity impleme
             }
         });
 
+        //setup views
+        mBtnDate = (Button) findViewById(R.id.btn_date);
+        mTVMonthlyTotal = (TextView) findViewById(R.id.tv_monthly_total);
+        RecyclerView rvEntries = (RecyclerView) findViewById(R.id.rv_entries);
+
+        //get db instance
+        mDBHelper = DBHelper.getInstance(this);
+
         //get extras
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            mCategoryId = extras.getString("CATEGORYID", "");
+            mCategoryId = extras.getInt("CATEGORYID", -1);
             mCategoryName = extras.getString("CATEGORYNAME", "");
-            mDate = extras.getString("DATE", "");
+            mDate = extras.getString("SELECTEDDATE", "");
+            mBtnDate.setText(extras.getString("BTNDATE", ""));
         }
 
-        //set actionbar
+        //set actionbar title
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setTitle(mCategoryName);
         }
 
-        //setup views
-        mBtnDate = (Button) findViewById(R.id.btn_date);
-        mTVMonthlyTotal = (TextView) findViewById(R.id.tv_monthly_total);
-        RecyclerView rvEntries = (RecyclerView) findViewById(R.id.rv_entries);
-
+        //set recycler view layout manager
         rvEntries.setHasFixedSize(true);
         rvEntries.setLayoutManager(new LinearLayoutManager(this));
+
+        //set adapter
+        mAdapter = new AdapterPersonalExpenseEntryList(mEntries);
+        rvEntries.setAdapter(mAdapter);
 
         //set listeners
         findViewById(R.id.btn_create).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                PersonalExpenseEntry entry = new PersonalExpenseEntry();
+                entry.category = mCategoryName;
                 Intent intent = new Intent(ActivityPersonalExpenseIndividual.this, ActivityPersonalExpenseAddEntry.class);
-                intent.putExtra("ENTRY", new PersonalExpenseEntry());
+                intent.putExtra("ENTRY", entry);
                 intent.putExtra("SPECIFICENTRY", true);
-                startActivityForResult(intent, REQUEST_CREATE);
+                startActivity(intent);
             }
         });
+        mBtnDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] monthAndYear = mDate.split("-");
+                openDatePicker(Integer.parseInt(monthAndYear[0].trim()) - 1, Integer.parseInt(monthAndYear[1].trim()));
+            }
+        });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         //fetch entries
         new FetchEntriesTask().execute();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mDBHelper != null) {
+            mDBHelper.close();
+        }
     }
 
     @Override
     public void onEntryClicked(int position) {
         Intent intent = new Intent(ActivityPersonalExpenseIndividual.this, ActivityPersonalExpenseAddEntry.class);
         intent.putExtra("ENTRY", mEntries.get(position));
-        startActivityForResult(intent, REQUEST_UPDATE);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onEntryLongClicked(final int position) {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Entry")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteEntryFromDB(position);
+                    }
+                })
+                .setNegativeButton("NO", null)
+                .show();
+    }
+
+    private void openDatePicker(int selectedMonth, int selectedYear) {
+        final MonthYearPicker monthPicker = new MonthYearPicker(this);
+        monthPicker.build(selectedMonth, selectedYear, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mBtnDate.setText(monthPicker.getSelectedMonthName() + "-" + monthPicker.getSelectedYear());
+
+                String dateString = ((monthPicker.getSelectedMonth() + 1) < 10 ? "0" : "") + (monthPicker.getSelectedMonth() + 1);
+                mDate = dateString + "-" + monthPicker.getSelectedYear();
+
+                //fetch entries
+                new FetchEntriesTask().execute();
+            }
+        }, null);
+        monthPicker.show();
+    }
+
+    private void deleteEntryFromDB(int position) {
+        if (mDBHelper.deletePersonalExpense(mEntries.get(position).entryId + "") > 0) {
+            PersonalExpenseEntry deletedEntry = mEntries.remove(position);
+            Toast.makeText(this, "Expense Entry Deleted", Toast.LENGTH_SHORT).show();
+            mAdapter.notifyItemRemoved(position);
+
+            //subtract expense of deleted entry from total expense and set that in "Total Expense Text View"
+            Double newExpense = Double.parseDouble(mTVMonthlyTotal.getText().toString()) - deletedEntry.amount;
+            mTVMonthlyTotal.setText(newExpense + "");
+        } else {
+            Toast.makeText(this, "Something went wrong while deleting expense", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private class FetchEntriesTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
+            mEntries.clear();
+            mEntries.addAll(mDBHelper.getPersonalExpense(mCategoryId, mCategoryName, mDate));
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            mAdapter.notifyDataSetChanged();
+            new FetchMonthlyTotalAmount().execute();
+        }
+    }
+
+    private class FetchMonthlyTotalAmount extends AsyncTask<Void, Void, Double> {
+
+        @Override
+        protected Double doInBackground(Void... params) {
+            return mDBHelper.getMonthTotalOfPersonalExpenseIndividual(mCategoryId, mDate);
+        }
+
+        @Override
+        protected void onPostExecute(Double result) {
+            super.onPostExecute(result);
+            mTVMonthlyTotal.setText(result + "");
         }
     }
 }

@@ -89,7 +89,7 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
             }
 
             if (cContext.getClass().getSimpleName().equals("ActivityPersonalExpense")) {
-                balanceAmt = myDb.getMonthTotalOfPersonalExpenseIndividual(Long.parseLong((cursor.getString(cursor.getColumnIndex("_id")))), dataExtra.get("selectedDate") );
+                //balanceAmt = myDb.getMonthTotalOfPersonalExpenseIndividual(Long.parseLong((cursor.getString(cursor.getColumnIndex("_id")))), dataExtra.get("selectedDate") );
                 ((TextView) view.findViewById(R.id.item_description)).setVisibility(View.GONE);
 
             }

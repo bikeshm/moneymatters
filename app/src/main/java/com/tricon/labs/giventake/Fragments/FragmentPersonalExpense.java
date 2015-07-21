@@ -23,6 +23,7 @@ import com.tricon.labs.giventake.database.DBHelper;
 import com.tricon.labs.giventake.libraries.MonthYearPicker;
 import com.tricon.labs.giventake.models.Category;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -34,76 +35,68 @@ import java.util.Locale;
 
 public class FragmentPersonalExpense extends Fragment {
 
-    private ListView mLVCategories;
+    private Button mBtnDate;
+    private TextView mTVMonthlyTotal;
+
     private DBHelper mDBHelper;
-    private View mRootView;
 
-    String mSelectedDate;
+    private String mSelectedDate;
+    private List<Category> mCategoriesList = new ArrayList<>();
 
-    List<Category> mCategoriesList;
-    AdapterPersonalExpense mAdapter;
-
-    Button mBtnDate;
+    private AdapterPersonalExpense mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mRootView = inflater.inflate(R.layout.fragment_personal_expense, container, false);
+        //setup view
+        View mRootView = inflater.inflate(R.layout.fragment_personal_expense, container, false);
+        mBtnDate = ((Button) mRootView.findViewById(R.id.btn_date));
+        mTVMonthlyTotal = (TextView) mRootView.findViewById(R.id.tv_monthly_total);
+        ListView mLVCategories = (ListView) mRootView.findViewById(R.id.lv_categories);
 
+        //set list view adapter
+        mAdapter = new AdapterPersonalExpense(mCategoriesList);
+        mLVCategories.setAdapter(mAdapter);
+
+        //get db instance
         mDBHelper = DBHelper.getInstance(getActivity());
 
-        mLVCategories = (ListView) mRootView.findViewById(R.id.lv_categories);
-
+        //get current date
         Calendar calenderInstance = Calendar.getInstance();
-
         String dayString = ((calenderInstance.get(Calendar.MONTH) + 1) < 10 ? "0" : "") + (calenderInstance.get(Calendar.MONTH) + 1);
-
         mSelectedDate = dayString + "-" + calenderInstance.get(Calendar.YEAR);
-
-
-        mLVCategories.setOnItemClickListener(new listItemClicked());
-        mLVCategories.setOnItemLongClickListener(new listItemLongClicked());
-
-        mBtnDate = ((Button) mRootView.findViewById(R.id.btn_date));
-
         mBtnDate.setText(calenderInstance.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US) + " - " + calenderInstance.get(Calendar.YEAR));
 
+        //set listeners
+        mLVCategories.setOnItemClickListener(new listItemClicked());
+        mLVCategories.setOnItemLongClickListener(new listItemLongClicked());
         mBtnDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openMonthPicker();
+                String[] monthAndYear = mSelectedDate.split("-");
+                openDatePicker(Integer.parseInt(monthAndYear[0].trim()) - 1, Integer.parseInt(monthAndYear[1].trim()));
             }
         });
 
         return mRootView;
-
     }
 
 
-    private void openMonthPicker() {
-
+    private void openDatePicker(int selectedMonth, int selectedYear) {
         final MonthYearPicker monthPicker = new MonthYearPicker(getActivity());
 
-        monthPicker.build(new DialogInterface.OnClickListener() {
+        monthPicker.build(selectedMonth, selectedYear, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
                 mBtnDate.setText(monthPicker.getSelectedMonthName() + "-" + monthPicker.getSelectedYear());
 
                 String dayString = ((monthPicker.getSelectedMonth() + 1) < 10 ? "0" : "") + (monthPicker.getSelectedMonth() + 1);
-
                 mSelectedDate = dayString + "-" + monthPicker.getSelectedYear();
 
-                mCategoriesList.clear();
-                mCategoriesList.addAll(mDBHelper.getCategoriesListsByMonth(mSelectedDate));
-
                 populateListViewFromDB();
-
             }
         }, null);
-
-
         monthPicker.show();
     }
 
@@ -111,11 +104,6 @@ public class FragmentPersonalExpense extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        mCategoriesList = mDBHelper.getCategoriesListsByMonth(mSelectedDate);
-        mAdapter = new AdapterPersonalExpense(mCategoriesList);
-        mLVCategories.setAdapter(mAdapter);
-
         populateListViewFromDB();
     }
 
@@ -127,11 +115,12 @@ public class FragmentPersonalExpense extends Fragment {
     }
 
     private void populateListViewFromDB() {
+        mCategoriesList.clear();
+        mCategoriesList.addAll(mDBHelper.getCategoriesListsByMonth(mSelectedDate));
 
         mAdapter.notifyDataSetChanged();
 
-        ((TextView) mRootView.findViewById(R.id.tv_monthly_total)).setText(": " + mDBHelper.getMonthTotalOfPersonalExpense(mSelectedDate));
-
+        mTVMonthlyTotal.setText(mDBHelper.getMonthTotalOfPersonalExpense(mSelectedDate) + "");
     }
 
 
@@ -143,8 +132,10 @@ public class FragmentPersonalExpense extends Fragment {
 
             Intent i = new Intent(getActivity(), ActivityPersonalExpenseIndividual.class);
 
-            i.putExtra("CATEGORYID", selectedCategory.id + "");
+            i.putExtra("CATEGORYID", selectedCategory.id);
             i.putExtra("CATEGORYNAME", selectedCategory.name);
+            i.putExtra("BTNDATE", mBtnDate.getText());
+            i.putExtra("SELECTEDDATE", mSelectedDate);
             startActivity(i);
         }
     }
@@ -154,80 +145,56 @@ public class FragmentPersonalExpense extends Fragment {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-            generatePopupMenu(mCategoriesList.get(position));
+            generatePopupMenu(position, mCategoriesList.get(position));
             return true;
         }
     }
 
 
-    public void generatePopupMenu(final Category category) {
-
+    public void generatePopupMenu(final int position, final Category category) {
         final CharSequence[] options = {"Edit", "Delete"};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        new AlertDialog.Builder(getActivity())
+                .setItems(options, new DialogInterface.OnClickListener() {
 
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (options[item].equals("Delete")) {
+                            Toast.makeText(getActivity(), "id" + category.id, Toast.LENGTH_LONG).show();
 
-        builder.setItems(options, new DialogInterface.OnClickListener() {
+                            //delete collection
+                            if (mDBHelper.deleteCollection(category.id + "") == 1) {
+                                Log.i("delete collection", "collection deleted");
 
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-
-                if (options[item].equals("Delete")) {
-
-
-                    new AlertDialog.Builder(getActivity())
-                            .setTitle("Delete")
-                            .setMessage("Do you really want to delete?")
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                                public void onClick(DialogInterface dialog, int whichButton) {
-
-                                    Toast.makeText(getActivity(), "id" + category.id, Toast.LENGTH_LONG).show();
-
-                                    //delete collection
-                                    if (mDBHelper.deleteCollection(category.id + "") == 1) {
-                                        Log.i("delete collection", "collection deleted");
-
-                                        //delete all the entrys in that collection
-                                        if (mDBHelper.deleteCollectionEntrys(category.id + "") == 1) {
-                                            Log.i("delete collection", "deleted all the collection entrys");
-                                        } else {
-                                            Log.i("delete collection", "Not deleted collection entrys");
-                                        }
-
-                                        //reloading the data
-                                        mCategoriesList.clear();
-                                        mCategoriesList.addAll(mDBHelper.getCategoriesListsByMonth(mSelectedDate));
-
-                                        populateListViewFromDB();
-
-                                    } else {
-                                        Log.i("delete collection", "collection Not deleted ");
-                                    }
-
-
+                                //delete all entries in that collection
+                                if (mDBHelper.deleteCollectionEntrys(category.id + "") == 1) {
+                                    Log.i("delete collection", "deleted all the collection entrys");
+                                } else {
+                                    Log.i("delete collection", "Not deleted collection entrys");
                                 }
-                            })
-                            .setNegativeButton(android.R.string.no, null).show();
 
+                                //delete entry from collection
+                                mCategoriesList.remove(position);
+                                mAdapter.notifyDataSetChanged();
 
-                } else if (options[item].equals("Edit")) {
-                    //dialog.dismiss();
+                                //subtract expense of this entry from total expense nd set that in "Total Expense Text view"
+                                Double newExpense = Double.parseDouble(mTVMonthlyTotal.getText().toString()) - category.totalAmount;
+                                mTVMonthlyTotal.setText(newExpense + "");
 
-                    Toast.makeText(getActivity(), "id" + category.id, Toast.LENGTH_LONG).show();
+                            } else {
+                                Log.i("delete collection", "collection Not deleted ");
+                            }
+                        } else if (options[item].equals("Edit")) {
+                            Toast.makeText(getActivity(), "id" + category.id, Toast.LENGTH_LONG).show();
 
-                    Intent i = new Intent(getActivity(), ActivityEditCategory.class);
-
-                    i.putExtra("CATEGORYID", category.id + "");
-                    i.putExtra("CATEGORYNAME", category.name);
-                    startActivity(i);
-
-                }
-            }
-        });
-
-        builder.show();
+                            Intent i = new Intent(getActivity(), ActivityEditCategory.class);
+                            i.putExtra("CATEGORYID", category.id + "");
+                            i.putExtra("CATEGORYNAME", category.name);
+                            startActivity(i);
+                        }
+                    }
+                })
+                .show();
     }
 
 }

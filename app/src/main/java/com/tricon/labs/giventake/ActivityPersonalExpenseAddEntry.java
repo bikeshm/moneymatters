@@ -213,7 +213,7 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
 
 
     private void saveData() {
-        String newCategory = mACTVCategory.getText().toString().trim().toLowerCase();
+        String newCategory = mACTVCategory.getText().toString().trim();
 
         if (TextUtils.isEmpty(newCategory)) {
             mTILCategory.setError("Category Required");
@@ -221,8 +221,9 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
             return;
         }
 
-        //if category is not present in database then create new category in database and then save entry, otherwise save entry
-        if (!mCategories.contains(newCategory)) {
+        // if user is creating entry for specific category then there will not be a new category. so no need to save category.
+        // if category is not present in database then create new category in database and then save entry, otherwise save entry
+        if (!creatingEntryForSpecificCategory && !mCategories.contains(newCategory.toLowerCase())) {
             new SaveCategoryTask(newCategory).execute();
         } else {
             saveEntry(newCategory);
@@ -291,7 +292,7 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
             categoryData.put("name", mCategory);
             categoryData.put("description", "");
 
-            return mDBHelper.insertCollection(categoryData) == 1;
+            return mDBHelper.insertCollection(categoryData) > 0;
         }
 
         @Override
@@ -339,7 +340,7 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
             int categoryId = mDBHelper.getCategoryIdFromCategoryName(mCategoryName);
 
             if (categoryId != -1) {
-                //convert date into "YYYY MM DD" format
+                //convert date into "yyyy MM dd" format
                 SimpleDateFormat localDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
                 SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                 try {
@@ -357,7 +358,7 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
                     return mDBHelper.insertPersonalExpense(entryData) > 0;
                 } else {
                     entryData.put("_id", mPersonalExpenseEntry.entryId + "");
-                    return mDBHelper.updatePersonalExpense(entryData) == 1;
+                    return mDBHelper.updatePersonalExpense(entryData) > 0;
                 }
             }
 

@@ -25,57 +25,57 @@
         </activity>
         <activity
             android:name=".ActivityHome"
-            android:label="@string/title_activity_activity_home"
+            android:label="@string/title_activity_home"
             android:screenOrientation="portrait" >
         </activity>
 
         <activity
             android:name=".ActivityLendAndBorrowIndividual"
-            android:label="@string/title_activity_activity_lend_and_borrow_personal"
+            android:label="@string/title_activity_lend_and_borrow_personal"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ActivityLendAndBorrowAddEntry"
-            android:label="@string/title_activity_activity_add_entry"
+            android:label="@string/title_activity_add_entry"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ActivityPersonalExpenseAddEntry"
-            android:label="@string/title_activity_activity_add_entry"
+            android:label="@string/title_activity_add_entry"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ActivityJointExpenseAddGroup"
-            android:label="@string/title_activity_activity_add_user"
+            android:label="@string/title_activity_add_user"
             android:screenOrientation="portrait" >
         </activity>
 
         <activity
             android:name=".ActivityPersonalExpenseIndividual"
-            android:label="@string/title_activity_activity_personal_expense_individual"
+            android:label="@string/title_activity_personal_expense_individual"
             android:screenOrientation="portrait" >
         </activity>
 
         <activity
             android:name=".ActivityJointExpenseIndividual"
-            android:label="@string/title_activity_activity_joint_expense_individual"
+            android:label="@string/title_activity_joint_expense_individual"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ActivityJointExpenseAddEntry"
-            android:label="@string/title_activity_activity_add_group_entry" >
+            android:label="@string/title_activity_add_group_entry" >
         </activity>
         <activity
             android:name=".ActivityEditCategory"
-            android:label="@string/title_activity_activity_add_category" >
+            android:label="@string/title_activity_add_category" >
         </activity>
         <activity
             android:name=".ActivityRegisterUser"
-            android:label="@string/title_activity_activity_register_user" >
+            android:label="@string/title_activity_register_user" >
         </activity>
         <activity
             android:name=".ActivitySettings"
-            android:label="@string/title_activity_activity_settings" >
+            android:label="@string/title_activity_settings" >
         </activity>
     </application>
 
