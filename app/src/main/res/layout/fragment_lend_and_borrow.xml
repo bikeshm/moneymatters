@@ -1,118 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="fill_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:padding="10dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:id="@+id/linearLayout">
+            android:layout_weight="1"
+            android:text="@string/label_amount_give"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:text="Total amount to Give"/>
-
-                <TextView
-                    android:id="@+id/amt_togive"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="500.00"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:text="Total amount to Get"/>
-
-                <TextView
-                    android:id="@+id/amt_toget"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="500.00"/>
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-
-
-
-        <ListView
-            android:id="@+id/lv_persons"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:layout_below="@+id/linearLayout"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="25dp"
-            >
-        </ListView>
-
-
-
-
-
-        <!--
-
-
-
-
-        <ImageButton
-            android:id="@+id/addEntry"
-            android:layout_width="@dimen/floating_button_diameter"
-            android:layout_height="@dimen/floating_button_diameter"
-            android:background="@drawable/floating_button"
-            android:src="@drawable/add_24"
-            android:tint="@android:color/white"
-
-            android:elevation="10dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-
-
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/addEntry"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/amt_togive"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/add_24"
-            android:layout_gravity="bottom|end"
-            app:elevation="6dp"
-            app:fabSize="mini"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
-            android:layout_marginBottom="20dp"
-            android:layout_marginRight="20dp"
+    </LinearLayout>
 
-            app:pressedTranslationZ="12dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal">
 
-            -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/label_amount_get"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
+        <TextView
+            android:id="@+id/amt_toget"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
-</RelativeLayout>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lv_persons"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="25dp"
+        android:background="@android:color/transparent"
+        android:clipToPadding="false"
+        android:listSelector="@android:color/transparent"
+        android:paddingBottom="20dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
+        android:scrollbars="none" />
+</LinearLayout>

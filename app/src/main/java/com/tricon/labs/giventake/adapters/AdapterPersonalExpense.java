@@ -11,17 +11,13 @@ import com.tricon.labs.giventake.models.Category;
 
 import java.util.List;
 
-/**
- * Created by bikesh on 7/17/2015.
- */
 public class AdapterPersonalExpense extends BaseAdapter {
 
-    List<Category> categories;
+    private List<Category> categories;
 
     public AdapterPersonalExpense(List<Category> categoriesList) {
         categories = categoriesList;
     }
-
 
     @Override
     public int getCount() {
@@ -29,7 +25,7 @@ public class AdapterPersonalExpense extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public Category getItem(int position) {
         return categories.get(position);
     }
 
@@ -61,7 +57,7 @@ public class AdapterPersonalExpense extends BaseAdapter {
         }
 
         // Get the data item for this position
-        Category category = (Category) getItem(position);
+        Category category = getItem(position);
 
         viewHolder.tvName.setText(category.name);
         viewHolder.tvTotalAmount.setText(category.totalAmount + "");
@@ -70,10 +66,8 @@ public class AdapterPersonalExpense extends BaseAdapter {
     }
 
     //View holder class
-    static class ViewHolderItem {
+    private static class ViewHolderItem {
         TextView tvName;
         TextView tvTotalAmount;
-
     }
-
 }

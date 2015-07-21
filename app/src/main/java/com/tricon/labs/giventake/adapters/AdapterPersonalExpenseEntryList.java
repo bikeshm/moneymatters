@@ -1,5 +1,7 @@
 package com.tricon.labs.giventake.adapters;
 
+import android.graphics.Color;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +15,16 @@ import com.tricon.labs.giventake.interfaces.EntryLongClickedListener;
 import com.tricon.labs.giventake.models.PersonalExpenseEntry;
 
 import java.util.List;
+import java.util.Random;
 
 public class AdapterPersonalExpenseEntryList extends RecyclerView.Adapter<AdapterPersonalExpenseEntryList.ViewHolder> {
 
     private List<PersonalExpenseEntry> mEntries;
+    private Random random;
 
     public AdapterPersonalExpenseEntryList(List<PersonalExpenseEntry> entries) {
         this.mEntries = entries;
+        random = new Random();
     }
 
     @Override
@@ -36,6 +41,8 @@ public class AdapterPersonalExpenseEntryList extends RecyclerView.Adapter<Adapte
         holder.tvDate.setText(entry.date);
         holder.tvDescription.setText(entry.description);
         holder.tvAmount.setText(entry.amount + "");
+        //int color = Color.argb(255, random.nextInt(100) + 50, random.nextInt(100) + 50, random.nextInt(100) + 50);
+        //holder.llEntry.setBackgroundColor(color);
     }
 
     @Override

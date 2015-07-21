@@ -63,7 +63,6 @@ public class FragmentLendAndBorrow extends Fragment {
     private class listItemClicked implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
             Person Person = mPersonList.get(position);
             Intent i = new Intent(getActivity(), ActivityLendAndBorrowIndividual.class);
             i.putExtra("ID", "" + Person.id);
@@ -74,15 +73,13 @@ public class FragmentLendAndBorrow extends Fragment {
 
     private void populateListViewFromDB() {
         //Todo :- need to implement pagination
-
         mPersonList.clear();
         mPersonList.addAll(mDBHelper.getLendAndBorrowList());
         mAdapter.notifyDataSetChanged();
 
         Map<String, String> finalResult = mDBHelper.getFinalResult();
-
-        mTVGive.setText(": " + finalResult.get("amt_toGive"));
-        mTVGet.setText(": " + finalResult.get("amt_toGet"));
+        mTVGive.setText(finalResult.get("amt_toGive"));
+        mTVGet.setText(finalResult.get("amt_toGet"));
     }
 
 
