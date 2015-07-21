@@ -14,6 +14,9 @@ public class LendAndBorrowEntry implements Parcelable {
     public String date;
     public String description;
     public double amount;
+    public String status;
+
+    public String toUserName;
 
     public LendAndBorrowEntry() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
@@ -23,15 +26,19 @@ public class LendAndBorrowEntry implements Parcelable {
         this.date = simpleDateFormat.format(new Date());
         this.description = "";
         this.amount = 0;
+        this.status = "";
+        this.toUserName = "";
     }
 
-    public LendAndBorrowEntry(int entryId, int fromUser, int toUser, String date, String description, double amount) {
+    public LendAndBorrowEntry(int entryId, int fromUser, int toUser, String date, String description, double amount, String status, String toUserName) {
         this.entryId = entryId;
         this.fromUser = fromUser;
         this.toUser = toUser;
         this.date = date;
         this.description = description;
         this.amount = amount;
+        this.status = status;
+        this.toUserName=toUserName;
     }
 
     @Override
@@ -47,6 +54,9 @@ public class LendAndBorrowEntry implements Parcelable {
         dest.writeString(date);
         dest.writeString(description);
         dest.writeDouble(amount);
+        dest.writeString(status);
+        dest.writeString(toUserName);
+
     }
 
     public LendAndBorrowEntry(Parcel in) {
@@ -56,6 +66,8 @@ public class LendAndBorrowEntry implements Parcelable {
         date = in.readString();
         description = in.readString();
         amount = in.readDouble();
+        status = in.readString();
+        toUserName = in.readString();
     }
 
     public static final Creator<LendAndBorrowEntry> CREATOR = new Creator<LendAndBorrowEntry>() {

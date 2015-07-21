@@ -16,6 +16,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.tricon.labs.giventake.models.Category;
+import com.tricon.labs.giventake.models.LendAndBorrowEntry;
 import com.tricon.labs.giventake.models.Person;
 import com.tricon.labs.giventake.models.PersonalExpenseEntry;
 
@@ -450,6 +451,50 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public ArrayList<LendAndBorrowEntry> getLendAndBorrowEntrysListByPerson(long userId) {
+
+        ArrayList<LendAndBorrowEntry> list = new ArrayList<>();
+        LendAndBorrowEntry lendAndBorrowEntry;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from lendandborrowtable where (from_user = " + userId + " or to_user = " + userId + ")  order by created_date ", null);
+
+        if (res != null) {
+            res.moveToFirst();
+
+            while (res.isAfterLast() == false) {
+
+                lendAndBorrowEntry = new LendAndBorrowEntry();
+
+                lendAndBorrowEntry.entryId = res.getInt(res.getColumnIndex("_id"));
+                lendAndBorrowEntry.fromUser =  res.getInt(res.getColumnIndex("from_user"));
+                lendAndBorrowEntry.toUser =  res.getInt(res.getColumnIndex("to_user"));
+
+                lendAndBorrowEntry.description = res.getString(res.getColumnIndex("description"));
+                lendAndBorrowEntry.date = res.getString(res.getColumnIndex("created_date"));
+                lendAndBorrowEntry.amount = res.getFloat(res.getColumnIndex("amt"));
+
+                if(lendAndBorrowEntry.fromUser==1) {
+                    lendAndBorrowEntry.status = "get";
+                }
+                else{
+                    lendAndBorrowEntry.status = "give";
+                }
+
+                list.add(lendAndBorrowEntry);
+
+                res.moveToNext();
+            }
+
+            res.close();
+        }
+        //db.close();
+
+        return list;
+
+    }
+
+
     public float getMonthTotalOfGive(long userId, String createdDate) {
         SQLiteDatabase db = this.getReadableDatabase();
         float amt;
@@ -498,6 +543,22 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return balance;
     }
+
+    public Double getLendAndBorrowBalanceAmount(long userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Double balance = Double.valueOf(0);
+
+        Cursor res = db.rawQuery("select ((select TOTAL(amt) from lendandborrowtable where from_user = " + userId + ")-(select TOTAL(amt) from lendandborrowtable where to_user = " + userId + "))", null);
+        if (res != null) {
+            res.moveToFirst();
+            balance = res.getDouble(0);
+            res.close();
+        }
+        db.close();
+
+        return balance;
+    }
+
 
     public float getPrevBalance(long userId, String CurrentDate) {
         SQLiteDatabase db = this.getReadableDatabase();

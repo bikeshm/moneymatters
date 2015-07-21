@@ -3,6 +3,7 @@ package com.tricon.labs.giventake.Fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tricon.labs.giventake.ActivityLendAndBorrowIndividual;
+import com.tricon.labs.giventake.ActivityPersonalExpenseIndividual;
 import com.tricon.labs.giventake.R;
 import com.tricon.labs.giventake.adapters.AdapterLendAndBorrow;
 import com.tricon.labs.giventake.database.DBHelper;
+import com.tricon.labs.giventake.models.Category;
 import com.tricon.labs.giventake.models.Person;
 
 import java.util.ArrayList;
@@ -62,10 +65,10 @@ public class FragmentLendAndBorrow extends Fragment {
     private class listItemClicked implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Person Person = mPersonList.get(position);
+            Person person = mPersonList.get(position);
             Intent i = new Intent(getActivity(), ActivityLendAndBorrowIndividual.class);
-            i.putExtra("ID", "" + Person.id);
-            i.putExtra("NAME", "" + Person.name);
+            i.putExtra("USERID", person.id);
+            i.putExtra("USERNAME", person.name);
             startActivity(i);
         }
     }

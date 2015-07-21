@@ -1,31 +1,168 @@
 package com.tricon.labs.giventake;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
-import android.widget.TableLayout;
-import android.widget.TableRow;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.tricon.labs.giventake.adapters.CustomDatePicker;
+import com.tricon.labs.giventake.adapters.AdapterLendAndBorrowEntryList;
+import com.tricon.labs.giventake.adapters.AdapterPersonalExpenseEntryList;
 import com.tricon.labs.giventake.database.DBHelper;
+import com.tricon.labs.giventake.interfaces.EntryClickedListener;
+import com.tricon.labs.giventake.interfaces.EntryLongClickedListener;
+import com.tricon.labs.giventake.models.LendAndBorrowEntry;
+import com.tricon.labs.giventake.models.PersonalExpenseEntry;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 
+public class ActivityLendAndBorrowIndividual extends AppCompatActivity implements EntryClickedListener, EntryLongClickedListener {
+
+    private DBHelper mDBHelper;
+
+    int mUserId;
+    String mUserName;
+
+    private List<LendAndBorrowEntry> mEntries = new ArrayList<>();
+    private AdapterLendAndBorrowEntryList mAdapter;
+
+    private TextView mTVTotalBalance;
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_lend_and_borrow_individual);
+
+        //setup toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(android.support.v7.appcompat.R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
+        //get db instance
+        mDBHelper = DBHelper.getInstance(this);
+
+        //setup views
+        RecyclerView rvEntries = (RecyclerView) findViewById(R.id.rv_entries);
+
+        mTVTotalBalance = (TextView) findViewById(R.id.tv_balance);
+
+        //get extras
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            mUserId = extras.getInt("USERID", -1);
+            mUserName = extras.getString("USERNAME", "");
+        }
+
+        //set actionbar title
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setTitle(mUserName);
+        }
+
+        //set recycler view layout manager
+        rvEntries.setHasFixedSize(true);
+        rvEntries.setLayoutManager(new LinearLayoutManager(this));
+
+        //set adapter
+        mAdapter = new AdapterLendAndBorrowEntryList(mEntries);
+        rvEntries.setAdapter(mAdapter);
+
+        //set listeners
+        findViewById(R.id.btn_create).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LendAndBorrowEntry entry = new LendAndBorrowEntry();
+                entry.toUser = mUserId;
+                entry.toUserName = mUserName;
+
+                Intent intent = new Intent(ActivityLendAndBorrowIndividual.this, ActivityLendAndBorrowAddEntry.class);
+                intent.putExtra("ENTRY", entry);
+                intent.putExtra("EDITENTRY", false);
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //fetch entries
+        new FetchEntriesTask().execute();
+    }
+
+    private class FetchEntriesTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            mEntries.clear();
+            mEntries.addAll(mDBHelper.getLendAndBorrowEntrysListByPerson(mUserId));
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            mAdapter.notifyDataSetChanged();
+            new FetchBalancelAmount().execute();
+        }
+    }
+
+
+    private class FetchBalancelAmount extends AsyncTask<Void, Void, Double> {
+
+        @Override
+        protected Double doInBackground(Void... params) {
+            return mDBHelper.getLendAndBorrowBalanceAmount(mUserId);
+
+        }
+
+        @Override
+        protected void onPostExecute(Double result) {
+            super.onPostExecute(result);
+            mTVTotalBalance.setText(result + "");
+            mTVTotalBalance.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+
+            if(result<0) {
+                mTVTotalBalance.setText((result * -1) + "");
+
+                mTVTotalBalance.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+            }
+
+        }
+    }
+
+    @Override
+    public void onEntryClicked(int position) {
+
+    }
+
+    @Override
+    public void onEntryLongClicked(int position) {
+
+    }
+}
+
+/*
 public class ActivityLendAndBorrowIndividual extends ActivityBase {
 
     //View lendAndBorrowPersonalView;
@@ -38,7 +175,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lend_and_borrow_personal);
+        setContentView(R.layout.activity_lend_and_borrow_individual);
 
        myDb = new DBHelper(this);
 
@@ -184,7 +321,7 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
 
 
 
-                /* Add Button to row. */
+                /* Add Button to row. *./
                 tr.addView(tv);
             }
 
@@ -372,3 +509,4 @@ public class ActivityLendAndBorrowIndividual extends ActivityBase {
 
 
 }
+*/

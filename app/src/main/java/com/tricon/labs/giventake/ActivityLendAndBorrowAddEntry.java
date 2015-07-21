@@ -110,11 +110,15 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
             //if creating Entry For a Specific Category then disable autocomplete text view
             mACTVUserName.setEnabled(isEditEntry);
 
+            mACTVUserName.setText(mLendAndBorrowEntry.toUserName);
+
             if (isEditEntry) {
                 ENTRY_TYPE = EDIT_ENTRY;
             }
         } else {
             mLendAndBorrowEntry = new LendAndBorrowEntry();
+
+
         }
 
         //initial date values
@@ -227,6 +231,8 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
 
         String userName = mACTVUserName.getText().toString().trim();
 
+        // setting toUser from ActivityLendAndBorrowIndividual add new entry otherwise it will be -1
+        int userId = mLendAndBorrowEntry.toUser;
 
         if (TextUtils.isEmpty(userName)) {
             tilUserName.setError("Nmae required");
@@ -242,15 +248,17 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
             tilAmount.setError(null);
         }
 
-        if (mSelectedContact == null) {
+        if (mSelectedContact == null && userId == -1 ) {
             tilUserName.setError("Invalid contact");
             return;
         } else {
             tilUserName.setError(null);
         }
 
-
-        int userId = (int) mDBHelper.registerUserFromContact(mSelectedContact.phone, mSelectedContact.name);
+        //if user from home screen it will be -1
+        if(userId == -1) {
+            userId = (int) mDBHelper.registerUserFromContact(mSelectedContact.phone, mSelectedContact.name);
+        }
 
         if (userId == 0) {
             tilUserName.setError("invalid name");
