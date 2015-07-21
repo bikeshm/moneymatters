@@ -1,12 +1,11 @@
 package com.tricon.labs.giventake.models;
 
-/**
- * Created by bikesh on 7/17/2015.
- */
 public class Person {
     public int id;
     public String name;
     public Float totalAmount;
-    public String status;
+    public int status;
 
+    public static final int STATUS_GIVE = 0;
+    public static final int STATUS_GET = 1;
 }

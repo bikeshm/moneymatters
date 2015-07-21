@@ -27,11 +27,7 @@
     <string name="description">Description</string>
     <string name="amount">Amount</string>
     <string name="date">Date</string>
+    <string name="label_total_expenses">Total Expense</string>
 
     <string name="action_done">DONE</string>
-
-    <string name="label_total_expenses">Total Expense</string>
-    <string name="label_amount_give">Total amount to Give</string>
-    <string name="label_amount_get">Total amount to Get</string>
-
 </resources>

@@ -28,12 +28,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
         android:src="@drawable/money_group"
         app:borderWidth="0dp"
-        app:elevation="6dp"
+        app:elevation="4dp"
         app:fabSize="mini"
-        app:pressedTranslationZ="12dp" />
+        app:pressedTranslationZ="6dp" />
 
 </android.support.design.widget.CoordinatorLayout>

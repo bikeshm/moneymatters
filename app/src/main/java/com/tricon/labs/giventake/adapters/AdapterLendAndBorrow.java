@@ -51,7 +51,6 @@ public class AdapterLendAndBorrow extends BaseAdapter {
 
             // storing the holder with the view.
             convertView.setTag(viewHolder);
-
         } else {
             viewHolder = (ViewHolderItem) convertView.getTag();
         }
@@ -60,7 +59,13 @@ public class AdapterLendAndBorrow extends BaseAdapter {
         Person person = getItem(position);
 
         viewHolder.tvName.setText(person.name);
-        viewHolder.tvTotalAmount.setText(person.totalAmount + " [" + person.status + "]");
+        viewHolder.tvTotalAmount.setText(person.totalAmount + "");
+
+        if (person.status == Person.STATUS_GIVE) {
+            viewHolder.tvTotalAmount.setTextColor(parent.getContext().getResources().getColor(android.R.color.holo_red_dark));
+        } else {
+            viewHolder.tvTotalAmount.setTextColor(parent.getContext().getResources().getColor(android.R.color.holo_green_dark));
+        }
 
         return convertView;
     }

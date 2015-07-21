@@ -387,10 +387,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
                 if (res.getFloat(2) < 0) {
                     person.totalAmount = res.getFloat(2) * -1;
-                    person.status = "I will Get";
+                    person.status = Person.STATUS_GET;
                 } else {
                     person.totalAmount = res.getFloat(2);
-                    person.status = "I will give";
+                    person.status = Person.STATUS_GIVE;
                 }
 
 

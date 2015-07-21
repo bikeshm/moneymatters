@@ -72,9 +72,9 @@
                     android:gravity="center_vertical|start"
                     android:hint="@string/description"
                     android:inputType="textMultiLine"
-                    android:lines="3"
+                    android:maxLength="100"
                     android:maxLines="3"
-                    android:minLines="3"
+                    android:imeOptions="actionDone"
                     android:scrollbars="vertical" />
             </android.support.design.widget.TextInputLayout>
 

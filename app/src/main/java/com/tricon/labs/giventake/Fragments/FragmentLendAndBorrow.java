@@ -36,8 +36,8 @@ public class FragmentLendAndBorrow extends Fragment {
 
         //setup views
         View mRootView = inflater.inflate(R.layout.fragment_lend_and_borrow, container, false);
-        mTVGive = (TextView) mRootView.findViewById(R.id.amt_togive);
-        mTVGet = (TextView) mRootView.findViewById(R.id.amt_toget);
+        mTVGive = (TextView) mRootView.findViewById(R.id.tv_give_amt);
+        mTVGet = (TextView) mRootView.findViewById(R.id.tv_get_amt);
         ListView mLVPersons = (ListView) mRootView.findViewById(R.id.lv_persons);
 
         //get db instance
@@ -52,7 +52,6 @@ public class FragmentLendAndBorrow extends Fragment {
 
         return mRootView;
     }
-
 
     @Override
     public void onResume() {
