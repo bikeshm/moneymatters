@@ -1,10 +1,8 @@
 package com.tricon.labs.giventake.Fragments;
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +10,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.tricon.labs.giventake.ActivityLendAndBorrowIndividual;
-import com.tricon.labs.giventake.ActivityPersonalExpenseIndividual;
+import com.tricon.labs.giventake.activities.ActivityLendAndBorrowIndividual;
 import com.tricon.labs.giventake.R;
 import com.tricon.labs.giventake.adapters.AdapterLendAndBorrow;
 import com.tricon.labs.giventake.database.DBHelper;
-import com.tricon.labs.giventake.models.Category;
 import com.tricon.labs.giventake.models.Person;
 
 import java.util.ArrayList;
