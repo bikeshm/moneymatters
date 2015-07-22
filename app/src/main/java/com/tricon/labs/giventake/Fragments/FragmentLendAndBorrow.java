@@ -10,7 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.tricon.labs.giventake.activities.ActivityLendAndBorrowIndividual;
+import com.tricon.labs.giventake.activities.lendandborrow.ActivityLendAndBorrowIndividual;
 import com.tricon.labs.giventake.R;
 import com.tricon.labs.giventake.adapters.AdapterLendAndBorrow;
 import com.tricon.labs.giventake.database.DBHelper;

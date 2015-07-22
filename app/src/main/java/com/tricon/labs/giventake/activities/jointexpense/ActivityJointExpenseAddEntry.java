@@ -1,4 +1,4 @@
-package com.tricon.labs.giventake;
+package com.tricon.labs.giventake.activities.jointexpense;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,6 +18,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.tricon.labs.giventake.R;
+import com.tricon.labs.giventake.activities.ActivityBase;
 import com.tricon.labs.giventake.adapters.Adapter_CustomSimpleCursor;
 import com.tricon.labs.giventake.adapters.CustomDatePicker;
 import com.tricon.labs.giventake.libraries.CustomRequest;
@@ -32,6 +34,7 @@ import java.util.Map;
 
 public class ActivityJointExpenseAddEntry extends ActivityBase {
 
+    /*
     RecyclerView recyclerView;
 
     String fromActivity=null;
@@ -236,7 +239,7 @@ public class ActivityJointExpenseAddEntry extends ActivityBase {
             return false;
         }
     }
- */
+ *--/
 
     private void generateEditData(Cursor currentEntry){
         //created_date DATE, description text, from_user INTEGER, to_user INTEGER,
@@ -302,7 +305,7 @@ public class ActivityJointExpenseAddEntry extends ActivityBase {
                     is_split = 1;
                 }
             }
-            */
+            *--/
 
             //face2
             data.put("is_split",  is_split+"" );
@@ -464,4 +467,6 @@ public class ActivityJointExpenseAddEntry extends ActivityBase {
             myDb.close();
         }
     }
+
+    */
 }

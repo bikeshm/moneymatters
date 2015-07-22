@@ -12,6 +12,9 @@ import android.view.View;
 import com.tricon.labs.giventake.Fragments.FragmentLendAndBorrow;
 import com.tricon.labs.giventake.Fragments.FragmentPersonalExpense;
 import com.tricon.labs.giventake.R;
+import com.tricon.labs.giventake.activities.jointexpense.ActivityJointExpenseAddGroup;
+import com.tricon.labs.giventake.activities.lendandborrow.ActivityLendAndBorrowAddEntry;
+import com.tricon.labs.giventake.activities.personalexpense.ActivityPersonalExpenseAddEntry;
 import com.tricon.labs.giventake.adapters.AdapterViewPager;
 
 

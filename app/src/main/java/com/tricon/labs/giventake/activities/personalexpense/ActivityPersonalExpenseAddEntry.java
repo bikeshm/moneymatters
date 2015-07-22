@@ -1,4 +1,4 @@
-package com.tricon.labs.giventake;
+package com.tricon.labs.giventake.activities.personalexpense;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -21,6 +21,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.tricon.labs.giventake.R;
 import com.tricon.labs.giventake.adapters.AdapterCategoryList;
 import com.tricon.labs.giventake.database.DBHelper;
 import com.tricon.labs.giventake.models.PersonalExpenseEntry;

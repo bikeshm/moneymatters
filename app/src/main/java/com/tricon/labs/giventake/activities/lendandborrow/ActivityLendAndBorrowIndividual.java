@@ -1,4 +1,4 @@
-package com.tricon.labs.giventake.activities;
+package com.tricon.labs.giventake.activities.lendandborrow;
 
 import android.content.DialogInterface;
 import android.content.Intent;

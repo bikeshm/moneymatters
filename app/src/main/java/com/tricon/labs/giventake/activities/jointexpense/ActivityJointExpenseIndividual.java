@@ -1,4 +1,4 @@
-package com.tricon.labs.giventake.activities;
+package com.tricon.labs.giventake.activities.jointexpense;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -26,6 +26,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.tricon.labs.giventake.R;
+import com.tricon.labs.giventake.activities.ActivityBase;
 import com.tricon.labs.giventake.adapters.CustomDatePicker;
 import com.tricon.labs.giventake.libraries.CustomRequest;
 import com.tricon.labs.giventake.database.DBHelper;
@@ -46,7 +47,7 @@ import static com.tricon.labs.giventake.libraries.functions.getInternetType;
 
 
 public class ActivityJointExpenseIndividual extends ActivityBase {
-
+/*
     //View JointExpenseIndividual;
 
     //DBHelper myDb;
@@ -351,7 +352,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
         tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
         //----
 
-        String fields[]={"created_date", "description",  "name", "amt" }; /*, "is_split"*/
+        String fields[]={"created_date", "description",  "name", "amt" }; /*, "is_split"*--/
 
         //Cursor cursor =  myDb.getGroupEntrys(groupId + "");
 
@@ -908,4 +909,5 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
             myDb.close();
         }
     }
+    */
 }

@@ -1,43 +1,9 @@
-package com.tricon.labs.giventake;
+package com.tricon.labs.giventake.activities.jointexpense;
 
-import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
-import com.tricon.labs.giventake.adapters.UserCheckBoxRecycler;
-import com.tricon.labs.giventake.libraries.CustomRequest;
-import com.tricon.labs.giventake.database.DBHelper;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import com.tricon.labs.giventake.R;
+import com.tricon.labs.giventake.activities.ActivityBase;
 
 
 public class ActivityJointExpenseAddGroup extends ActivityBase {

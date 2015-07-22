@@ -15,8 +15,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tricon.labs.giventake.activities.ActivityEditCategory;
-import com.tricon.labs.giventake.activities.ActivityPersonalExpenseIndividual;
+import com.tricon.labs.giventake.activities.personalexpense.ActivityEditCategory;
+import com.tricon.labs.giventake.activities.personalexpense.ActivityPersonalExpenseIndividual;
 import com.tricon.labs.giventake.R;
 import com.tricon.labs.giventake.adapters.AdapterPersonalExpense;
 import com.tricon.labs.giventake.database.DBHelper;

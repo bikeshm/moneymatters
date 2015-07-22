@@ -1,4 +1,4 @@
-package com.tricon.labs.giventake;
+package com.tricon.labs.giventake.activities.lendandborrow;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -22,6 +22,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.tricon.labs.giventake.R;
 import com.tricon.labs.giventake.adapters.AdapterContactList;
 import com.tricon.labs.giventake.database.DBHelper;
 import com.tricon.labs.giventake.models.Contact;

@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name=".activities.GiveNTakeApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -30,33 +29,33 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.ActivityLendAndBorrowIndividual"
+            android:name=".activities.lendandborrow.ActivityLendAndBorrowIndividual"
             android:label="@string/title_activity_lend_and_borrow_personal"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.ActivityLendAndBorrowAddEntry"
+            android:name=".activities.lendandborrow.ActivityLendAndBorrowAddEntry"
             android:label="@string/title_activity_lend_and_borrow_add_entry"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.ActivityPersonalExpenseAddEntry"
+            android:name=".activities.personalexpense.ActivityPersonalExpenseAddEntry"
             android:label="@string/title_activity_add_entry"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.ActivityJointExpenseAddGroup"
+            android:name=".activities.jointexpense.ActivityJointExpenseAddGroup"
             android:label="@string/title_activity_add_user"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.ActivityPersonalExpenseIndividual"
+            android:name=".activities.personalexpense.ActivityPersonalExpenseIndividual"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.ActivityJointExpenseIndividual"
+            android:name=".activities.jointexpense.ActivityJointExpenseIndividual"
             android:label="@string/title_activity_joint_expense_individual"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.ActivityJointExpenseAddEntry"
+            android:name=".activities.jointexpense.ActivityJointExpenseAddEntry"
             android:label="@string/title_activity_add_group_entry" />
         <activity
-            android:name=".activities.ActivityEditCategory"
+            android:name=".activities.personalexpense.ActivityEditCategory"
             android:label="@string/title_activity_edit_category" />
         <activity
             android:name=".activities.ActivityRegisterUser"

@@ -1,4 +1,4 @@
-package com.tricon.labs.giventake.activities;
+package com.tricon.labs.giventake.activities.personalexpense;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
