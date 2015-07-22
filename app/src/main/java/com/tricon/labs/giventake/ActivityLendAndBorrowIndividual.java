@@ -2,8 +2,6 @@ package com.tricon.labs.giventake;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -12,18 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.tricon.labs.giventake.adapters.AdapterLendAndBorrowEntryList;
-import com.tricon.labs.giventake.adapters.AdapterPersonalExpenseEntryList;
 import com.tricon.labs.giventake.database.DBHelper;
 import com.tricon.labs.giventake.interfaces.EntryClickedListener;
 import com.tricon.labs.giventake.interfaces.EntryLongClickedListener;
 import com.tricon.labs.giventake.models.LendAndBorrowEntry;
-import com.tricon.labs.giventake.models.PersonalExpenseEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,7 +141,7 @@ public class ActivityLendAndBorrowIndividual extends AppCompatActivity implement
             mTVTotalBalance.setText(result + "");
             mTVTotalBalance.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
 
-            if(result<0) {
+            if (result < 0) {
                 mTVTotalBalance.setText((result * -1) + "");
 
                 mTVTotalBalance.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
@@ -181,11 +175,21 @@ public class ActivityLendAndBorrowIndividual extends AppCompatActivity implement
                     public void onClick(DialogInterface dialog, int which) {
                         mDBHelper.deleteLendAndBorrowEntry(mEntries.get(position).entryId);
 
-                        new FetchEntriesTask().execute();
+                        LendAndBorrowEntry entry = mEntries.remove(position);
+                        mAdapter.notifyItemRemoved(position);
+                        double newBalance;
+                        if (entry.status == LendAndBorrowEntry.STATUS_GET) {
+                            newBalance = Double.parseDouble(mTVTotalBalance.getText().toString()) + entry.amount;
+                        } else {
+                            newBalance = Double.parseDouble(mTVTotalBalance.getText().toString()) - entry.amount;
+                        }
+                        mTVTotalBalance.setText(Math.abs(newBalance) + "");
+
                     }
                 })
                 .setNegativeButton("NO", null)
                 .show();
     }
+
 
 }
