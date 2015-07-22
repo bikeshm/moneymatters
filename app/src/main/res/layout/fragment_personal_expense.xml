@@ -42,8 +42,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
         android:clipToPadding="false"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
+
         android:listSelector="@android:color/transparent"
         android:paddingBottom="70dp"
         android:paddingLeft="10dp"
