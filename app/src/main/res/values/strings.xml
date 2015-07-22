@@ -30,4 +30,6 @@
     <string name="label_total_expenses">Total Expense</string>
 
     <string name="action_done">DONE</string>
+    <string name="to_get">To get</string>
+    <string name="to_give">To give</string>
 </resources>

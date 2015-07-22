@@ -1,6 +1,7 @@
 package com.tricon.labs.giventake.Fragments;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
