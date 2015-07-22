@@ -94,6 +94,7 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
 
         //get data from intent
         Bundle extras = getIntent().getExtras();
+        ENTRY_TYPE = CREATE_ENTRY;
 
         //if extras is not null, that means user is either creating entry under specific category or editing previous entry.
         if (extras != null) {
@@ -105,6 +106,7 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
 
             if (!creatingEntryForSpecificCategory) {
                 ENTRY_TYPE = EDIT_ENTRY;
+                getSupportActionBar().setTitle("Edit Personal Expense");
             }
         } else {
             mPersonalExpenseEntry = new PersonalExpenseEntry();
@@ -113,6 +115,7 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
         //set data in views
         mBtnDate.setText(mPersonalExpenseEntry.date);
         mACTVCategory.setText(mPersonalExpenseEntry.category);
+        mACTVCategory.setSelection(mPersonalExpenseEntry.category.length());
         mETAmount.setText(mPersonalExpenseEntry.amount + "");
         mETDescription.setText(mPersonalExpenseEntry.description);
 

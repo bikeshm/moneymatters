@@ -431,6 +431,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return commonDelete(id, "lendandborrowtable");
     }
 
+    public Integer deleteLendAndBorrowEntry(int id) {
+        return commonDelete(id+"", "lendandborrowtable");
+    }
+
     public Cursor getEntryById(String entryId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from lendandborrowtable where _id = " + entryId, null);
@@ -471,14 +475,25 @@ public class DBHelper extends SQLiteOpenHelper {
                 lendAndBorrowEntry.toUser =  res.getInt(res.getColumnIndex("to_user"));
 
                 lendAndBorrowEntry.description = res.getString(res.getColumnIndex("description"));
-                lendAndBorrowEntry.date = res.getString(res.getColumnIndex("created_date"));
                 lendAndBorrowEntry.amount = res.getFloat(res.getColumnIndex("amt"));
 
+                String date = res.getString(res.getColumnIndex("created_date"));
+                //convert date into "dd MM yyyy" format
+                SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                SimpleDateFormat localDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+                try {
+                    date = localDateFormat.format(dbDateFormat.parse(date));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                lendAndBorrowEntry.date = date;
+
                 if(lendAndBorrowEntry.fromUser==1) {
-                    lendAndBorrowEntry.status = "get";
+                    lendAndBorrowEntry.status = LendAndBorrowEntry.STATUS_GET;
                 }
                 else{
-                    lendAndBorrowEntry.status = "give";
+                    lendAndBorrowEntry.status = LendAndBorrowEntry.STATUS_GIVE;
                 }
 
                 list.add(lendAndBorrowEntry);

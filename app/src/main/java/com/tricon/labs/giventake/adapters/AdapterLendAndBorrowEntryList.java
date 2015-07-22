@@ -11,6 +11,7 @@ import com.tricon.labs.giventake.R;
 import com.tricon.labs.giventake.interfaces.EntryClickedListener;
 import com.tricon.labs.giventake.interfaces.EntryLongClickedListener;
 import com.tricon.labs.giventake.models.LendAndBorrowEntry;
+import com.tricon.labs.giventake.models.Person;
 import com.tricon.labs.giventake.models.PersonalExpenseEntry;
 
 import java.util.List;
@@ -38,6 +39,12 @@ public class AdapterLendAndBorrowEntryList extends RecyclerView.Adapter<AdapterL
         holder.tvDate.setText(entry.date);
         holder.tvDescription.setText(entry.description);
         holder.tvAmount.setText(entry.amount + "");
+
+        if (entry.status == Person.STATUS_GIVE) {
+            holder.tvAmount.setTextColor(holder.tvAmount.getContext().getResources().getColor(android.R.color.holo_red_dark));
+        } else {
+            holder.tvAmount.setTextColor(holder.tvAmount.getContext().getResources().getColor(android.R.color.holo_green_dark));
+        }
     }
 
     @Override

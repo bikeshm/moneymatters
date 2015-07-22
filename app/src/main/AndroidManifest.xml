@@ -35,7 +35,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ActivityLendAndBorrowAddEntry"
-            android:label="@string/title_activity_add_entry"
+            android:label="@string/title_activity_lend_and_borrow_add_entry"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ActivityPersonalExpenseAddEntry"

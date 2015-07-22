@@ -1,11 +1,13 @@
 package com.tricon.labs.giventake;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -91,12 +93,15 @@ public class ActivityLendAndBorrowIndividual extends AppCompatActivity implement
             @Override
             public void onClick(View v) {
                 LendAndBorrowEntry entry = new LendAndBorrowEntry();
-                entry.toUser = mUserId;
-                entry.toUserName = mUserName;
+
 
                 Intent intent = new Intent(ActivityLendAndBorrowIndividual.this, ActivityLendAndBorrowAddEntry.class);
                 intent.putExtra("ENTRY", entry);
                 intent.putExtra("EDITENTRY", false);
+
+                intent.putExtra("SELECTEDUSERID", mUserId);
+                intent.putExtra("SELECTEDUSERNAME", mUserName);
+
                 startActivity(intent);
             }
         });
@@ -154,12 +159,35 @@ public class ActivityLendAndBorrowIndividual extends AppCompatActivity implement
     @Override
     public void onEntryClicked(int position) {
 
+        Intent intent = new Intent(ActivityLendAndBorrowIndividual.this, ActivityLendAndBorrowAddEntry.class);
+        LendAndBorrowEntry selectedEntry = mEntries.get(position);
+
+        intent.putExtra("ENTRY", mEntries.get(position));
+        intent.putExtra("EDITENTRY", true);
+
+        intent.putExtra("SELECTEDUSERID", mUserId);
+        intent.putExtra("SELECTEDUSERNAME", mUserName);
+
+        startActivity(intent);
     }
 
     @Override
-    public void onEntryLongClicked(int position) {
+    public void onEntryLongClicked(final int position) {
 
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Entry")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mDBHelper.deleteLendAndBorrowEntry(mEntries.get(position).entryId);
+
+                        new FetchEntriesTask().execute();
+                    }
+                })
+                .setNegativeButton("NO", null)
+                .show();
     }
+
 }
 
 /*

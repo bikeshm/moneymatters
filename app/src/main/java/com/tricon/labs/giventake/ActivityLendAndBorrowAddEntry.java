@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -29,7 +30,6 @@ import com.tricon.labs.giventake.models.LendAndBorrowEntry;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -58,11 +58,12 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
 
     private ProgressDialog mPDSaveData;
 
-    private boolean isEditEntry = false;
-
     private static final int CREATE_ENTRY = 1;
     private static final int EDIT_ENTRY = 2;
     private static int ENTRY_TYPE = CREATE_ENTRY;
+
+    int mSelectedUserID = 0;
+    String mSelectedUserName ="";
 
 
     @Override
@@ -81,51 +82,70 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
                 finish();
             }
         });
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+        }
 
-        getSupportActionBar().setHomeButtonEnabled(true);
-
-        mDBHelper = DBHelper.getInstance(this);
-
+        //setup views
         mBtnDate = (Button) findViewById(R.id.btn_date);
         mRadioGroup = (RadioGroup) findViewById(R.id.rg_lend_and_borrow);
         mRBLend = (RadioButton) findViewById(R.id.rb_lend);
+        RadioButton mRBBorrow = (RadioButton) findViewById(R.id.rb_borrow);
 
-        TextInputLayout tilDescription = (TextInputLayout) findViewById(R.id.til_description);
         mACTVUserName = (AutoCompleteTextView) findViewById(R.id.actv_user_name);
         mETAmount = (EditText) findViewById(R.id.et_amount);
         mETDescription = (EditText) findViewById(R.id.et_description);
 
+        //set progress dialog
+        mPDSaveData = new ProgressDialog(this);
+        mPDSaveData.setCancelable(false);
+        mPDSaveData.setIndeterminate(true);
+        mPDSaveData.setMessage("Saving Data...");
+
         //set autocomplete threshold
         mACTVUserName.setThreshold(1);
+
+        mDBHelper = DBHelper.getInstance(this);
         new FetchUserFromContactTask().execute();
 
         //get data from intent
         Bundle extras = getIntent().getExtras();
+        ENTRY_TYPE = CREATE_ENTRY;
 
         //if extras is not null, that means user is either creating entry under specific category or editing previous entry.
         if (extras != null) {
             mLendAndBorrowEntry = extras.getParcelable("ENTRY");
-            isEditEntry = extras.getBoolean("EDITENTRY", false);
+            boolean isEditEntry = extras.getBoolean("EDITENTRY", false);
+
+            mSelectedUserID = extras.getInt("SELECTEDUSERID", 0);
+            mSelectedUserName = extras.getString("SELECTEDUSERNAME", "");
+
 
             //if creating Entry For a Specific Category then disable autocomplete text view
             mACTVUserName.setEnabled(isEditEntry);
 
-            mACTVUserName.setText(mLendAndBorrowEntry.toUserName);
-
             if (isEditEntry) {
                 ENTRY_TYPE = EDIT_ENTRY;
+                getSupportActionBar().setTitle("Edit Lend and Borrow");
             }
         } else {
             mLendAndBorrowEntry = new LendAndBorrowEntry();
-
-
         }
 
-        //initial date values
-        SimpleDateFormat dmy = new SimpleDateFormat("dd-MM-yyyy");
-        String dmyDate = dmy.format(new Date());
+        //set data in views
+        mBtnDate.setText(mLendAndBorrowEntry.date);
+        mACTVUserName.setText(mSelectedUserName);
+        mACTVUserName.setSelection(mSelectedUserName.length());
+        mETAmount.setText(mLendAndBorrowEntry.amount + "");
+        mETDescription.setText(mLendAndBorrowEntry.description);
+        if(mLendAndBorrowEntry.toUser == 1){
+            mRBBorrow.setChecked(true);
+        }
+        else{
+            mRBLend.setChecked(true);
 
-        mBtnDate.setText(dmyDate);
+        }
 
         mBtnDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,39 +166,19 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 
-                if (mSelectedContact != null && mSelectedContact.name.equals(mACTVUserName.getText().toString()) != true) {
+                if (mSelectedContact != null && !mSelectedContact.name.equals(mACTVUserName.getText().toString())) {
                     mSelectedContact = null;
+
                 }
+
+
+                    mSelectedUserID=0;
+
                 return false;
             }
         });
 
-        //set progress dialog
-        mPDSaveData = new ProgressDialog(this);
-        mPDSaveData.setCancelable(false);
-        mPDSaveData.setIndeterminate(true);
-        mPDSaveData.setMessage("Saving Data...");
-
     }
-
-
-    private class FetchUserFromContactTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            //getting user from contact
-            mContacts = getContactList(getApplicationContext());
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            mAdapter = new AdapterContactList(ActivityLendAndBorrowAddEntry.this, mContacts);
-            mACTVUserName.setAdapter(mAdapter);
-        }
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -232,7 +232,7 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
         String userName = mACTVUserName.getText().toString().trim();
 
         // setting toUser from ActivityLendAndBorrowIndividual add new entry otherwise it will be -1
-        int userId = mLendAndBorrowEntry.toUser;
+
 
         if (TextUtils.isEmpty(userName)) {
             tilUserName.setError("Nmae required");
@@ -248,7 +248,7 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
             tilAmount.setError(null);
         }
 
-        if (mSelectedContact == null && userId == -1 ) {
+        if (mSelectedContact == null && mSelectedUserID == 0 ) {
             tilUserName.setError("Invalid contact");
             return;
         } else {
@@ -256,18 +256,18 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
         }
 
         //if user from home screen it will be -1
-        if(userId == -1) {
-            userId = (int) mDBHelper.registerUserFromContact(mSelectedContact.phone, mSelectedContact.name);
+        if(mSelectedUserID == 0) {
+            mSelectedUserID = (int) mDBHelper.registerUserFromContact(mSelectedContact.phone, mSelectedContact.name);
         }
 
-        if (userId == 0) {
+        if (mSelectedUserID == 0) {
             tilUserName.setError("invalid name");
             return;
         } else {
             tilUserName.setError(null);
         }
 
-        saveEntry(userId);
+        saveEntry(mSelectedUserID);
     }
 
 
@@ -371,6 +371,23 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
                         "Something went wrong while saving entry.",
                         Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    private class FetchUserFromContactTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            //getting user from contact
+            mContacts = getContactList(getApplicationContext());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            mAdapter = new AdapterContactList(ActivityLendAndBorrowAddEntry.this, mContacts);
+            mACTVUserName.setAdapter(mAdapter);
         }
     }
 
