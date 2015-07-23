@@ -10,8 +10,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.tricon.labs.giventake.activities.lendandborrow.ActivityLendAndBorrowIndividual;
 import com.tricon.labs.giventake.R;
+import com.tricon.labs.giventake.activities.lendandborrow.ActivityLendAndBorrowIndividual;
 import com.tricon.labs.giventake.adapters.AdapterLendAndBorrow;
 import com.tricon.labs.giventake.database.DBHelper;
 import com.tricon.labs.giventake.models.Person;
@@ -38,17 +38,20 @@ public class FragmentLendAndBorrow extends Fragment {
         View mRootView = inflater.inflate(R.layout.fragment_lend_and_borrow, container, false);
         mTVGive = (TextView) mRootView.findViewById(R.id.tv_give_amt);
         mTVGet = (TextView) mRootView.findViewById(R.id.tv_get_amt);
-        ListView mLVPersons = (ListView) mRootView.findViewById(R.id.lv_persons);
+        ListView lvPersons = (ListView) mRootView.findViewById(R.id.lv_persons);
 
         //get db instance
         mDBHelper = new DBHelper(getActivity());
 
         //set list view adapter
         mAdapter = new AdapterLendAndBorrow(mPersonList);
-        mLVPersons.setAdapter(mAdapter);
+        lvPersons.setAdapter(mAdapter);
+
+        //set empty view
+        lvPersons.setEmptyView(mRootView.findViewById(android.R.id.empty));
 
         //set listeners
-        mLVPersons.setOnItemClickListener(new listItemClicked());
+        lvPersons.setOnItemClickListener(new listItemClicked());
 
         return mRootView;
     }

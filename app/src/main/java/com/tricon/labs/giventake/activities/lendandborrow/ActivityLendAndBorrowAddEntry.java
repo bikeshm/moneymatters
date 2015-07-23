@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
@@ -42,8 +43,6 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
 
     private DBHelper mDBHelper;
 
-    private AdapterContactList mAdapter;
-
     private LendAndBorrowEntry mLendAndBorrowEntry;
 
     private List<Contact> mContacts;
@@ -51,6 +50,9 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
     private Contact mSelectedContact = null;
 
     private Button mBtnDate;
+    private TextInputLayout mTILUserName;
+    private TextInputLayout mTILAmount;
+    private TextInputLayout mTILDescription;
     private AutoCompleteTextView mACTVUserName;
     private EditText mETAmount;
     private EditText mETDescription;
@@ -64,13 +66,15 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
     private static int ENTRY_TYPE = CREATE_ENTRY;
 
     int mSelectedUserID = 0;
-    String mSelectedUserName ="";
+    String mSelectedUserName = "";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lend_and_borrow_add_entry);
+
+        overridePendingTransition(R.anim.slide_in_from_bottom, R.anim.slide_out_to_top);
 
         //setup toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
@@ -94,6 +98,9 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
         mRBLend = (RadioButton) findViewById(R.id.rb_lend);
         RadioButton mRBBorrow = (RadioButton) findViewById(R.id.rb_borrow);
 
+        mTILUserName = (TextInputLayout) findViewById(R.id.til_user_name);
+        mTILAmount = (TextInputLayout) findViewById(R.id.til_amount);
+        mTILDescription = (TextInputLayout) findViewById(R.id.til_description);
         mACTVUserName = (AutoCompleteTextView) findViewById(R.id.actv_user_name);
         mETAmount = (EditText) findViewById(R.id.et_amount);
         mETDescription = (EditText) findViewById(R.id.et_description);
@@ -138,16 +145,20 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
         mBtnDate.setText(mLendAndBorrowEntry.date);
         mACTVUserName.setText(mSelectedUserName);
         mACTVUserName.setSelection(mSelectedUserName.length());
-        mETAmount.setText(mLendAndBorrowEntry.amount + "");
-        mETDescription.setText(mLendAndBorrowEntry.description);
-        if(mLendAndBorrowEntry.toUser == 1){
-            mRBBorrow.setChecked(true);
+        if (mLendAndBorrowEntry.amount == 0) {
+            mETAmount.setText("");
+        } else {
+            mETAmount.setText(mLendAndBorrowEntry.amount + "");
         }
-        else{
+        mETDescription.setText(mLendAndBorrowEntry.description);
+        if (mLendAndBorrowEntry.toUser == 1) {
+            mRBBorrow.setChecked(true);
+        } else {
             mRBLend.setChecked(true);
 
         }
 
+        //bind listeners
         mBtnDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,27 +169,54 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
         mACTVUserName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mSelectedContact = mAdapter.getItem(position);
+                mSelectedContact = (Contact) parent.getAdapter().getItem(position);
                 mACTVUserName.setText(mSelectedContact.name);
+                mACTVUserName.setSelection(mSelectedContact.name.length());
             }
         });
 
         mACTVUserName.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-
                 if (mSelectedContact != null && !mSelectedContact.name.equals(mACTVUserName.getText().toString())) {
                     mSelectedContact = null;
 
                 }
-
-
-                    mSelectedUserID=0;
-
+                mSelectedUserID = 0;
                 return false;
             }
         });
 
+        mACTVUserName.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mTILUserName.setError(null);
+                return false;
+            }
+        });
+
+        mETAmount.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mTILAmount.setError(null);
+                return false;
+            }
+        });
+
+        mETDescription.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mTILDescription.setError(null);
+                return false;
+            }
+        });
+
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_from_top, R.anim.slide_out_to_bottom);
     }
 
     @Override
@@ -226,46 +264,32 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
 
 
     private void saveData() {
-
-        TextInputLayout tilUserName = (TextInputLayout) findViewById(R.id.til_user_name);
-        TextInputLayout tilAmount = (TextInputLayout) findViewById(R.id.til_amount);
-
         String userName = mACTVUserName.getText().toString().trim();
 
         // setting toUser from ActivityLendAndBorrowIndividual add new entry otherwise it will be -1
-
-
         if (TextUtils.isEmpty(userName)) {
-            tilUserName.setError("Nmae required");
+            mTILUserName.setError("Name Required");
             return;
-        } else {
-            tilUserName.setError(null);
         }
 
         if (TextUtils.isEmpty(mETAmount.getText().toString())) {
-            tilAmount.setError("Amount required");
+            mTILAmount.setError("Amount Required");
             return;
-        } else {
-            tilAmount.setError(null);
         }
 
-        if (mSelectedContact == null && mSelectedUserID == 0 ) {
-            tilUserName.setError("Invalid contact");
+        if (mSelectedContact == null && mSelectedUserID == 0) {
+            mTILUserName.setError("Invalid contact");
             return;
-        } else {
-            tilUserName.setError(null);
         }
 
         //if user from home screen it will be -1
-        if(mSelectedUserID == 0) {
+        if (mSelectedUserID == 0) {
             mSelectedUserID = (int) mDBHelper.registerUserFromContact(mSelectedContact.phone, mSelectedContact.name);
         }
 
         if (mSelectedUserID == 0) {
-            tilUserName.setError("invalid name");
+            mTILUserName.setError("invalid name");
             return;
-        } else {
-            tilUserName.setError(null);
         }
 
         saveEntry(mSelectedUserID);
@@ -387,8 +411,7 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            mAdapter = new AdapterContactList(ActivityLendAndBorrowAddEntry.this, mContacts);
-            mACTVUserName.setAdapter(mAdapter);
+            mACTVUserName.setAdapter(new AdapterContactList(ActivityLendAndBorrowAddEntry.this, mContacts));
         }
     }
 

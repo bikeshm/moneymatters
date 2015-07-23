@@ -8,13 +8,13 @@ package com.tricon.labs.giventake.database;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.tricon.labs.giventake.common.Constants;
 import com.tricon.labs.giventake.models.Category;
 import com.tricon.labs.giventake.models.LendAndBorrowEntry;
 import com.tricon.labs.giventake.models.Person;
@@ -23,14 +23,14 @@ import com.tricon.labs.giventake.models.PersonalExpenseEntry;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeSet;
 
 import static com.tricon.labs.giventake.libraries.functions.getContactByPhone;
-import static com.tricon.labs.giventake.libraries.parsePhone.parsePhone;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -413,6 +413,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public long insertEntry(Map<String, String> data) {
         return commonInsert(data, "lendandborrowtable");
     }
+
     public long insertLendAndBorrowEntry(Map<String, String> data) {
         return commonInsert(data, "lendandborrowtable");
     }
@@ -432,7 +433,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public Integer deleteLendAndBorrowEntry(int id) {
-        return commonDelete(id+"", "lendandborrowtable");
+        return commonDelete(id + "", "lendandborrowtable");
     }
 
     public Cursor getEntryById(String entryId) {
@@ -471,8 +472,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 lendAndBorrowEntry = new LendAndBorrowEntry();
 
                 lendAndBorrowEntry.entryId = res.getInt(res.getColumnIndex("_id"));
-                lendAndBorrowEntry.fromUser =  res.getInt(res.getColumnIndex("from_user"));
-                lendAndBorrowEntry.toUser =  res.getInt(res.getColumnIndex("to_user"));
+                lendAndBorrowEntry.fromUser = res.getInt(res.getColumnIndex("from_user"));
+                lendAndBorrowEntry.toUser = res.getInt(res.getColumnIndex("to_user"));
 
                 lendAndBorrowEntry.description = res.getString(res.getColumnIndex("description"));
                 lendAndBorrowEntry.amount = res.getFloat(res.getColumnIndex("amt"));
@@ -489,10 +490,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
                 lendAndBorrowEntry.date = date;
 
-                if(lendAndBorrowEntry.fromUser==1) {
+                if (lendAndBorrowEntry.fromUser == 1) {
                     lendAndBorrowEntry.status = LendAndBorrowEntry.STATUS_GET;
-                }
-                else{
+                } else {
                     lendAndBorrowEntry.status = LendAndBorrowEntry.STATUS_GIVE;
                 }
 
@@ -655,8 +655,12 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public HashSet<String> getAllCategories() {
-        HashSet<String> categories = new HashSet<>();
+    public TreeSet<String> getAllCategories() {
+        TreeSet<String> categories = new TreeSet<>();
+
+        //add default categories to set
+        categories.addAll(Arrays.asList(Constants.PERSONAL_EXPENSE_DEFAULT_CATEGORIES));
+
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor categoryCursor = db.rawQuery("select name from " + COLLECTION_TABLE_NAME, null);
@@ -1598,14 +1602,8 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-
-
     //---------------------------------------------------------------------------------/
-
-
     public long registerUserFromContact(String phone, String name) {
-
-
         /*
         //Context context,
         String APP_SETTINGS_PREFERENCES = "APPSWTTINGSPREFERENCES" ;
@@ -1618,7 +1616,7 @@ public class DBHelper extends SQLiteOpenHelper {
         */
 
         //Locale.getDefault().getCountry()
-        long userId=0;
+        long userId = 0;
 
         Log.i("Phone n", phone);
 
@@ -1626,23 +1624,18 @@ public class DBHelper extends SQLiteOpenHelper {
 
         Log.i("Phone is exsist", cursorUser.getCount() + "");
 
-        if(cursorUser.getCount()==0){
+        if (cursorUser.getCount() == 0) {
 
             Map<String, String> data = new HashMap<String, String>();
-            data.put("name",  name );
-            data.put("phone", phone );
+            data.put("name", name);
+            data.put("phone", phone);
 
-            userId=insertUser(data);
-
-        }
-        else{
-            if(cursorUser.moveToFirst()) {
+            userId = insertUser(data);
+        } else {
+            if (cursorUser.moveToFirst()) {
                 userId = cursorUser.getLong(cursorUser.getColumnIndex("_id"));
             }
         }
-
         return userId;
     }
-
-
 }

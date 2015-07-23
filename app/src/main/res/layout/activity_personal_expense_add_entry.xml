@@ -25,7 +25,8 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@android:color/transparent"
                 android:textColor="@color/colorAccent"
-                android:textSize="22sp" />
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/til_category"
@@ -71,10 +72,10 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical|start"
                     android:hint="@string/description"
+                    android:imeOptions="actionDone"
                     android:inputType="textMultiLine"
                     android:maxLength="100"
                     android:maxLines="3"
-                    android:imeOptions="actionDone"
                     android:scrollbars="vertical" />
             </android.support.design.widget.TextInputLayout>
 

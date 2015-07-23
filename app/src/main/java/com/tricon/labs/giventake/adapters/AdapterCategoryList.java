@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.tricon.labs.giventake.R;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.TreeSet;
 
 public class AdapterCategoryList extends BaseAdapter implements Filterable {
 
@@ -23,7 +23,7 @@ public class AdapterCategoryList extends BaseAdapter implements Filterable {
     private LayoutInflater mInflater;
     private Filter mCategoryFilter = null;
 
-    public AdapterCategoryList(Context context, HashSet<String> categories) {
+    public AdapterCategoryList(Context context, TreeSet<String> categories) {
         this.mAllCategories = new ArrayList<>(categories);
         this.mFilteredCategories = new ArrayList<>(categories);
         this.mInflater = LayoutInflater.from(context);

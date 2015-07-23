@@ -40,6 +40,8 @@ public class ActivityLendAndBorrowIndividual extends AppCompatActivity implement
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lend_and_borrow_individual);
 
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+
         //setup toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
         setSupportActionBar(toolbar);
@@ -110,6 +112,48 @@ public class ActivityLendAndBorrowIndividual extends AppCompatActivity implement
         new FetchEntriesTask().execute();
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+    }
+
+    @Override
+    public void onEntryClicked(int position) {
+        Intent intent = new Intent(ActivityLendAndBorrowIndividual.this, ActivityLendAndBorrowAddEntry.class);
+        intent.putExtra("ENTRY", mEntries.get(position));
+        intent.putExtra("EDITENTRY", true);
+        intent.putExtra("SELECTEDUSERID", mUserId);
+        intent.putExtra("SELECTEDUSERNAME", mUserName);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onEntryLongClicked(final int position) {
+
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Entry")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mDBHelper.deleteLendAndBorrowEntry(mEntries.get(position).entryId);
+
+                        LendAndBorrowEntry entry = mEntries.remove(position);
+                        mAdapter.notifyItemRemoved(position);
+                        double newBalance;
+                        if (entry.status == LendAndBorrowEntry.STATUS_GET) {
+                            newBalance = Double.parseDouble(mTVTotalBalance.getText().toString()) + entry.amount;
+                        } else {
+                            newBalance = Double.parseDouble(mTVTotalBalance.getText().toString()) - entry.amount;
+                        }
+                        mTVTotalBalance.setText(Math.abs(newBalance) + "");
+
+                    }
+                })
+                .setNegativeButton("NO", null)
+                .show();
+    }
+
     private class FetchEntriesTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -150,47 +194,5 @@ public class ActivityLendAndBorrowIndividual extends AppCompatActivity implement
 
         }
     }
-
-    @Override
-    public void onEntryClicked(int position) {
-
-        Intent intent = new Intent(ActivityLendAndBorrowIndividual.this, ActivityLendAndBorrowAddEntry.class);
-        LendAndBorrowEntry selectedEntry = mEntries.get(position);
-
-        intent.putExtra("ENTRY", mEntries.get(position));
-        intent.putExtra("EDITENTRY", true);
-
-        intent.putExtra("SELECTEDUSERID", mUserId);
-        intent.putExtra("SELECTEDUSERNAME", mUserName);
-
-        startActivity(intent);
-    }
-
-    @Override
-    public void onEntryLongClicked(final int position) {
-
-        new AlertDialog.Builder(this)
-                .setTitle("Delete Entry")
-                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mDBHelper.deleteLendAndBorrowEntry(mEntries.get(position).entryId);
-
-                        LendAndBorrowEntry entry = mEntries.remove(position);
-                        mAdapter.notifyItemRemoved(position);
-                        double newBalance;
-                        if (entry.status == LendAndBorrowEntry.STATUS_GET) {
-                            newBalance = Double.parseDouble(mTVTotalBalance.getText().toString()) + entry.amount;
-                        } else {
-                            newBalance = Double.parseDouble(mTVTotalBalance.getText().toString()) - entry.amount;
-                        }
-                        mTVTotalBalance.setText(Math.abs(newBalance) + "");
-
-                    }
-                })
-                .setNegativeButton("NO", null)
-                .show();
-    }
-
 
 }

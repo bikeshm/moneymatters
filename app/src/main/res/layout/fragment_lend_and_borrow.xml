@@ -21,21 +21,21 @@
                 android:id="@+id/tv_give_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:gravity="center_horizontal"
+                android:singleLine="false"
                 android:text="@string/to_give"
                 android:textColor="@android:color/holo_red_dark"
-                android:textSize="14sp"
-                android:layout_marginBottom="5dp"
-                android:singleLine="false" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tv_give_amt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
+                android:text="200.00"
                 android:textColor="@android:color/holo_red_dark"
-                android:textSize="20sp"
-                android:text="200.00"/>
+                android:textSize="20sp" />
         </LinearLayout>
 
 
@@ -48,11 +48,11 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:gravity="center_horizontal"
                 android:text="@string/to_get"
                 android:textColor="@android:color/holo_green_dark"
-                android:textSize="14sp"
-                android:layout_marginBottom="5dp"/>
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tv_get_amt"
@@ -71,10 +71,18 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
         android:clipToPadding="false"
-
         android:listSelector="@android:color/transparent"
         android:paddingBottom="70dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:scrollbars="none" />
+
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="No entries.\nClick below icon to create new"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="20sp" />
 </LinearLayout>

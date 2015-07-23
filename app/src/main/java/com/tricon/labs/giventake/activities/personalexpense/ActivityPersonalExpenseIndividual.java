@@ -86,6 +86,8 @@ public class ActivityPersonalExpenseIndividual extends AppCompatActivity impleme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_expense_individual);
 
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+
         //setup toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
         setSupportActionBar(toolbar);
@@ -167,6 +169,12 @@ public class ActivityPersonalExpenseIndividual extends AppCompatActivity impleme
     }
 
     @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+    }
+
+    @Override
     public void onEntryClicked(int position) {
         Intent intent = new Intent(ActivityPersonalExpenseIndividual.this, ActivityPersonalExpenseAddEntry.class);
         intent.putExtra("ENTRY", mEntries.get(position));
@@ -193,7 +201,7 @@ public class ActivityPersonalExpenseIndividual extends AppCompatActivity impleme
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mBtnDate.setText(monthPicker.getSelectedMonthName() + "-" + monthPicker.getSelectedYear());
+                mBtnDate.setText(monthPicker.getSelectedMonthShortName() + "-" + monthPicker.getSelectedYear());
 
                 String dateString = ((monthPicker.getSelectedMonth() + 1) < 10 ? "0" : "") + (monthPicker.getSelectedMonth() + 1);
                 mDate = dateString + "-" + monthPicker.getSelectedYear();

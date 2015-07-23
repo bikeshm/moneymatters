@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.tricon.labs.giventake.R;
 import com.tricon.labs.giventake.database.DBHelper;
@@ -16,19 +14,12 @@ import java.util.Map;
 
 public class ActivitySplash extends AppCompatActivity {
 
-
     private DBHelper mDBHelper;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
 
         mDBHelper = new DBHelper(this);
 
@@ -38,10 +29,10 @@ public class ActivitySplash extends AppCompatActivity {
             @Override
             public void run() {
 
-                Intent i=new Intent(ActivitySplash.this, ActivityHome.class);
+                Intent i = new Intent(ActivitySplash.this, ActivityHome.class);
 
                 // if first time opening the app , need to register root user (me user)
-                if(mDBHelper.getNumRowsUsertable()==0){
+                if (mDBHelper.getNumRowsUsertable() == 0) {
 
                     //registering root user
                     Map<String, String> data = new HashMap<String, String>();
@@ -53,9 +44,14 @@ public class ActivitySplash extends AppCompatActivity {
                 startActivity(i);
                 finish();
             }
-        }, 3*1000); // wait for 3 seconds
+        }, 2 * 1000); // wait for 3 seconds
 
     } // onreate end
 
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+    }
 }
 

@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import com.tricon.labs.giventake.Fragments.FragmentLendAndBorrow;
 import com.tricon.labs.giventake.Fragments.FragmentPersonalExpense;
@@ -20,7 +21,7 @@ import com.tricon.labs.giventake.adapters.AdapterViewPager;
 
 public class ActivityHome extends AppCompatActivity {
 
-    private ViewPager mVPExpenseModule;
+    private boolean backPressed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +31,13 @@ public class ActivityHome extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
         setSupportActionBar(toolbar);
 
-        mVPExpenseModule = (ViewPager) findViewById(R.id.vp_expense_module);
-        setupViewPager(mVPExpenseModule);
+        ViewPager vpExpenseModule = (ViewPager) findViewById(R.id.vp_expense_module);
+        setupViewPager(vpExpenseModule);
 
-        mVPExpenseModule.addOnPageChangeListener(new pageChangeListener());
+        vpExpenseModule.addOnPageChangeListener(new pageChangeListener());
 
-        TabLayout tlExpenseModule = (TabLayout) findViewById(R.id.tl_expense_module);
-        tlExpenseModule.setupWithViewPager(mVPExpenseModule);
+        final TabLayout tlExpenseModule = (TabLayout) findViewById(R.id.tl_expense_module);
+        tlExpenseModule.setupWithViewPager(vpExpenseModule);
 
         //tlExpenseModule.setTabMode(TabLayout.MODE_SCROLLABLE);
 
@@ -44,7 +45,7 @@ public class ActivityHome extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i;
-                switch (mVPExpenseModule.getCurrentItem()) {
+                switch (tlExpenseModule.getSelectedTabPosition()) {
                     case 0:
                         i = new Intent(ActivityHome.this, ActivityPersonalExpenseAddEntry.class);
                         startActivity(i);
@@ -62,6 +63,21 @@ public class ActivityHome extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        backPressed = false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (backPressed) {
+            super.onBackPressed();
+        } else {
+            backPressed = true;
+            Toast.makeText(this, "Press back again to close the app", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     private void setupViewPager(ViewPager viewPager) {
         AdapterViewPager adapter = new AdapterViewPager(getSupportFragmentManager());
@@ -83,14 +99,12 @@ public class ActivityHome extends AppCompatActivity {
 
             switch (position) {
                 case 0:
-                    ((FloatingActionButton) findViewById(R.id.btn_create)).setImageResource(R.drawable.money_group);
+                    ((FloatingActionButton) findViewById(R.id.btn_create)).setImageResource(R.drawable.icon_personal_stuff);
                     break;
                 case 1:
-
                     ((FloatingActionButton) findViewById(R.id.btn_create)).setImageResource(R.drawable.add_user_24);
                     break;
                 case 2:
-
                     ((FloatingActionButton) findViewById(R.id.btn_create)).setImageResource(R.drawable.add_user_group);
                     break;
             }
@@ -100,6 +114,5 @@ public class ActivityHome extends AppCompatActivity {
         public void onPageScrollStateChanged(int state) {
         }
     }
-
 }
 

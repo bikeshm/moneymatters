@@ -52,11 +52,14 @@ public class FragmentPersonalExpense extends Fragment {
         View mRootView = inflater.inflate(R.layout.fragment_personal_expense, container, false);
         mBtnDate = ((Button) mRootView.findViewById(R.id.btn_date));
         mTVMonthlyTotal = (TextView) mRootView.findViewById(R.id.tv_monthly_total);
-        ListView mLVCategories = (ListView) mRootView.findViewById(R.id.lv_categories);
+        ListView lvCategories = (ListView) mRootView.findViewById(R.id.lv_categories);
+
+        //set empty view
+        lvCategories.setEmptyView(mRootView.findViewById(android.R.id.empty));
 
         //set list view adapter
         mAdapter = new AdapterPersonalExpense(mCategoriesList);
-        mLVCategories.setAdapter(mAdapter);
+        lvCategories.setAdapter(mAdapter);
 
         //get db instance
         mDBHelper = DBHelper.getInstance(getActivity());
@@ -68,8 +71,8 @@ public class FragmentPersonalExpense extends Fragment {
         mBtnDate.setText(calenderInstance.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US) + " - " + calenderInstance.get(Calendar.YEAR));
 
         //set listeners
-        mLVCategories.setOnItemClickListener(new listItemClicked());
-        mLVCategories.setOnItemLongClickListener(new listItemLongClicked());
+        lvCategories.setOnItemClickListener(new listItemClicked());
+        lvCategories.setOnItemLongClickListener(new listItemLongClicked());
         mBtnDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,7 +92,7 @@ public class FragmentPersonalExpense extends Fragment {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mBtnDate.setText(monthPicker.getSelectedMonthName() + "-" + monthPicker.getSelectedYear());
+                mBtnDate.setText(monthPicker.getSelectedMonthShortName() + "-" + monthPicker.getSelectedYear());
 
                 String dayString = ((monthPicker.getSelectedMonth() + 1) < 10 ? "0" : "") + (monthPicker.getSelectedMonth() + 1);
                 mSelectedDate = dayString + "-" + monthPicker.getSelectedYear();

@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -30,21 +29,23 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeSet;
 
 public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
 
     private Button mBtnDate;
     private TextInputLayout mTILCategory;
+    private TextInputLayout mTILAmount;
+    private TextInputLayout mTILDescription;
     private AutoCompleteTextView mACTVCategory;
     private EditText mETAmount;
     private EditText mETDescription;
     private ProgressDialog mPDSaveData;
 
     //set to store unique categories for autocomplete text view
-    private HashSet<String> mCategories;
+    private TreeSet<String> mCategories;
 
     private DBHelper mDBHelper;
 
@@ -59,6 +60,8 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_expense_add_entry);
+
+        overridePendingTransition(R.anim.slide_in_from_bottom, R.anim.slide_out_to_top);
 
         //setup toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
@@ -80,6 +83,8 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
         //setup views
         mBtnDate = (Button) findViewById(R.id.btn_date);
         mTILCategory = (TextInputLayout) findViewById(R.id.til_category);
+        mTILAmount = (TextInputLayout) findViewById(R.id.til_amount);
+        mTILDescription = (TextInputLayout) findViewById(R.id.til_description);
         mACTVCategory = (AutoCompleteTextView) findViewById(R.id.actv_category);
         mETAmount = (EditText) findViewById(R.id.et_amount);
         mETDescription = (EditText) findViewById(R.id.et_description);
@@ -117,7 +122,11 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
         mBtnDate.setText(mPersonalExpenseEntry.date);
         mACTVCategory.setText(mPersonalExpenseEntry.category);
         mACTVCategory.setSelection(mPersonalExpenseEntry.category.length());
-        mETAmount.setText(mPersonalExpenseEntry.amount + "");
+        if (mPersonalExpenseEntry.amount == 0) {
+            mETAmount.setText("");
+        } else {
+            mETAmount.setText(mPersonalExpenseEntry.amount + "");
+        }
         mETDescription.setText(mPersonalExpenseEntry.description);
 
         //get database instance
@@ -141,10 +150,12 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    mACTVCategory.setText((String) parent.getAdapter().getItem(position));
+                    String category = parent.getAdapter().getItem(position).toString();
+                    mACTVCategory.setText(category);
+                    mACTVCategory.setSelection(category.length());
                 }
             });
-            mACTVCategory.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            /*mACTVCategory.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
@@ -152,7 +163,7 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
                         showAutoCompleteDropDown();
                     }
                 }
-            });
+            });*/
             mACTVCategory.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -161,6 +172,22 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
                 }
             });
         }
+
+        mETAmount.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mTILAmount.setError(null);
+                return false;
+            }
+        });
+
+        mETDescription.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mTILDescription.setError(null);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -188,6 +215,12 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
         if (mDBHelper != null) {
             mDBHelper.close();
         }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_from_top, R.anim.slide_out_to_bottom);
     }
 
     public void openDatePicker() {
@@ -225,6 +258,18 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
             return;
         }
 
+        if (TextUtils.isEmpty(mETAmount.getText().toString().trim())) {
+            mTILAmount.setError("Amount Required");
+            mETAmount.setText("");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mETDescription.getText().toString().trim())) {
+            mTILDescription.setError("Description Required");
+            mETDescription.setText("");
+            return;
+        }
+
         // if user is creating entry for specific category then there will not be a new category. so no need to save category.
         // if category is not present in database then create new category in database and then save entry, otherwise save entry
         if (!creatingEntryForSpecificCategory && !mCategories.contains(newCategory.toLowerCase())) {
@@ -252,7 +297,7 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
         }
     }
 
-    private void showAutoCompleteDropDown() {
+    /*private void showAutoCompleteDropDown() {
         new Handler().postDelayed(new Runnable() {
 
             @Override
@@ -260,7 +305,7 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
                 mACTVCategory.showDropDown();
             }
         }, 500);
-    }
+    }*/
 
     private class FetchCategoriesTask extends AsyncTask<Void, Void, Void> {
 

@@ -18,13 +18,14 @@ import com.tricon.labs.giventake.database.DBHelper;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 public class ActivityEditCategory extends AppCompatActivity {
 
     private TextInputLayout mTILCategory;
     private EditText mETCategory;
 
-    private HashSet<String> mCategories = new HashSet<>();
+    private TreeSet<String> mCategories = new TreeSet<>();
 
     private DBHelper mDBHelper;
 
@@ -34,6 +35,8 @@ public class ActivityEditCategory extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_category);
+
+        overridePendingTransition(R.anim.slide_in_from_bottom, R.anim.slide_out_to_top);
 
         //setup toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
@@ -106,6 +109,12 @@ public class ActivityEditCategory extends AppCompatActivity {
         if (mDBHelper != null) {
             mDBHelper.close();
         }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_from_top, R.anim.slide_out_to_bottom);
     }
 
     private void saveData() {

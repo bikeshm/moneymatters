@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Give N Take</string>
+    <string name="app_name">Money Matters</string>
 
-    <string-array name="contryCode">
+    <string-array name="countryCode">
         <item>+91</item>
         <item>+1</item>
     </string-array>
@@ -27,9 +27,11 @@
     <string name="description">Description</string>
     <string name="amount">Amount</string>
     <string name="date">Date</string>
-    <string name="label_total_expenses">Total Expense</string>
-
-    <string name="action_done">DONE</string>
     <string name="to_get">To get</string>
     <string name="to_give">To give</string>
+    <string name="label_total_expenses">Total Expense</string>
+    <string name="label_lend">Lend</string>
+    <string name="label_borrow">Borrow</string>
+
+    <string name="action_done">DONE</string>
 </resources>
