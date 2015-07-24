@@ -34,7 +34,7 @@ import static com.tricon.labs.pepper.libraries.parsePhone.parsePhone;
 public class ActivityRegisterUser extends AppCompatActivity {
 
     private List<Country> countryList;
-    private Country mSelectedCountry  = null;
+    private Country mSelectedCountry = null;
 
     private EditText mName;
     private AutoCompleteTextView mACTVCountryCode;
@@ -85,10 +85,7 @@ public class ActivityRegisterUser extends AppCompatActivity {
                 mACTVCountryCode.setSelection(mSelectedCountry.getPhoneCode().length() + 1);
             }
         });
-
     }
-
-
 
     @Override
     public void finish() {
@@ -134,26 +131,26 @@ public class ActivityRegisterUser extends AppCompatActivity {
             return;
         }
 
-        if (mSelectedCountry==null) {
+        if (mSelectedCountry == null) {
 
-            boolean validCountryCode=false;
+            boolean validCountryCode = false;
             for (int i = 0; i < countryList.size(); i++) {
 
-                if( ("+"+countryList.get(i).getPhoneCode()).equals(countryCode)){
-                    validCountryCode=true;
-                    mSelectedCountry=countryList.get(i);
+                if (("+" + countryList.get(i).getPhoneCode()).equals(countryCode)) {
+                    validCountryCode = true;
+                    mSelectedCountry = countryList.get(i);
                     break;
                 }
 
-                if( (countryList.get(i).getPhoneCode()).equals(countryCode)){
-                    validCountryCode=true;
-                    mACTVCountryCode.setText("+"+countryCode);
-                    mSelectedCountry=countryList.get(i);
+                if ((countryList.get(i).getPhoneCode()).equals(countryCode)) {
+                    validCountryCode = true;
+                    mACTVCountryCode.setText("+" + countryCode);
+                    mSelectedCountry = countryList.get(i);
                     break;
                 }
             }
 
-            if(validCountryCode==false){
+            if (validCountryCode == false) {
                 mACTVCountryCode.setError("invalid country code");
                 return;
             }
@@ -169,9 +166,7 @@ public class ActivityRegisterUser extends AppCompatActivity {
             return;
         }
 
-
-        new SaveEntryTask(name,mSelectedCountry.getCode(), phoneNumber, emailId).execute();
-
+        new SaveEntryTask(name, mSelectedCountry.getCode(), phoneNumber, emailId).execute();
     }
 
     private class SaveEntryTask extends AsyncTask<Void, Void, Boolean> {
@@ -200,20 +195,18 @@ public class ActivityRegisterUser extends AppCompatActivity {
 
             String phoneNumber = parsePhone(mPhone, mCountryCode);
 
-            if(phoneNumber.equals("")){
+            if (phoneNumber.equals("")) {
                 return false;
             }
 
-            entryData.put("name", mName );
-            entryData.put("country_code",mCountryCode);
-            entryData.put("phone", phoneNumber );
+            entryData.put("name", mName);
+            entryData.put("country_code", mCountryCode);
+            entryData.put("phone", phoneNumber);
             entryData.put("email", mEmail);
 
-            if(ENTRY_TYPE == 1){
+            if (ENTRY_TYPE == 1) {
 
                 if (mDBHelper.insertUser(entryData) == 1) {
-
-
 
                     SharedPreferences sharedpreferences;
                     sharedpreferences = getSharedPreferences(Constants.APP_SETTINGS_PREFERENCES, Context.MODE_PRIVATE);
@@ -225,10 +218,8 @@ public class ActivityRegisterUser extends AppCompatActivity {
                 } else {
                     return false;
                 }
-            }
-            else{
+            } else {
                 //update
-
             }
 
             return false;
@@ -253,74 +244,4 @@ public class ActivityRegisterUser extends AppCompatActivity {
         }
     }
 
-
-
-
-/*
-    private class validateAndSaveData implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-
-            String phoneNumber = ((EditText) currentView.findViewById(R.id.phone)).getText().toString().trim();
-
-            if (((EditText) currentView.findViewById(R.id.name)).getText().toString().trim().equals("")) {
-                Toast.makeText(getApplicationContext(), "Name required", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            if (phoneNumber.equals("") ) {
-                Toast.makeText(getApplicationContext(), "Phone number required", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            Map<String, String> data = new HashMap<String, String>();
-
-            //Todo:- validate and escape incomming data
-            data.put("name", ((EditText) currentView.findViewById(R.id.name)).getText().toString());
-            data.put("description", ((EditText) currentView.findViewById(R.id.description)).getText().toString());
-
-
-            data.put("email", ((EditText) currentView.findViewById(R.id.email)).getText().toString());
-
-
-
-            data.put("password", md5(((EditText) currentView.findViewById(R.id.password)).getText().toString()));
-
-            data.put("country_code",countryList.get((int)countrySpinner.getSelectedItemId()).getCode().toUpperCase());
-
-            data.put("phone", parsePhone(phoneNumber, data.get("country_code")) );
-
-            //Toast.makeText(getApplicationContext(), "Selected country"+ countryList.get((int)countrySpinner.getSelectedItemId()).getName(), Toast.LENGTH_SHORT).show();
-
-            Log.i("saving user", data+" "+countryList.get((int)countrySpinner.getSelectedItemId()).getCode() );
-
-
-
-            if (myDb.insertUser(data) == 1) {
-                Toast.makeText(getApplicationContext(), "Data Saved", Toast.LENGTH_SHORT).show();
-
-                goBack();
-
-            } else {
-                Toast.makeText(getApplicationContext(), "Error while Saving data", Toast.LENGTH_SHORT).show();
-            }
-
-
-
-
-
-        }
-    }
-
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (myDb != null) {
-            myDb.close();
-        }
-    }
-
-    */
 }
