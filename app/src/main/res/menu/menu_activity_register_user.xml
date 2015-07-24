@@ -1,6 +1,14 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.tricon.labs.giventake.activities.ActivityRegisterUser">
+    tools:context="com.tricon.labs.pepper.activities.ActivityRegisterUser">
+
+    <item
+        android:id="@+id/action_done"
+        android:icon="@mipmap/ic_done_white_24dp"
+        android:title="@string/action_done"
+        app:showAsAction="always" />
 
 </menu>
+

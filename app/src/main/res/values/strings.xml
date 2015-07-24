@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Money Matters</string>
+    <string name="app_name">Pepper</string>
 
     <string-array name="countryCode">
         <item>+91</item>
@@ -19,7 +19,7 @@
     <string name="title_activity_joint_expense_individual">Joint Expense Individual</string>
     <string name="title_activity_add_group_entry">Add Group Entry</string>
     <string name="title_activity_edit_category">Edit Category</string>
-    <string name="title_activity_register_user">Register User</string>
+    <string name="title_activity_register_user">Register</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_lend_and_borrow_add_entry">Add Lend and Borrow</string>
 
@@ -34,4 +34,8 @@
     <string name="label_borrow">Borrow</string>
 
     <string name="action_done">DONE</string>
+    <string name="name">Name</string>
+    <string name="phone">Phone</string>
+    <string name="email">Email</string>
+    <string name="country_code">Country Code</string>
 </resources>

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tricon.labs.giventake.activities.jointexpense.ActivityJointExpenseAddEntry">
+    tools:context="com.tricon.labs.pepper.activities.jointexpense.ActivityJointExpenseAddEntry">
 
     <LinearLayout
         android:layout_width="match_parent"

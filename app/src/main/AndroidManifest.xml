@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tricon.labs.giventake">
+    package="com.tricon.labs.pepper">
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".activities.ActivitySplash"
+            android:name="com.tricon.labs.pepper.activities.ActivitySplash"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -25,46 +25,46 @@
         </activity>
 
         <activity
-            android:name=".activities.ActivityHome"
+            android:name="com.tricon.labs.pepper.activities.ActivityHome"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.lendandborrow.ActivityLendAndBorrowIndividual"
+            android:name="com.tricon.labs.pepper.activities.lendandborrow.ActivityLendAndBorrowIndividual"
             android:label="@string/title_activity_lend_and_borrow_personal"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.lendandborrow.ActivityLendAndBorrowAddEntry"
+            android:name="com.tricon.labs.pepper.activities.lendandborrow.ActivityLendAndBorrowAddEntry"
             android:label="@string/title_activity_lend_and_borrow_add_entry"
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.personalexpense.ActivityPersonalExpenseAddEntry"
+            android:name="com.tricon.labs.pepper.activities.personalexpense.ActivityPersonalExpenseAddEntry"
             android:label="@string/title_activity_add_entry"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
-            android:name=".activities.jointexpense.ActivityJointExpenseAddGroup"
+            android:name="com.tricon.labs.pepper.activities.jointexpense.ActivityJointExpenseAddGroup"
             android:label="@string/title_activity_add_user"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.personalexpense.ActivityPersonalExpenseIndividual"
+            android:name="com.tricon.labs.pepper.activities.personalexpense.ActivityPersonalExpenseIndividual"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.jointexpense.ActivityJointExpenseIndividual"
+            android:name="com.tricon.labs.pepper.activities.jointexpense.ActivityJointExpenseIndividual"
             android:label="@string/title_activity_joint_expense_individual"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.jointexpense.ActivityJointExpenseAddEntry"
+            android:name="com.tricon.labs.pepper.activities.jointexpense.ActivityJointExpenseAddEntry"
             android:label="@string/title_activity_add_group_entry" />
         <activity
-            android:name=".activities.personalexpense.ActivityEditCategory"
+            android:name="com.tricon.labs.pepper.activities.personalexpense.ActivityEditCategory"
             android:label="@string/title_activity_edit_category"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.ActivityRegisterUser"
+            android:name="com.tricon.labs.pepper.activities.ActivityRegisterUser"
             android:label="@string/title_activity_register_user" />
         <activity
-            android:name=".activities.ActivitySettings"
+            android:name="com.tricon.labs.pepper.activities.ActivitySettings"
             android:label="@string/title_activity_settings" />
     </application>
 
