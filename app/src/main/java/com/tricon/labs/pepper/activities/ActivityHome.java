@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
+import com.tricon.labs.pepper.Fragments.FragmentGroupExpense;
 import com.tricon.labs.pepper.Fragments.FragmentLendAndBorrow;
 import com.tricon.labs.pepper.Fragments.FragmentPersonalExpense;
 import com.tricon.labs.pepper.R;
@@ -84,7 +85,7 @@ public class ActivityHome extends AppCompatActivity {
 
         adapter.addFrag(new FragmentPersonalExpense(), "Personal exp");
         adapter.addFrag(new FragmentLendAndBorrow(), "Lend and borrow");
-        //adapter.addFrag(new FragmentGroupExpense(), "Group exp"); //next face
+        adapter.addFrag(new FragmentGroupExpense(), "Group exp"); //next face
 
         viewPager.setAdapter(adapter);
     }
