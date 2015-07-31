@@ -1,40 +1,111 @@
 package com.tricon.labs.pepper.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.tricon.labs.pepper.R;
+import com.tricon.labs.pepper.activities.lendandborrow.ActivityLendAndBorrowIndividual;
+import com.tricon.labs.pepper.adapters.AdapterGroupExpense;
+import com.tricon.labs.pepper.adapters.AdapterLendAndBorrow;
+import com.tricon.labs.pepper.database.DBHelper;
+import com.tricon.labs.pepper.models.Group;
+import com.tricon.labs.pepper.models.Person;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 public class FragmentGroupExpense extends Fragment {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        //retrieving data from Savedinstance when orientation changes
-        super.onCreate(savedInstanceState);
+    private DBHelper mDBHelper;
 
-    }
+    private TextView mTVSpent;
+    private TextView mTVGive;
+    private TextView mTVGet;
+
+    private List<Group> mGroupList = new ArrayList<>();
+
+    private AdapterGroupExpense mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //return super.onCreateView(inflater, container, savedInstanceState);
 
-        View v =  inflater.inflate(R.layout.fragment_group_expense,container,false);
-        return v;
+        View rootView = inflater.inflate(R.layout.fragment_group_expense,container,false);
+
+        //setup views
+        mTVSpent = (TextView) rootView.findViewById(R.id.tv_spent_amt);
+        mTVGive = (TextView) rootView.findViewById(R.id.tv_give_amt);
+        mTVGet = (TextView) rootView.findViewById(R.id.tv_get_amt);
+        ListView lvPersons = (ListView) rootView.findViewById(R.id.lv_groups);
+
+        //get db instance
+        mDBHelper = new DBHelper(getActivity());
+
+        //set list view adapter
+        mAdapter = new AdapterGroupExpense(mGroupList);
+        lvPersons.setAdapter(mAdapter);
+
+        //set empty view
+        lvPersons.setEmptyView(rootView.findViewById(android.R.id.empty));
+
+        //set listeners
+        lvPersons.setOnItemClickListener(new listItemClicked());
+
+
+
+        return rootView;
 
     }
 
 
+    private class listItemClicked implements android.widget.AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            /*
+            Person person = mPersonList.get(position);
+            Intent i = new Intent(getActivity(), ActivityLendAndBorrowIndividual.class);
+            i.putExtra("USERID", person.id);
+            i.putExtra("USERNAME", person.name);
+            startActivity(i);
+            */
+        }
+    }
 
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        //Saving data while orientation changes
-        super.onSaveInstanceState(outState);
+    public void onResume() {
+        super.onResume();
+        populateListViewFromDB();
     }
+
+
+    private void populateListViewFromDB() {
+        //Todo :- need to implement pagination
+        mGroupList.clear();
+
+
+        mGroupList.addAll(mDBHelper.getJointGroupsList());
+        mAdapter.notifyDataSetChanged();
+
+        Map<String, String> finalResult = mDBHelper.getAllGroupTotalSpendGiveGet();
+
+        mTVSpent.setText(finalResult.get("amt_spent"));
+        mTVGive.setText(finalResult.get("amt_toGive"));
+        mTVGet.setText(finalResult.get("amt_toGet"));
+    }
+
+
+
+
 }
 
 

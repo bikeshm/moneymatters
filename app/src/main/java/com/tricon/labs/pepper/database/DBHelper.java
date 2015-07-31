@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.tricon.labs.pepper.common.Constants;
 import com.tricon.labs.pepper.models.Category;
+import com.tricon.labs.pepper.models.Group;
 import com.tricon.labs.pepper.models.LendAndBorrowEntry;
 import com.tricon.labs.pepper.models.Person;
 import com.tricon.labs.pepper.models.PersonalExpenseEntry;
@@ -939,6 +940,66 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     //---
+
+    public  ArrayList<Group> getJointGroupsList() {
+
+        ArrayList<Group> list = new ArrayList<>();
+        Group group;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor res ;
+
+        SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy", Locale.US);
+
+
+        String sql = " select G._id,  G.name, G.totalamt,G.members_count,G.balanceamt," +
+                " (G.totalamt / G.members_count  ) as perhead," +
+                " (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  G._id  ) as i_spend, " +
+                " (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  G._id and STRFTIME('%m-%Y', created_date) = '" + dmy.format(new Date()) + "'  ) as i_spendinmonth" +
+                " from joint_grouptable G";
+
+        res = db.rawQuery(sql, null);
+
+
+        if (res != null) {
+            res.moveToFirst();
+
+            while (res.isAfterLast() == false) {
+
+                group = new Group();
+
+                group.id = res.getInt(0);
+                group.name = res.getString(1);
+                group.totalAmount = res.getFloat(2);
+                group.membersCount = res.getInt(3);
+                group.balanceAmount = res.getFloat(4);
+                group.amountPerHead = res.getFloat(5);
+                group.amountSpentByMe = res.getFloat(6);
+                group.amountSpentByMeCurrentMonth = res.getFloat(7);
+
+
+                if (group.balanceAmount < 0) {
+                    group.balanceAmount = group.balanceAmount * -1;
+                    group.status = Person.STATUS_GET;
+                } else {
+                    group.status = Person.STATUS_GIVE;
+                }
+
+
+                list.add(group);
+
+                res.moveToNext();
+            }
+
+            res.close();
+        }
+        //db.close();
+
+        return list;
+    }
+
+
     public Cursor getAllJointGroupsWithData() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = null;
@@ -1199,9 +1260,9 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor res;
         Map<String, String> data = new HashMap<>();
 
-        data.put("total", "0");
-        data.put("togive", "0");
-        data.put("toget", "0");
+        data.put("amt_spent", "0");
+        data.put("amt_toGive", "0");
+        data.put("amt_toGet", "0");
 
 
         res = db.rawQuery(" select" +
@@ -1212,9 +1273,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if (res != null) {
             res.moveToFirst();
-            data.put("total", "" + String.format("%.2f", res.getFloat(0)));
-            data.put("togive", "" + String.format("%.2f", res.getFloat(1)));
-            data.put("toget", "" + String.format("%.2f", ((res.getFloat(2) >= 0) ? res.getFloat(2) : (res.getFloat(2) * -1))));
+            data.put("amt_spent", "" + String.format("%.2f", res.getFloat(0)));
+            data.put("amt_toGive", "" + String.format("%.2f", res.getFloat(1)));
+            data.put("amt_toGet", "" + String.format("%.2f", ((res.getFloat(2) >= 0) ? res.getFloat(2) : (res.getFloat(2) * -1))));
             res.close();
         }
 
