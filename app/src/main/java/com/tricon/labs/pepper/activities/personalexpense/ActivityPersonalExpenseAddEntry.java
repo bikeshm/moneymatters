@@ -272,7 +272,7 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
 
         // if user is creating entry for specific category then there will not be a new category. so no need to save category.
         // if category is not present in database then create new category in database and then save entry, otherwise save entry
-        if (!creatingEntryForSpecificCategory && !mCategories.contains(newCategory.toLowerCase())) {
+        if (!creatingEntryForSpecificCategory) {
             new SaveCategoryTask(newCategory).execute();
         } else {
             saveEntry(newCategory);
@@ -337,11 +337,17 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... category) {
-            Map<String, String> categoryData = new HashMap<>();
-            categoryData.put("name", mCategory);
-            categoryData.put("description", "");
 
-            return mDBHelper.insertCollection(categoryData) > 0;
+            if(mDBHelper.getCategoryIdFromCategoryName(mCategory) == -1) {
+
+                Map<String, String> categoryData = new HashMap<>();
+                categoryData.put("name", mCategory);
+                categoryData.put("description", "");
+
+                return mDBHelper.insertCollection(categoryData) > 0;
+            } else {
+                return true;
+            }
         }
 
         @Override
