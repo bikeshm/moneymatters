@@ -22,6 +22,10 @@ public class Group implements Parcelable {
     public static final int STATUS_GIVE = 0;
     public static final int STATUS_GET = 1;
 
+    public Group() {
+
+    }
+
     protected Group(Parcel in) {
         id = in.readInt();
         onlineid = in.readInt();

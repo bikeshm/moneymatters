@@ -32,11 +32,17 @@
     <string name="label_total_expenses">Total Expense</string>
     <string name="label_lend">Lend</string>
     <string name="label_borrow">Borrow</string>
+    <string name="label_monthly_renew">Monthly Renewing</string>
+    <string name="label_ongoing">On Going</string>
 
     <string name="action_done">DONE</string>
     <string name="name">Name</string>
     <string name="phone">Phone</string>
     <string name="email">Email</string>
     <string name="country_code">Country Code</string>
+    <string name="group_name">Enter Group Name</string>
+    <string name="hint_type_member_name">Type Member Name</string>
+    <string name="remove">REMOVE</string>
+    <string name="title_remove_member">Remove Member</string>
     <string name="spent">Spent</string>
 </resources>

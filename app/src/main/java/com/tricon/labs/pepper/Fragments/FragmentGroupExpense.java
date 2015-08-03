@@ -1,8 +1,10 @@
 package com.tricon.labs.pepper.Fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +13,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tricon.labs.pepper.R;
-import com.tricon.labs.pepper.activities.lendandborrow.ActivityLendAndBorrowIndividual;
+import com.tricon.labs.pepper.activities.groupexpense.ActivityAddOrEditGroup;
 import com.tricon.labs.pepper.adapters.AdapterGroupExpense;
-import com.tricon.labs.pepper.adapters.AdapterLendAndBorrow;
 import com.tricon.labs.pepper.database.DBHelper;
+import com.tricon.labs.pepper.models.Category;
 import com.tricon.labs.pepper.models.Group;
-import com.tricon.labs.pepper.models.Person;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,35 +40,61 @@ public class FragmentGroupExpense extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //return super.onCreateView(inflater, container, savedInstanceState);
 
-        View rootView = inflater.inflate(R.layout.fragment_group_expense,container,false);
+        View rootView = inflater.inflate(R.layout.fragment_group_expense, container, false);
 
         //setup views
         mTVSpent = (TextView) rootView.findViewById(R.id.tv_spent_amt);
         mTVGive = (TextView) rootView.findViewById(R.id.tv_give_amt);
         mTVGet = (TextView) rootView.findViewById(R.id.tv_get_amt);
-        ListView lvPersons = (ListView) rootView.findViewById(R.id.lv_groups);
+        ListView lvGroup = (ListView) rootView.findViewById(R.id.lv_groups);
 
         //get db instance
         mDBHelper = new DBHelper(getActivity());
 
         //set list view adapter
         mAdapter = new AdapterGroupExpense(mGroupList);
-        lvPersons.setAdapter(mAdapter);
+        lvGroup.setAdapter(mAdapter);
 
         //set empty view
-        lvPersons.setEmptyView(rootView.findViewById(android.R.id.empty));
+        lvGroup.setEmptyView(rootView.findViewById(android.R.id.empty));
 
         //set listeners
-        lvPersons.setOnItemClickListener(new listItemClicked());
-
+        lvGroup.setOnItemClickListener(new ListItemClicked());
+        lvGroup.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                generatePopupMenu(position);
+                return false;
+            }
+        });
 
 
         return rootView;
 
     }
 
+    public void generatePopupMenu(final int position) {
+        final CharSequence[] options = {"Edit", "Delete"};
 
-    private class listItemClicked implements android.widget.AdapterView.OnItemClickListener {
+        new AlertDialog.Builder(getActivity())
+                .setItems(options, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (options[item].equals("Delete")) {
+
+                        } else if (options[item].equals("Edit")) {
+                            Intent intent = new Intent(getActivity(), ActivityAddOrEditGroup.class);
+                            intent.putExtra(ActivityAddOrEditGroup.INTENT_GROUP_DETAILS, mGroupList.get(position));
+                            startActivity(intent);
+                        }
+                    }
+                })
+                .show();
+    }
+
+
+    private class ListItemClicked implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             /*
@@ -102,8 +129,6 @@ public class FragmentGroupExpense extends Fragment {
         mTVGive.setText(finalResult.get("amt_toGive"));
         mTVGet.setText(finalResult.get("amt_toGet"));
     }
-
-
 
 
 }

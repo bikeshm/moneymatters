@@ -71,8 +71,8 @@ public class FragmentPersonalExpense extends Fragment {
         mBtnDate.setText(calenderInstance.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US) + " - " + calenderInstance.get(Calendar.YEAR));
 
         //set listeners
-        lvCategories.setOnItemClickListener(new listItemClicked());
-        lvCategories.setOnItemLongClickListener(new listItemLongClicked());
+        lvCategories.setOnItemClickListener(new ListItemClicked());
+        lvCategories.setOnItemLongClickListener(new ListItemLongClicked());
         mBtnDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,7 +127,7 @@ public class FragmentPersonalExpense extends Fragment {
     }
 
 
-    private class listItemClicked implements android.widget.AdapterView.OnItemClickListener {
+    private class ListItemClicked implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -144,7 +144,7 @@ public class FragmentPersonalExpense extends Fragment {
     }
 
 
-    private class listItemLongClicked implements AdapterView.OnItemLongClickListener {
+    private class ListItemLongClicked implements AdapterView.OnItemLongClickListener {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 

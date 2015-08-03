@@ -51,7 +51,7 @@ public class FragmentLendAndBorrow extends Fragment {
         lvPersons.setEmptyView(mRootView.findViewById(android.R.id.empty));
 
         //set listeners
-        lvPersons.setOnItemClickListener(new listItemClicked());
+        lvPersons.setOnItemClickListener(new ListItemClicked());
 
         return mRootView;
     }
@@ -62,7 +62,7 @@ public class FragmentLendAndBorrow extends Fragment {
         populateListViewFromDB();
     }
 
-    private class listItemClicked implements android.widget.AdapterView.OnItemClickListener {
+    private class ListItemClicked implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Person person = mPersonList.get(position);

@@ -1,4 +1,4 @@
-package com.tricon.labs.pepper.activities.jointexpense;
+package com.tricon.labs.pepper.activities.groupexpense;
 
 import com.tricon.labs.pepper.activities.ActivityBase;
 

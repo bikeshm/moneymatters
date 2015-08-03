@@ -1,3 +1,4 @@
+/*
 package com.tricon.labs.pepper.activities.jointexpense;
 
 import android.os.Bundle;
@@ -7,8 +8,6 @@ import com.tricon.labs.pepper.activities.ActivityBase;
 
 
 public class ActivityJointExpenseAddGroup extends ActivityBase {
-
-    /*
 
     Face 2
 
@@ -28,14 +27,13 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
     EditText nameEditText, descriptionEditText, UsersFilter;
     RadioGroup isOnlineRadio,groupTypeRadio;
     RecyclerView usersRecyclerView;
-    */
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joint_expense_add_group);
 
-/*
         nameEditText        = ((EditText) currentView.findViewById(R.id.name) );
         descriptionEditText = ((EditText) currentView.findViewById(R.id.description));
         isOnlineRadio       = ((RadioGroup) currentView.findViewById(R.id.isOnline));
@@ -293,13 +291,13 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
         //Adapter_CustomSimpleCursor adapter = new Adapter_CustomSimpleCursor(this, R.layout.listview_item_with_checkbox_template, cursor);
 
         //((ListView) currentView.findViewById(R.id.users)).setAdapter(adapter);
-            /*
+
             recyclerView = (RecyclerView) findViewById(R.id.users);
             recyclerView.setHasFixedSize(true);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(layoutManager);
-            *./
+
 
 
         //adapter = new Adapter_RecyclerViewList(cursor, this);
@@ -364,7 +362,6 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
 
             Map<String, String> data = new HashMap<String, String>();
 
-            //Todo:- validate and escape incomming data
             data.put("name",  nameEditText.getText().toString());
             data.put("description", descriptionEditText.getText().toString());
 
@@ -606,7 +603,303 @@ public class ActivityJointExpenseAddGroup extends ActivityBase {
         }
     }
 
-    */
     }
 
+}
+
+*/
+
+package com.tricon.labs.pepper.activities.groupexpense;
+
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+
+import com.tricon.labs.pepper.R;
+import com.tricon.labs.pepper.adapters.AdapterContactList;
+import com.tricon.labs.pepper.adapters.MemberListAdapter;
+import com.tricon.labs.pepper.database.DBHelper;
+import com.tricon.labs.pepper.interfaces.RemoveMemberListener;
+import com.tricon.labs.pepper.libraries.Utils;
+import com.tricon.labs.pepper.models.Contact;
+import com.tricon.labs.pepper.models.Group;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+
+public class ActivityAddOrEditGroup extends AppCompatActivity implements RemoveMemberListener {
+
+    private TextInputLayout mTILGroupName;
+    private EditText mETGroupName;
+    private AutoCompleteTextView mACTVMemberName;
+
+    private MemberListAdapter mMemberListAdapter;
+    private AdapterContactList mContactListAdapter;
+
+    private ProgressDialog mPDSaveData;
+    private DBHelper mDBHelper;
+
+    private int monthlyTask = 1;
+    private Group group;
+    public static final String INTENT_GROUP_DETAILS = "com.tricon.labs.pepper.activities.groupexpense.GROUP_DETAILS";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_group);
+
+        overridePendingTransition(R.anim.slide_in_from_bottom, R.anim.slide_out_to_top);
+
+        //setup toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(android.support.v7.appcompat.R.drawable.abc_ic_clear_mtrl_alpha);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+        }
+
+        //setup views
+        mTILGroupName = (TextInputLayout) findViewById(R.id.til_group_name);
+        mETGroupName = (EditText) findViewById(R.id.et_group_name);
+        mACTVMemberName = (AutoCompleteTextView) findViewById(R.id.actv_member_name);
+        RecyclerView rvMembers = (RecyclerView) findViewById(R.id.rv_members);
+
+        //set layout manager
+        rvMembers.setHasFixedSize(true);
+        rvMembers.setLayoutManager(new LinearLayoutManager(this));
+
+        //set members adapter
+        mMemberListAdapter = new MemberListAdapter(new ArrayList<Contact>());
+        rvMembers.setAdapter(mMemberListAdapter);
+
+        //set contacts adapter for autocomplete text view
+        mContactListAdapter = new AdapterContactList(ActivityAddOrEditGroup.this, new ArrayList<Contact>());
+        mACTVMemberName.setAdapter(mContactListAdapter);
+
+        //set autocomplete threshold
+        mACTVMemberName.setThreshold(1);
+
+        //set progress dialog
+        mPDSaveData = new ProgressDialog(this);
+        mPDSaveData.setCancelable(false);
+        mPDSaveData.setIndeterminate(true);
+        mPDSaveData.setMessage("Saving Data...");
+
+        //set listeners
+        mETGroupName.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mTILGroupName.setError(null);
+                return false;
+            }
+        });
+        mACTVMemberName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Contact member = (Contact) parent.getAdapter().getItem(position);
+                mACTVMemberName.setText("");
+                mMemberListAdapter.addMember(member);
+                mContactListAdapter.removeMember(member);
+            }
+        });
+        ((RadioGroup) findViewById(R.id.rg_group_type)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.rb_monthly) {
+                    monthlyTask = 1;
+                } else {
+                    monthlyTask = 0;
+                }
+            }
+        });
+
+        //get db instance
+        mDBHelper = DBHelper.getInstance(this);
+
+        //get extras. if extras exist that means user is editing existing group
+        group = getIntent().getParcelableExtra(INTENT_GROUP_DETAILS);
+        if (group != null) {
+            monthlyTask = group.ismonthlytask;
+            if (group.ismonthlytask == 1) {
+                ((RadioButton) findViewById(R.id.rb_monthly)).setChecked(true);
+            } else {
+                ((RadioButton) findViewById(R.id.rb_ongoing)).setChecked(true);
+            }
+            mETGroupName.setText(group.name);
+        }
+
+        //fetch contacts and set them in autocomplete text view's adapter
+        new FetchContactsTask().execute();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_from_top, R.anim.slide_out_to_bottom);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_activity_group_expenses_add_entry, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_done:
+                validateAndSave();
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public void removeMember(final int position) {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.title_remove_member))
+                .setMessage("Do you want to remove " + mMemberListAdapter.getItem(position).name + "?")
+                .setPositiveButton(getString(R.string.remove), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mContactListAdapter.addMember(mMemberListAdapter.removeMember(position));
+                    }
+                })
+                .setNegativeButton(getString(android.R.string.cancel), null)
+                .show();
+    }
+
+    private void validateAndSave() {
+        String groupName = mETGroupName.getText().toString().trim();
+
+        if (TextUtils.isEmpty(groupName)) {
+            mTILGroupName.setError("Field Required");
+            mETGroupName.setText("");
+            return;
+        }
+
+        if (mMemberListAdapter.getItemCount() == 0) {
+            Toast.makeText(this, "Add at least one more member other than you", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        new SaveDataTask().execute();
+    }
+
+    private class SaveDataTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected void onPreExecute() {
+            mPDSaveData.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            int count = mMemberListAdapter.getItemCount();
+            ArrayList<String> memberIds = new ArrayList<>();
+            memberIds.add("1"); // adding root user id
+
+            //save members in user table
+            for (int i = 0; i < count; i++) {
+                Contact member = mMemberListAdapter.getItem(i);
+                memberIds.add(mDBHelper.registerUserFromContact(member.phone, member.name) + "");
+            }
+
+            //save group expense (update existing or insert new)
+            HashMap<String, String> data = new HashMap<>();
+            data.put("name", mETGroupName.getText().toString());
+            data.put("description", "");
+            data.put("members_count", count + "");
+            data.put("ismonthlytask", monthlyTask + "");
+
+            //if updating previous group info
+            if (group != null) {
+                data.put("_id", group.id + "");
+                if (mDBHelper.updateJointGroup(data) > 0) {
+                    //update user group relation
+                    mDBHelper.insertUserGroupRelation(group.id + "", memberIds);
+
+                    //clean up
+                    mDBHelper.cleanupOnlineGroupRelation(memberIds, group.id + "");
+
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                long groupId = mDBHelper.insertJointGroup(data);
+                return groupId > 0 && mDBHelper.insertUserGroupRelation(groupId + "", memberIds) > 0;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            mPDSaveData.dismiss();
+            if (success) {
+                Toast.makeText(ActivityAddOrEditGroup.this, "Data saved successfully", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(ActivityAddOrEditGroup.this, "Data saved failed", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class FetchContactsTask extends AsyncTask<Void, Void, HashSet<Contact>> {
+
+        private HashSet<Contact> existingMembers;
+
+        @Override
+        protected HashSet<Contact> doInBackground(Void... params) {
+            //fetch all phone contacts
+            HashSet<Contact> allContacts = Utils.getContactList(getApplicationContext());
+
+            //if editing existing group then fetch existing members and remove them from allContacts
+            //add the existing members in members adapter data set (in onPostExecute)
+            if (group != null) {
+                existingMembers = mDBHelper.getGroupMembers(group.id + "");
+                allContacts.removeAll(existingMembers);
+            }
+            return allContacts;
+        }
+
+        @Override
+        protected void onPostExecute(HashSet<Contact> members) {
+            //if editing then add members members adapter data set
+            if (group != null && existingMembers.size() > 0) {
+                mMemberListAdapter.addMembers(existingMembers);
+            }
+            mContactListAdapter.addMembers(members);
+        }
+    }
 }

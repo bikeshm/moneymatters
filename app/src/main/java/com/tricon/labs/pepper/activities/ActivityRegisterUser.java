@@ -27,8 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.tricon.labs.pepper.libraries.functions.getCountries;
-import static com.tricon.labs.pepper.libraries.functions.isValidEmail;
+import static com.tricon.labs.pepper.libraries.Utils.getCountries;
+import static com.tricon.labs.pepper.libraries.Utils.isValidEmail;
 import static com.tricon.labs.pepper.libraries.parsePhone.parsePhone;
 
 public class ActivityRegisterUser extends AppCompatActivity {

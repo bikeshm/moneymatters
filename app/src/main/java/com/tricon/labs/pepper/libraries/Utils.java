@@ -26,6 +26,7 @@ import java.net.InetAddress;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ import static com.tricon.labs.pepper.libraries.parsePhone.parsePhoneGetAll;
 /**
  * Created by bikesh on 6/5/2015.
  */
-public class functions {
+public class Utils {
 
     public static String md5(String s) {
         try {
@@ -46,7 +47,7 @@ public class functions {
 
             // Create Hex String
             StringBuffer hexString = new StringBuffer();
-            for (int i=0; i<messageDigest.length; i++)
+            for (int i = 0; i < messageDigest.length; i++)
                 hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
             return hexString.toString();
 
@@ -71,28 +72,31 @@ public class functions {
     */
 
 
-    public static  boolean isInternetAvailablexx() {
+    public static boolean isInternetAvailablexx() {
 
         Runtime runtime = Runtime.getRuntime();
         try {
 
             Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8"); //Google DNS (e.g. 8.8.8.8)
-            int     exitValue = ipProcess.waitFor();
-            Log.i("int ip ",exitValue+"");
+            int exitValue = ipProcess.waitFor();
+            Log.i("int ip ", exitValue + "");
             return (exitValue == 0);
 
-        } catch (IOException e)          { e.printStackTrace(); }
-        catch (InterruptedException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        Log.i("int ip ","fffffffffff");
+        Log.i("int ip ", "fffffffffff");
         return false;
     }
 
-    public static  boolean isInternetAvailablex() {
+    public static boolean isInternetAvailablex() {
         try {
             InetAddress ipAddr = InetAddress.getByName("google.com"); //You can replace it with your name
 
-            Log.i("int ip ",ipAddr.toString());
+            Log.i("int ip ", ipAddr.toString());
 
             if (ipAddr.equals("")) {
                 return false;
@@ -108,27 +112,8 @@ public class functions {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static String getInternetType(Context appContext) {
-        String networkType="?";
+        String networkType = "?";
 
         ConnectivityManager cm = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
@@ -169,11 +154,9 @@ public class functions {
             networkType = "?";
         }
 
-        Log.i("int ip ",networkType);
+        Log.i("int ip ", networkType);
         return networkType;
     }
-
-
 
 
     public static String getContactByPhone(String phone, ContentResolver ContentResolver) {
@@ -181,17 +164,17 @@ public class functions {
 
         Map<String, String> parsedPhone = parsePhoneGetAll(phone);
 
-        if(parsedPhone.size()>0) {
+        if (parsedPhone.size() > 0) {
 
             Cursor cursorPhone = ContentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME},
 
-                    ContactsContract.CommonDataKinds.Phone.NUMBER + " = ? OR "+
-                    ContactsContract.CommonDataKinds.Phone.NUMBER + " = ? OR "+
-                    ContactsContract.CommonDataKinds.Phone.NUMBER + " = ? OR "+
-                    ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
+                    ContactsContract.CommonDataKinds.Phone.NUMBER + " = ? OR " +
+                            ContactsContract.CommonDataKinds.Phone.NUMBER + " = ? OR " +
+                            ContactsContract.CommonDataKinds.Phone.NUMBER + " = ? OR " +
+                            ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
 
-                    new String[]{parsedPhone.get("E164").toString(), parsedPhone.get("NATIONAL").toString(),parsedPhone.get("INTERNATIONAL").toString(),parsedPhone.get("TENDIGIT").toString(),    },
+                    new String[]{parsedPhone.get("E164").toString(), parsedPhone.get("NATIONAL").toString(), parsedPhone.get("INTERNATIONAL").toString(), parsedPhone.get("TENDIGIT").toString(),},
                     null);
 
             if (cursorPhone.moveToFirst()) {
@@ -204,44 +187,30 @@ public class functions {
     }
 
 
+    public static HashSet<Contact> getContactList(Context context) {
 
-
-    public static ArrayList<Contact> getContactList(Context context){
-
-        ArrayList<Contact> list = new ArrayList<>();
-        Contact contact;
+        HashSet<Contact> members = new HashSet<>();
 
         SharedPreferences sharedpreferences;
         sharedpreferences = context.getSharedPreferences(Constants.APP_SETTINGS_PREFERENCES, Context.MODE_PRIVATE);
 
-        String[] projection    = new String[] {
+        String[] projection = new String[]{
                 ContactsContract.CommonDataKinds.Phone._ID,
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
                 ContactsContract.CommonDataKinds.Phone.NUMBER,
                 ContactsContract.CommonDataKinds.Phone.TYPE};
 
-        Cursor cursor =  context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+        Cursor cursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
-        if (cursor != null) {
-            cursor.moveToFirst();
-
-            while (!cursor.isAfterLast()) {
-
-                contact = new Contact();
-
-                contact.id    = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID));
-                contact.name  = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                contact.phone = parsePhone(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)), sharedpreferences.getString("CountryCode", "IN") );
-
-                list.add(contact);
-
-                cursor.moveToNext();
-            }
-            cursor.close();
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID));
+            String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            String phone = parsePhone(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)), sharedpreferences.getString("CountryCode", "IN"));
+            members.add(new Contact(id, name, phone));
         }
+        cursor.close();
 
-
-        return list;
+        return members;
     }
 
 
@@ -257,7 +226,8 @@ public class functions {
             JSONObject countriesJsonObject = new JSONObject(countriesJsonString);
 
             Gson gson = new GsonBuilder().create();
-            Type listType = new TypeToken<ArrayList<Country>>() { }.getType();
+            Type listType = new TypeToken<ArrayList<Country>>() {
+            }.getType();
 
             List<Country> countries = gson.fromJson(countriesJsonObject.getJSONArray("country").toString(), listType);
             return countries;
@@ -268,13 +238,12 @@ public class functions {
     }
 
 
-    public static  boolean isValidEmail(CharSequence target) {
+    public static boolean isValidEmail(CharSequence target) {
         if (target == null)
             return false;
 
         return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
-
 
 
 }

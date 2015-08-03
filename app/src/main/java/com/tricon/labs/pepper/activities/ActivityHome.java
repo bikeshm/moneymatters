@@ -14,7 +14,7 @@ import com.tricon.labs.pepper.Fragments.FragmentGroupExpense;
 import com.tricon.labs.pepper.Fragments.FragmentLendAndBorrow;
 import com.tricon.labs.pepper.Fragments.FragmentPersonalExpense;
 import com.tricon.labs.pepper.R;
-import com.tricon.labs.pepper.activities.jointexpense.ActivityJointExpenseAddGroup;
+import com.tricon.labs.pepper.activities.groupexpense.ActivityAddOrEditGroup;
 import com.tricon.labs.pepper.activities.lendandborrow.ActivityLendAndBorrowAddEntry;
 import com.tricon.labs.pepper.activities.personalexpense.ActivityPersonalExpenseAddEntry;
 import com.tricon.labs.pepper.adapters.AdapterViewPager;
@@ -56,7 +56,7 @@ public class ActivityHome extends AppCompatActivity {
                         startActivity(i);
                         break;
                     case 2:
-                        i = new Intent(ActivityHome.this, ActivityJointExpenseAddGroup.class);
+                        i = new Intent(ActivityHome.this, ActivityAddOrEditGroup.class);
                         startActivity(i);
                         break;
                 }

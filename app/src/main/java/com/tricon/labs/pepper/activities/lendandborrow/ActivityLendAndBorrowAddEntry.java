@@ -31,21 +31,20 @@ import com.tricon.labs.pepper.models.LendAndBorrowEntry;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.tricon.labs.pepper.libraries.functions.getContactList;
+import static com.tricon.labs.pepper.libraries.Utils.getContactList;
 
 public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
 
     private DBHelper mDBHelper;
 
     private LendAndBorrowEntry mLendAndBorrowEntry;
-
-    private List<Contact> mContacts;
 
     private Contact mSelectedContact = null;
 
@@ -399,19 +398,18 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
         }
     }
 
-    private class FetchUserFromContactTask extends AsyncTask<Void, Void, Void> {
+    private class FetchUserFromContactTask extends AsyncTask<Void, Void, HashSet<Contact>> {
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected HashSet<Contact> doInBackground(Void... params) {
 
             //getting user from contact
-            mContacts = getContactList(getApplicationContext());
-            return null;
+            return getContactList(getApplicationContext());
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            mACTVUserName.setAdapter(new AdapterContactList(ActivityLendAndBorrowAddEntry.this, mContacts));
+        protected void onPostExecute(HashSet<Contact> members) {
+            mACTVUserName.setAdapter(new AdapterContactList(ActivityLendAndBorrowAddEntry.this, new ArrayList<>(members)));
         }
     }
 

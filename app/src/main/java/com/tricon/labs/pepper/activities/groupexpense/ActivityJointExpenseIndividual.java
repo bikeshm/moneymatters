@@ -1,4 +1,4 @@
-package com.tricon.labs.pepper.activities.jointexpense;
+package com.tricon.labs.pepper.activities.groupexpense;
 
 import com.tricon.labs.pepper.activities.ActivityBase;
 
@@ -632,7 +632,6 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
             //not registerd means it is created as online group but not updated in server
             Log.i("api call","not registred group it is created as online group but not updated in server");
 
-            // TODO: 6/16/2015 :- need to work on it
             generateTables();
         }
         else{

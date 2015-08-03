@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.tricon.labs.pepper.common.Constants;
 import com.tricon.labs.pepper.models.Category;
+import com.tricon.labs.pepper.models.Contact;
 import com.tricon.labs.pepper.models.Group;
 import com.tricon.labs.pepper.models.LendAndBorrowEntry;
 import com.tricon.labs.pepper.models.Person;
@@ -27,11 +28,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeSet;
 
-import static com.tricon.labs.pepper.libraries.functions.getContactByPhone;
+import static com.tricon.labs.pepper.libraries.Utils.getContactByPhone;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -92,7 +94,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         db.execSQL(
-                "create table " + JOINTGROUP_TABLE_NAME + "  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', isonline INTEGER DEFAULT 0, owner text, name text,  members_count INTEGER,ismonthlytask INTEGER  DEFAULT 0 , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB, last_updated DATE ,status text DEFAULT 'new')"  /* status=>new,updated (for knowing local changes)    */
+                "create table " + JOINTGROUP_TABLE_NAME + "  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', isonline INTEGER DEFAULT 0, owner INTEGER DEFAULT 1, name text,  members_count INTEGER,ismonthlytask INTEGER  DEFAULT 0 , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB, last_updated DATE ,status text DEFAULT 'new')"  /* status=>new,updated (for knowing local changes)    */
         );
         db.execSQL(
                 "create table " + JOINTENTRY_TABLE_NAME + "  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', joint_group_id INTEGER, created_date DATE, description text, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0, last_updated DATE, status text DEFAULT 'new' )"  /* status=>new,updated  (for knowing local changes)   */
@@ -899,11 +901,11 @@ public class DBHelper extends SQLiteOpenHelper {
         return commonGetField(id, field, JOINTGROUP_TABLE_NAME);
     }
 
-    public Map fetchJointGroupbyId(String groupId) {
+    public HashMap<String, String> fetchJointGroupbyId(String groupId) {
 
         Cursor res = getJointGroupbyId(groupId);
 
-        Map<String, String> data = new HashMap<>();
+        HashMap<String, String> data = new HashMap<>();
 
         if (res != null) {
             res.moveToFirst();
@@ -941,14 +943,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //---
 
-    public  ArrayList<Group> getJointGroupsList() {
+    public ArrayList<Group> getJointGroupsList() {
 
         ArrayList<Group> list = new ArrayList<>();
         Group group;
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor res ;
+        Cursor res;
 
         SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy", Locale.US);
 
@@ -1172,23 +1174,19 @@ public class DBHelper extends SQLiteOpenHelper {
         return userIds;
     }
 
-    public ArrayList<String> getAllUsersPhoneInGroup(String groupId) {
+    public HashSet<Contact> getGroupMembers(String groupId) {
 
-        ArrayList<String> userIds = new ArrayList<>();
+        HashSet<Contact> members = new HashSet<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select phone from usertable where _id in ( select user_id from " + JOINT_USER_GROUP_RELATION_TABLE_NAME + " where joint_group_id = " + groupId + ")", null);
-        if (res != null) {
-            res.moveToFirst();
-
-            while (!res.isAfterLast()) {
-
-                userIds.add(res.getString(res.getColumnIndex("phone")));
-                res.moveToNext();
-            }
-            res.close();
+        Cursor res = db.rawQuery("select name, phone from usertable where _id != 1 and _id in ( select user_id from " + JOINT_USER_GROUP_RELATION_TABLE_NAME + " where joint_group_id = " + groupId + ")", null);
+        int nameColumnIndex = res.getColumnIndex("name");
+        int phoneColumnIndex = res.getColumnIndex("phone");
+        while (res.moveToNext()) {
+            members.add(new Contact(-1, res.getString(nameColumnIndex), res.getString(phoneColumnIndex)));
         }
-        return userIds;
+        res.close();
+        return members;
     }
 
     //for ongoing single exp

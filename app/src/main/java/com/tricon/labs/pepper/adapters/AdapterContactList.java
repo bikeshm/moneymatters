@@ -14,6 +14,7 @@ import com.tricon.labs.pepper.R;
 import com.tricon.labs.pepper.models.Contact;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class AdapterContactList extends BaseAdapter implements Filterable {
@@ -24,7 +25,7 @@ public class AdapterContactList extends BaseAdapter implements Filterable {
     private Filter mContactFilter = null;
 
     public AdapterContactList(Context context, List<Contact> contacts) {
-        mContacts =contacts;
+        mContacts = contacts;
         mFilteredContacts = new ArrayList<>(contacts);
         this.mInflater = LayoutInflater.from(context);
     }
@@ -70,6 +71,18 @@ public class AdapterContactList extends BaseAdapter implements Filterable {
         holder.tvPhone.setText(contact.phone);
 
         return convertView;
+    }
+
+    public void addMember(Contact contact) {
+        mContacts.add(contact);
+    }
+
+    public void addMembers(Collection<Contact> members) {
+        mContacts.addAll(members);
+    }
+
+    public void removeMember(Contact contact) {
+        mContacts.remove(contact);
     }
 
     private static class ViewHolder {

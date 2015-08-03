@@ -1,46 +1,5 @@
 package com.tricon.labs.pepper.activities.personalexpense;
 
-/*
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        SimpleDateFormat dmy = new SimpleDateFormat("MM-yyyy");
-        String cDate = dmy.format(new Date());
-
-        SimpleDateFormat dbmy = new SimpleDateFormat("yyyy-MM");
-        String cdbDate = dbmy.format(new Date());
-
-        TextView dateChanger = (TextView) currentView.findViewById(R.id.dateChanger);
-        TextView dateChangerForDb = (TextView) currentView.findViewById(R.id.dateChangerForDb);
-
-        dateChanger.setOnClickListener(new CustomDatePicker(ActivityPersonalExpenseIndividual.this, dateChanger, dateChangerForDb, true));
-
-        dateChanger.setText(cDate);
-        dateChangerForDb.setText(cdbDate);
-
-        dateChangerForDb.addTextChangedListener(new dateChange());
-    }
-
-    private class dateChange implements TextWatcher {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            Toast.makeText(getApplicationContext(), "" + ((TextView) currentView.findViewById(R.id.dateChangerForDb)).getText(), Toast.LENGTH_LONG).show();
-
-            Cursor entrys = myDb.getPersonalExpense(colId, ((TextView) currentView.findViewById(R.id.dateChanger)).getText().toString());
-
-            generateTable(entrys);
-
-        }
-    }
-}*/
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;

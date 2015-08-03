@@ -43,18 +43,18 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
-            android:name="com.tricon.labs.pepper.activities.jointexpense.ActivityJointExpenseAddGroup"
+            android:name=".activities.groupexpense.ActivityAddOrEditGroup"
             android:label="@string/title_activity_add_user"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tricon.labs.pepper.activities.personalexpense.ActivityPersonalExpenseIndividual"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tricon.labs.pepper.activities.jointexpense.ActivityJointExpenseIndividual"
+            android:name="com.tricon.labs.pepper.activities.groupexpense.ActivityJointExpenseIndividual"
             android:label="@string/title_activity_joint_expense_individual"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tricon.labs.pepper.activities.jointexpense.ActivityJointExpenseAddEntry"
+            android:name="com.tricon.labs.pepper.activities.groupexpense.ActivityJointExpenseAddEntry"
             android:label="@string/title_activity_add_group_entry" />
         <activity
             android:name="com.tricon.labs.pepper.activities.personalexpense.ActivityEditCategory"
