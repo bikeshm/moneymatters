@@ -18,7 +18,6 @@ import com.tricon.labs.pepper.activities.groupexpense.ActivityAddOrEditGroup;
 import com.tricon.labs.pepper.activities.groupexpense.ActivityGroupExpenseIndividual;
 import com.tricon.labs.pepper.adapters.AdapterGroupExpense;
 import com.tricon.labs.pepper.database.DBHelper;
-import com.tricon.labs.pepper.models.Category;
 import com.tricon.labs.pepper.models.Group;
 
 import java.util.ArrayList;

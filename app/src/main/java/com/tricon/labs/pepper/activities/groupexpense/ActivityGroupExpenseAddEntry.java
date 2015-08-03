@@ -1,9 +1,247 @@
 package com.tricon.labs.pepper.activities.groupexpense;
 
+import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.tricon.labs.pepper.R;
+import com.tricon.labs.pepper.adapters.AdapterMembersSpinner;
+import com.tricon.labs.pepper.database.DBHelper;
+import com.tricon.labs.pepper.models.Contact;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
 
 
-public class ActivityJointExpenseAddEntry extends AppCompatActivity {
+public class ActivityGroupExpenseAddEntry extends AppCompatActivity {
+
+    private Button mBtnDate;
+    private Spinner mSpinnerMembers;
+    private TextInputLayout mTILAmount;
+    private EditText mETAmount;
+    private TextInputLayout mTILDescription;
+    private EditText mETDescription;
+
+    private ProgressDialog mPDSaveData;
+    private DBHelper mDBHelper;
+
+    private String mGroupId;
+
+    public static final String INTENT_GROUP_ID = "com.tricon.labs.pepper.activities.groupexpense.GROUP_ID";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_group_expense_add_entry);
+
+        overridePendingTransition(R.anim.slide_in_from_bottom, R.anim.slide_out_to_top);
+
+        //setup toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(android.support.v7.appcompat.R.drawable.abc_ic_clear_mtrl_alpha);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+        }
+
+        //setup views
+        mBtnDate = (Button) findViewById(R.id.btn_date);
+        mTILAmount = (TextInputLayout) findViewById(R.id.til_amount);
+        mETAmount = (EditText) findViewById(R.id.et_amount);
+        mTILDescription = (TextInputLayout) findViewById(R.id.til_description);
+        mETDescription = (EditText) findViewById(R.id.et_description);
+        mSpinnerMembers = (Spinner) findViewById(R.id.spinner_members);
+
+        //set progress dialog
+        mPDSaveData = new ProgressDialog(this);
+        mPDSaveData.setCancelable(false);
+        mPDSaveData.setIndeterminate(true);
+        mPDSaveData.setMessage("Saving Data...");
+
+        //get db instance
+        mDBHelper = DBHelper.getInstance(this);
+
+        //get extras
+        Intent intent = getIntent();
+        mGroupId = intent.getStringExtra(INTENT_GROUP_ID);
+
+        //set data in views
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        mBtnDate.setText(simpleDateFormat.format(new Date()));
+
+        //set listeners
+        mBtnDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDatePicker();
+            }
+        });
+        mETAmount.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mTILAmount.setError(null);
+                return false;
+            }
+        });
+        mETDescription.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mTILDescription.setError(null);
+                return false;
+            }
+        });
+
+        //get members and set them in spinner's adapter
+        new FetchGroupMembersTask().execute();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_from_top, R.anim.slide_out_to_bottom);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_activity_lend_and_borrow_add_entry, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_done:
+                saveData();
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    private void openDatePicker() {
+        //To show current date in the datepicker
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                selectedmonth++;
+                String actualMonth = "" + selectedmonth;
+                if (selectedmonth < 10) {
+                    actualMonth = "0" + actualMonth;
+                }
+
+                String actualDay = "" + selectedday;
+                if (selectedday < 10) {
+                    actualDay = "0" + actualDay;
+                }
+
+                mBtnDate.setText(actualDay + "-" + actualMonth + "-" + selectedyear);
+            }
+        }, year, month, day).show();
+    }
+
+    private void saveData() {
+        if (TextUtils.isEmpty(mETAmount.getText().toString().trim())) {
+            mTILAmount.setError("Amount Required");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mETDescription.getText().toString())) {
+            mTILDescription.setError("Description Required");
+            return;
+        }
+
+        new SaveDataTask().execute();
+    }
+
+    private class SaveDataTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected void onPreExecute() {
+            mPDSaveData.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            HashMap<String, String> data = new HashMap<>();
+
+            //convert date into "yyyy MM dd" format
+            SimpleDateFormat localDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+            SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            String date = mBtnDate.getText().toString();
+            try {
+                date = dbDateFormat.format(localDateFormat.parse(date));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            data.put("created_date", date);
+            data.put("amt", mETAmount.getText().toString().trim());
+            data.put("description", mETDescription.getText().toString());
+            data.put("joint_group_id", mGroupId);
+            data.put("user_id", ((Contact) mSpinnerMembers.getSelectedItem()).id + "");
+
+            return mDBHelper.insertGroupEntry(data) > 0;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            mPDSaveData.dismiss();
+            if (success) {
+                Toast.makeText(ActivityGroupExpenseAddEntry.this, "Data saved successfully", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(ActivityGroupExpenseAddEntry.this, "Data saved failed", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class FetchGroupMembersTask extends AsyncTask<Void, Void, HashSet<Contact>> {
+
+        @Override
+        protected HashSet<Contact> doInBackground(Void... params) {
+            return mDBHelper.getGroupMembers(mGroupId);
+        }
+
+        @Override
+        protected void onPostExecute(HashSet<Contact> members) {
+            mSpinnerMembers.setAdapter(new AdapterMembersSpinner(ActivityGroupExpenseAddEntry.this, members));
+        }
+    }
+}
 
     /*
     RecyclerView recyclerView;
@@ -300,9 +538,6 @@ public class ActivityJointExpenseAddEntry extends AppCompatActivity {
         }
     }
 
-
-
-
     private void save_JointEntryToLocal(Map<String, String> data) {
 
         Log.i("save", "online id save_JointEntryToLocal"+data);
@@ -398,21 +633,6 @@ public class ActivityJointExpenseAddEntry extends AppCompatActivity {
         Rqueue.add(jsObjRequest);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -440,4 +660,3 @@ public class ActivityJointExpenseAddEntry extends AppCompatActivity {
     }
 
     */
-}

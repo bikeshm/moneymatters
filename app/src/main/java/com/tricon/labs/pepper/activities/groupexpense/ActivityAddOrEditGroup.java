@@ -666,7 +666,7 @@ public class ActivityAddOrEditGroup extends AppCompatActivity implements RemoveM
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_group);
+        setContentView(R.layout.activity_add_or_edit_group);
 
         overridePendingTransition(R.anim.slide_in_from_bottom, R.anim.slide_out_to_top);
 
@@ -755,6 +755,7 @@ public class ActivityAddOrEditGroup extends AppCompatActivity implements RemoveM
                 ((RadioButton) findViewById(R.id.rb_ongoing)).setChecked(true);
             }
             mETGroupName.setText(group.name);
+            mETGroupName.setSelection(group.name.length());
         }
 
         //fetch contacts and set them in autocomplete text view's adapter

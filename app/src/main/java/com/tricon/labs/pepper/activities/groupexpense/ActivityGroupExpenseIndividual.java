@@ -54,11 +54,9 @@ public class ActivityGroupExpenseIndividual extends AppCompatActivity {
         findViewById(R.id.btn_create).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i;
-
-                //i = new Intent(ActivityHome.this, ActivityPersonalExpenseAddEntry.class);
-                //startActivity(i);
-
+                Intent intent = new Intent(ActivityGroupExpenseIndividual.this, ActivityGroupExpenseAddEntry.class);
+                intent.putExtra(ActivityGroupExpenseAddEntry.INTENT_GROUP_ID, mGroup.id + "");
+                startActivity(intent);
             }
         });
 
@@ -73,7 +71,6 @@ public class ActivityGroupExpenseIndividual extends AppCompatActivity {
 
         viewPager.setAdapter(adapter);
     }
-
 
 
 }

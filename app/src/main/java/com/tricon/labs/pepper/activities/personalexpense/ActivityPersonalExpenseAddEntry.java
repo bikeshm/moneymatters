@@ -223,7 +223,7 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_from_top, R.anim.slide_out_to_bottom);
     }
 
-    public void openDatePicker() {
+    private void openDatePicker() {
         //To show current date in the datepicker
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);

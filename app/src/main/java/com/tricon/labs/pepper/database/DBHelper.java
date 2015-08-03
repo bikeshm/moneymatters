@@ -1182,11 +1182,12 @@ public class DBHelper extends SQLiteOpenHelper {
         HashSet<Contact> members = new HashSet<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select name, phone from usertable where _id != 1 and _id in ( select user_id from " + JOINT_USER_GROUP_RELATION_TABLE_NAME + " where joint_group_id = " + groupId + ")", null);
+        Cursor res = db.rawQuery("select _id, name, phone from usertable where _id != 1 and _id in ( select user_id from " + JOINT_USER_GROUP_RELATION_TABLE_NAME + " where joint_group_id = " + groupId + ")", null);
+        int idColumnIndex = res.getColumnIndex("_id");
         int nameColumnIndex = res.getColumnIndex("name");
         int phoneColumnIndex = res.getColumnIndex("phone");
         while (res.moveToNext()) {
-            members.add(new Contact(-1, res.getString(nameColumnIndex), res.getString(phoneColumnIndex)));
+            members.add(new Contact(res.getInt(idColumnIndex), res.getString(nameColumnIndex), res.getString(phoneColumnIndex)));
         }
         res.close();
         return members;

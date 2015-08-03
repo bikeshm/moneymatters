@@ -54,7 +54,7 @@
             android:label="@string/title_activity_joint_expense_individual"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tricon.labs.pepper.activities.groupexpense.ActivityJointExpenseAddEntry"
+            android:name=".activities.groupexpense.ActivityGroupExpenseAddEntry"
             android:label="@string/title_activity_add_group_entry" />
         <activity
             android:name="com.tricon.labs.pepper.activities.personalexpense.ActivityEditCategory"

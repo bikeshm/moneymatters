@@ -236,7 +236,7 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
         return true;
     }
 
-    public void openDatePicker() {
+    private void openDatePicker() {
         //To show current date in the datepicker
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
