@@ -19,6 +19,7 @@ import com.tricon.labs.pepper.models.Category;
 import com.tricon.labs.pepper.models.Contact;
 import com.tricon.labs.pepper.models.Group;
 import com.tricon.labs.pepper.models.LendAndBorrowEntry;
+import com.tricon.labs.pepper.models.Member;
 import com.tricon.labs.pepper.models.Person;
 import com.tricon.labs.pepper.models.PersonalExpenseEntry;
 
@@ -958,7 +959,8 @@ public class DBHelper extends SQLiteOpenHelper {
         String sql = " select G._id,  G.name, G.totalamt,G.members_count,G.balanceamt," +
                 " (G.totalamt / G.members_count  ) as perhead," +
                 " (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  G._id  ) as i_spend, " +
-                " (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  G._id and STRFTIME('%m-%Y', created_date) = '" + dmy.format(new Date()) + "'  ) as i_spendinmonth" +
+                " (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  G._id and STRFTIME('%m-%Y', created_date) = '" + dmy.format(new Date()) + "'  ) as i_spendinmonth, " +
+                "G.ismonthlytask"+
                 " from joint_grouptable G";
 
         res = db.rawQuery(sql, null);
@@ -979,6 +981,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 group.amountPerHead = res.getFloat(5);
                 group.amountSpentByMe = res.getFloat(6);
                 group.amountSpentByMeCurrentMonth = res.getFloat(7);
+                group.ismonthlytask=res.getInt(8);
 
 
                 if (group.balanceAmount < 0) {
@@ -1225,6 +1228,61 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToFirst();
         }
         return res;
+    }
+
+    public ArrayList<Member> getGroupMemberDetailsList(int groupId){
+        return getGroupMemberDetailsList(groupId, null);
+    }
+
+    public ArrayList<Member> getGroupMemberDetailsList(int groupId, String month) {
+
+        ArrayList<Member> list = new ArrayList<>();
+        Member member;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        if (month != null) {
+            month = "  and STRFTIME('%m-%Y', created_date) = '" + month + "'";
+        } else {
+            month = "";
+        }
+
+        Cursor res = db.rawQuery("select U._id, U.name, " +
+                "(select Total(amt) from joint_entrytable where user_id = U._id and joint_group_id = " + groupId + month + " ) as amt_spent, " +
+                "((select Total(amt)/(select count(user_id) from joint_usergrouprelationtable where  joint_group_id = " + groupId + "  ) from joint_entrytable where joint_group_id = " + groupId + month + " )- (select Total(amt) from joint_entrytable where user_id = U._id and joint_group_id = " + groupId + month + "  )) as balance " +
+                "from usertable U where u._id in ( select user_id from  joint_usergrouprelationtable  where  joint_group_id = " + groupId + " ) ", null);
+
+        if (res != null) {
+            res.moveToFirst();
+
+            while (res.isAfterLast() == false) {
+
+                member = new Member();
+
+                member.id = res.getInt(0);
+                member.name = res.getString(1);
+
+                member.amountSpent = res.getFloat(2);
+                member.amountBalance = res.getFloat(3);
+
+                if (res.getFloat(3) < 0) {
+                    member.amountBalance = res.getFloat(3) * -1;
+                    member.status = Person.STATUS_GET;
+                } else {
+                    member.status = Person.STATUS_GIVE;
+                }
+
+
+                list.add(member);
+
+                res.moveToNext();
+            }
+
+            res.close();
+        }
+
+
+        return list;
     }
 
 

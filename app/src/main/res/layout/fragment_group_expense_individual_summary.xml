@@ -64,24 +64,19 @@
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/lv_members"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_members"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/tv_balance"
         android:background="@android:color/transparent"
         android:clipToPadding="false"
         android:listSelector="@android:color/transparent"
         android:paddingBottom="70dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="10dp"
         android:scrollbars="none" />
 
-    <TextView
-        android:id="@android:id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="No entries.\nClick below icon to create new"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="20sp" />
+
 </LinearLayout>
