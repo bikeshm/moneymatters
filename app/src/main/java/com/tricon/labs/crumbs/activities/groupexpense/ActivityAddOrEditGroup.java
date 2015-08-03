@@ -661,7 +661,7 @@ public class ActivityAddOrEditGroup extends AppCompatActivity implements RemoveM
 
     private int monthlyTask = 1;
     private Group group;
-    public static final String INTENT_GROUP_DETAILS = "com.tricon.labs.pepper.activities.groupexpense.GROUP_DETAILS";
+    public static final String INTENT_GROUP_DETAILS = "com.tricon.labs.crumbs.activities.groupexpense.GROUP_DETAILS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
