@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tricon.labs.pepper">
+    package="com.tricon.labs.crumbs">
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.tricon.labs.pepper.activities.ActivitySplash"
+            android:name="com.tricon.labs.crumbs.activities.ActivitySplash"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -25,46 +25,46 @@
         </activity>
 
         <activity
-            android:name="com.tricon.labs.pepper.activities.ActivityHome"
+            android:name="com.tricon.labs.crumbs.activities.ActivityHome"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tricon.labs.pepper.activities.lendandborrow.ActivityLendAndBorrowIndividual"
+            android:name="com.tricon.labs.crumbs.activities.lendandborrow.ActivityLendAndBorrowIndividual"
             android:label="@string/title_activity_lend_and_borrow_personal"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tricon.labs.pepper.activities.lendandborrow.ActivityLendAndBorrowAddEntry"
+            android:name="com.tricon.labs.crumbs.activities.lendandborrow.ActivityLendAndBorrowAddEntry"
             android:label="@string/title_activity_lend_and_borrow_add_entry"
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tricon.labs.pepper.activities.personalexpense.ActivityPersonalExpenseAddEntry"
+            android:name="com.tricon.labs.crumbs.activities.personalexpense.ActivityPersonalExpenseAddEntry"
             android:label="@string/title_activity_add_entry"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
-            android:name=".activities.groupexpense.ActivityAddOrEditGroup"
+            android:name="com.tricon.labs.crumbs.activities.groupexpense.ActivityAddOrEditGroup"
             android:label="@string/title_activity_add_user"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tricon.labs.pepper.activities.personalexpense.ActivityPersonalExpenseIndividual"
+            android:name="com.tricon.labs.crumbs.activities.personalexpense.ActivityPersonalExpenseIndividual"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tricon.labs.pepper.activities.groupexpense.ActivityGroupExpenseIndividual"
+            android:name="com.tricon.labs.crumbs.activities.groupexpense.ActivityGroupExpenseIndividual"
             android:label="@string/title_activity_joint_expense_individual"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.groupexpense.ActivityGroupExpenseAddEntry"
+            android:name="com.tricon.labs.crumbs.activities.groupexpense.ActivityGroupExpenseAddEntry"
             android:label="@string/title_activity_add_group_entry" />
         <activity
-            android:name="com.tricon.labs.pepper.activities.personalexpense.ActivityEditCategory"
+            android:name="com.tricon.labs.crumbs.activities.personalexpense.ActivityEditCategory"
             android:label="@string/title_activity_edit_category"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.tricon.labs.pepper.activities.ActivityRegisterUser"
+            android:name="com.tricon.labs.crumbs.activities.ActivityRegisterUser"
             android:label="@string/title_activity_register_user" />
         <activity
-            android:name="com.tricon.labs.pepper.activities.ActivitySettings"
+            android:name="com.tricon.labs.crumbs.activities.ActivitySettings"
             android:label="@string/title_activity_settings" />
     </application>
 

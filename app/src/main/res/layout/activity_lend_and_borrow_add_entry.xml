@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.tricon.labs.pepper.activities.lendandborrow.ActivityLendAndBorrowAddEntry">
+    tools:context="com.tricon.labs.crumbs.activities.lendandborrow.ActivityLendAndBorrowAddEntry">
 
     <include layout="@layout/toolbar" />
 

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.tricon.labs.pepper.activities.groupexpense.ActivityGroupExpenseAddEntry">
+    tools:context="com.tricon.labs.crumbs.activities.groupexpense.ActivityGroupExpenseAddEntry">
 
     <include layout="@layout/toolbar" />
 

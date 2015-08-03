@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.tricon.labs.pepper.activities.personalexpense.ActivityEditCategory">
+    tools:context="com.tricon.labs.crumbs.activities.personalexpense.ActivityEditCategory">
 
     <item
         android:id="@+id/action_done"

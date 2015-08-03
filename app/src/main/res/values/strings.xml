@@ -47,5 +47,6 @@
     <string name="spent">Spent</string>
     <string name="total">Total</string>
     <string name="per_head">Per Head</string>
+    <string name="balance">Balance</string>
     <string name="spent_by">Spent By:</string>
 </resources>
