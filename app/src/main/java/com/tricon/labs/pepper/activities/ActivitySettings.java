@@ -1,12 +1,13 @@
 package com.tricon.labs.pepper.activities;
 
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.tricon.labs.pepper.R;
 
-public class ActivitySettings  extends ActivityBase {
+public class ActivitySettings  extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

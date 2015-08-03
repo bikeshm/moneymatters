@@ -1,8 +1,9 @@
 package com.tricon.labs.pepper.activities.groupexpense;
 
-import com.tricon.labs.pepper.activities.ActivityBase;
+import android.support.v7.app.AppCompatActivity;
 
-public class ActivityJointExpenseAddEntry extends ActivityBase {
+
+public class ActivityJointExpenseAddEntry extends AppCompatActivity {
 
     /*
     RecyclerView recyclerView;

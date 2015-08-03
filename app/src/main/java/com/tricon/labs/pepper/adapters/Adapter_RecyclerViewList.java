@@ -21,6 +21,9 @@ import static com.tricon.labs.pepper.libraries.parsePhone.parsePhone;
 /**
  * Created by bikesh on 5/22/2015.
  */
+
+public class Adapter_RecyclerViewList{}
+/*
 public class Adapter_RecyclerViewList extends RecyclerView.Adapter<Adapter_RecyclerViewList.viewHolder> {
 
     private Context context;
@@ -85,7 +88,7 @@ public class Adapter_RecyclerViewList extends RecyclerView.Adapter<Adapter_Recyc
             } else {
                 holder.item_name.setChecked(false);
             }
-            */
+            *./
 
             //holder.item_name.setOnClickListener(new checkboxClicked(   contact_id  ) );
 
@@ -106,7 +109,7 @@ public class Adapter_RecyclerViewList extends RecyclerView.Adapter<Adapter_Recyc
             holder.item_name.setOnClickListener(new checkboxClicked(mCursor.getString(mCursor.getColumnIndex("_id"))));
             holder.item_name.clearFocus();
             holder.item_name.setFocusable(false);
-            */
+            *.../
         }
 
     }
@@ -145,7 +148,7 @@ public class Adapter_RecyclerViewList extends RecyclerView.Adapter<Adapter_Recyc
                 /*
                 if (!CheckBoxSelected.contains(rid) ) {
                     CheckBoxSelected.add(rid);
-                }*/
+                }*../
             }
             else{
                 //CheckBoxSelected.remove(rid);
@@ -174,3 +177,4 @@ public class Adapter_RecyclerViewList extends RecyclerView.Adapter<Adapter_Recyc
     }
 
 }
+            */

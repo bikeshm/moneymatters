@@ -1,0 +1,300 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <include layout="@layout/toolbar" />
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tl_group_module"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_group_module"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/icon_personal_stuff"
+        app:borderWidth="0dp"
+        app:elevation="4dp"
+        app:fabSize="mini"
+        app:pressedTranslationZ="6dp" />
+
+</android.support.design.widget.CoordinatorLayout>
+
+
+    <!--
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+
+
+        tools:context="com.tricon.labs.pepper.activities.groupexpense.ActivityGroupExpenseIndividual">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/l1"
+            android:paddingLeft="20dp" >
+
+            <TextView android:text="Showing details of (Month/Year) : "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/dateChanger"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:minWidth="100dp"/>
+
+            <TextView
+                android:id="@+id/dateChangerForDb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                />
+
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:id="@+id/l2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="left"
+            android:layout_marginTop="10dp"
+
+            android:paddingLeft="20dp"
+            android:layout_below="@+id/l1">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="Total amount  "/>
+
+                <TextView
+                    android:id="@+id/amtTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""/>
+
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="Amount per head  "/>
+
+                <TextView
+                    android:id="@+id/amtPerHead"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/groupUsersLayer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/l2">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginTop="15dp"
+                android:paddingBottom="15dp"
+                android:id="@+id/scrollView1" >
+
+                <TableLayout
+                    android:id="@+id/groupUserTableLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:shrinkColumns="1"
+                    android:stretchColumns="1"
+                    android:background="#ffae9a"
+                    android:paddingBottom="2dp" >
+
+                    <TableRow
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent" >
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:textStyle="bold"
+                            android:text="Name "/>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:textStyle="bold"
+                            android:text="Amt Spend "/>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:textStyle="bold"
+                            android:text="Amd Balance "/>
+                    </TableRow>
+
+
+
+
+                </TableLayout>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/restore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_below="@+id/groupUsersLayer"
+            android:layout_marginTop="15dp"
+            >
+
+            <ImageView
+                android:id="@+id/restorebtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/double_arrow_up"
+                />
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:paddingBottom="15dp"
+            android:layout_below="@+id/restore"
+            android:id="@+id/scrollView">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+
+
+                <TableLayout
+                    android:id="@+id/groupEntryTableLayout"
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:shrinkColumns="1"
+                    android:stretchColumns="1"
+                    android:background="#DFD080"
+                    android:paddingBottom="2dp"
+                    >
+
+                    <TableRow
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:shrinkColumns="1"
+                        android:stretchColumns="1"
+                        android:background="#DFD080"
+                        android:paddingBottom="2dp">
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Date"
+                            android:padding="5dp"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Description"
+                            android:padding="5dp"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Name"
+                            android:padding="5dp"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:layout_weight="4"
+                            android:layout_height="wrap_content"
+                            android:text="Amount"
+                            android:padding="5dp"
+                            android:textStyle="bold"/>
+                    </TableRow>
+
+
+                </TableLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+
+
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/addEntry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/add_24"
+            android:layout_gravity="bottom|end"
+            app:elevation="6dp"
+            app:fabSize="mini"
+
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
+
+            app:pressedTranslationZ="12dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+
+    </RelativeLayout>
+    -->

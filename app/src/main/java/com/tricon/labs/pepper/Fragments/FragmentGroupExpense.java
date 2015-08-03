@@ -1,5 +1,6 @@
 package com.tricon.labs.pepper.Fragments;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.tricon.labs.pepper.R;
 import com.tricon.labs.pepper.activities.groupexpense.ActivityAddOrEditGroup;
+import com.tricon.labs.pepper.activities.groupexpense.ActivityGroupExpenseIndividual;
 import com.tricon.labs.pepper.adapters.AdapterGroupExpense;
 import com.tricon.labs.pepper.database.DBHelper;
 import com.tricon.labs.pepper.models.Category;
@@ -49,7 +51,7 @@ public class FragmentGroupExpense extends Fragment {
         ListView lvGroup = (ListView) rootView.findViewById(R.id.lv_groups);
 
         //get db instance
-        mDBHelper = new DBHelper(getActivity());
+        mDBHelper = DBHelper.getInstance(getActivity());
 
         //set list view adapter
         mAdapter = new AdapterGroupExpense(mGroupList);
@@ -97,13 +99,10 @@ public class FragmentGroupExpense extends Fragment {
     private class ListItemClicked implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            /*
-            Person person = mPersonList.get(position);
-            Intent i = new Intent(getActivity(), ActivityLendAndBorrowIndividual.class);
-            i.putExtra("USERID", person.id);
-            i.putExtra("USERNAME", person.name);
+
+            Intent i = new Intent(getActivity(), ActivityGroupExpenseIndividual.class);
+            i.putExtra("GROUP", mGroupList.get(position) );
             startActivity(i);
-            */
         }
     }
 

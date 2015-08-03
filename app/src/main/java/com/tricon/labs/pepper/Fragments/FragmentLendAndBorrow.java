@@ -41,7 +41,7 @@ public class FragmentLendAndBorrow extends Fragment {
         ListView lvPersons = (ListView) mRootView.findViewById(R.id.lv_persons);
 
         //get db instance
-        mDBHelper = new DBHelper(getActivity());
+        mDBHelper = DBHelper.getInstance(getActivity());
 
         //set list view adapter
         mAdapter = new AdapterLendAndBorrow(mPersonList);

@@ -62,7 +62,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static DBHelper mDBDbHelper = null;
 
-    public DBHelper(Context context) {
+    private DBHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
 
@@ -94,7 +94,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         db.execSQL(
-                "create table " + JOINTGROUP_TABLE_NAME + "  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', isonline INTEGER DEFAULT 0, owner INTEGER DEFAULT 1, name text,  members_count INTEGER,ismonthlytask INTEGER  DEFAULT 0 , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB, last_updated DATE ,status text DEFAULT 'new')"  /* status=>new,updated (for knowing local changes)    */
+                "create table " + JOINTGROUP_TABLE_NAME + "  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', isonline INTEGER DEFAULT 0, owner text, name text,  members_count INTEGER,ismonthlytask INTEGER  DEFAULT 0 , description text, totalamt FLOAT DEFAULT 0, balanceamt FLOAT DEFAULT 0, photo BLOB )"  /* status=>new,updated (for knowing local changes)    */
         );
         db.execSQL(
                 "create table " + JOINTENTRY_TABLE_NAME + "  (_id INTEGER primary key autoincrement, onlineid text DEFAULT '0', joint_group_id INTEGER, created_date DATE, description text, user_id INTEGER, amt FLOAT, is_split INTEGER DEFAULT 0, last_updated DATE, status text DEFAULT 'new' )"  /* status=>new,updated  (for knowing local changes)   */

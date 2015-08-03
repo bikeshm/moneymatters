@@ -18,7 +18,8 @@ public class ActivitySplash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        mDBHelper = new DBHelper(this);
+        //get db instance
+        mDBHelper =DBHelper.getInstance(ActivitySplash.this);
 
         new Handler().postDelayed(new Runnable() {
 

@@ -50,7 +50,7 @@
             android:name="com.tricon.labs.pepper.activities.personalexpense.ActivityPersonalExpenseIndividual"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tricon.labs.pepper.activities.groupexpense.ActivityJointExpenseIndividual"
+            android:name="com.tricon.labs.pepper.activities.groupexpense.ActivityGroupExpenseIndividual"
             android:label="@string/title_activity_joint_expense_individual"
             android:screenOrientation="portrait" />
         <activity

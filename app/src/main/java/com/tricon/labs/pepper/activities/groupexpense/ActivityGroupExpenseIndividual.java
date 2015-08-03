@@ -1,9 +1,84 @@
 package com.tricon.labs.pepper.activities.groupexpense;
 
-import com.tricon.labs.pepper.activities.ActivityBase;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+
+import com.tricon.labs.pepper.Fragments.FragmentGroupExpenseIndividualExpenses;
+import com.tricon.labs.pepper.Fragments.FragmentGroupExpenseIndividualSummary;
+import com.tricon.labs.pepper.R;
+import com.tricon.labs.pepper.adapters.AdapterViewPager;
+import com.tricon.labs.pepper.models.Group;
 
 
-public class ActivityJointExpenseIndividual extends ActivityBase {
+public class ActivityGroupExpenseIndividual extends AppCompatActivity {
+
+    Group mGroup;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_group_expense_individual);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
+        setSupportActionBar(toolbar);
+
+
+        //get extras
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            mGroup = extras.getParcelable("GROUP");
+
+        }
+
+        //set actionbar title
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setTitle(mGroup.name);
+        }
+
+
+        ViewPager vpExpenseModule = (ViewPager) findViewById(R.id.vp_group_module);
+        setupViewPager(vpExpenseModule);
+
+
+        final TabLayout tlExpenseModule = (TabLayout) findViewById(R.id.tl_group_module);
+        tlExpenseModule.setupWithViewPager(vpExpenseModule);
+
+        findViewById(R.id.btn_create).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i;
+
+                //i = new Intent(ActivityHome.this, ActivityPersonalExpenseAddEntry.class);
+                //startActivity(i);
+
+            }
+        });
+
+    }
+
+
+    private void setupViewPager(ViewPager viewPager) {
+        AdapterViewPager adapter = new AdapterViewPager(getSupportFragmentManager());
+
+        adapter.addFrag(FragmentGroupExpenseIndividualSummary.getInstance(mGroup), "Summary");
+        adapter.addFrag(FragmentGroupExpenseIndividualExpenses.getInstance(mGroup), "Expenses");
+
+        viewPager.setAdapter(adapter);
+    }
+
+
+}
+
+
+
 /*
     //View JointExpenseIndividual;
 
@@ -27,7 +102,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_joint_expense_individual);
+        setContentView(R.layout.activity_group_expense_individual);
 
         myDb = new DBHelper(this);
 
@@ -632,6 +707,7 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
             //not registerd means it is created as online group but not updated in server
             Log.i("api call","not registred group it is created as online group but not updated in server");
 
+            // TODO: 6/16/2015 :- need to work on it
             generateTables();
         }
         else{
@@ -865,5 +941,6 @@ public class ActivityJointExpenseIndividual extends ActivityBase {
             myDb.close();
         }
     }
-    */
+
 }
+*/

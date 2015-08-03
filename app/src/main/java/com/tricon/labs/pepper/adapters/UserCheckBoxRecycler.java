@@ -24,7 +24,10 @@ import static com.tricon.labs.pepper.libraries.parsePhone.parsePhone;
 /**
  * Created by bikesh on 6/25/2015.
  */
-public class UserCheckBoxRecycler extends RecyclerView.Adapter<UserCheckBoxRecycler.viewHolder> implements Filterable {
+
+public class UserCheckBoxRecycler {}
+
+/*extends RecyclerView.Adapter<UserCheckBoxRecycler.viewHolder> implements Filterable {
 
     private Context context;
 
@@ -173,7 +176,7 @@ public class UserCheckBoxRecycler extends RecyclerView.Adapter<UserCheckBoxRecyc
             /*else {
                 cursor = mCursor;
             }
-            */
+            *888./
             filterResults.values = cursor;
             filterResults.count = cursor.getCount() ;
             return filterResults;
@@ -188,3 +191,4 @@ public class UserCheckBoxRecycler extends RecyclerView.Adapter<UserCheckBoxRecyc
     }
 
 }
+*/

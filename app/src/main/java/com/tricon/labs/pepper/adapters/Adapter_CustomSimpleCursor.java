@@ -24,8 +24,12 @@ import static com.tricon.labs.pepper.libraries.parsePhone.parsePhone;
  * Created by bikesh on 5/15/2015.
  * thia adapter userd to generate fist level listview (eg:- ActivityLendandBorrow, ActivityPersonalExpense, etc)
  */
-public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
 
+public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
+    public Adapter_CustomSimpleCursor(Context context, int layout, Cursor c, String[] from, int[] to) {
+        super(context, layout, c, from, to);
+    }
+/*
     DBHelper myDb;
     private int layout;
     private final LayoutInflater inflater;
@@ -153,7 +157,7 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
             else{
                 ((TextView) view.findViewById(R.id.item_phone)).setVisibility(View.GONE);
             }
-            */
+            *./
         }
         else if(cContext.getResources().getResourceEntryName(layout).equals("listview_item_with_checkbox_template")){
 
@@ -222,4 +226,5 @@ public class Adapter_CustomSimpleCursor extends SimpleCursorAdapter {
 
 
     }
+    */
 }

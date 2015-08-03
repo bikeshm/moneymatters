@@ -45,4 +45,6 @@
     <string name="remove">REMOVE</string>
     <string name="title_remove_member">Remove Member</string>
     <string name="spent">Spent</string>
+    <string name="total">Total</string>
+    <string name="per_head">Per Head</string>
 </resources>
