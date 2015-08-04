@@ -3,4 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.tricon.labs.crumbs.activities.groupexpense.ActivityAddOrEditGroup">
 
+    <item
+        android:id="@+id/action_done"
+        android:icon="@mipmap/ic_done_white_24dp"
+        android:title="@string/action_done"
+        app:showAsAction="always" />
+
 </menu>

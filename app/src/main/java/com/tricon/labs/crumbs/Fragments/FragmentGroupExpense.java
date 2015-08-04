@@ -65,7 +65,7 @@ public class FragmentGroupExpense extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 generatePopupMenu(position);
-                return false;
+                return true;
             }
         });
 

@@ -15,8 +15,7 @@ import com.tricon.labs.crumbs.Fragments.FragmentLendAndBorrow;
 import com.tricon.labs.crumbs.Fragments.FragmentPersonalExpense;
 import com.tricon.labs.crumbs.R;
 import com.tricon.labs.crumbs.activities.groupexpense.ActivityAddOrEditGroup;
-import com.tricon.labs.crumbs.activities.lendandborrow.ActivityLendAndBorrowAddEntry;
-import com.tricon.labs.crumbs.activities.personalexpense.ActivityPersonalExpenseAddEntry;
+import com.tricon.labs.crumbs.activities.lendandborrow.ActivityAddOrEditEntry;
 import com.tricon.labs.crumbs.adapters.AdapterViewPager;
 
 
@@ -48,11 +47,11 @@ public class ActivityHome extends AppCompatActivity {
                 Intent i;
                 switch (tlExpenseModule.getSelectedTabPosition()) {
                     case 0:
-                        i = new Intent(ActivityHome.this, ActivityPersonalExpenseAddEntry.class);
+                        i = new Intent(ActivityHome.this, com.tricon.labs.crumbs.activities.personalexpense.ActivityAddOrEditEntry.class);
                         startActivity(i);
                         break;
                     case 1:
-                        i = new Intent(ActivityHome.this, ActivityLendAndBorrowAddEntry.class);
+                        i = new Intent(ActivityHome.this, ActivityAddOrEditEntry.class);
                         startActivity(i);
                         break;
                     case 2:

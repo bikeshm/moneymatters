@@ -685,6 +685,7 @@ public class ActivityAddOrEditGroup extends AppCompatActivity implements RemoveM
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
+            actionBar.setTitle("Add Group Details");
         }
 
         //setup views
@@ -756,6 +757,9 @@ public class ActivityAddOrEditGroup extends AppCompatActivity implements RemoveM
             }
             mETGroupName.setText(group.name);
             mETGroupName.setSelection(group.name.length());
+            if (actionBar != null) {
+                actionBar.setTitle("Edit Group Details");
+            }
         }
 
         //fetch contacts and set them in autocomplete text view's adapter
@@ -770,7 +774,7 @@ public class ActivityAddOrEditGroup extends AppCompatActivity implements RemoveM
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_activity_group_expenses_add_entry, menu);
+        getMenuInflater().inflate(R.menu.menu_activity_group_expense_add_group, menu);
         return true;
     }
 
@@ -820,9 +824,12 @@ public class ActivityAddOrEditGroup extends AppCompatActivity implements RemoveM
 
     private class SaveDataTask extends AsyncTask<Void, Void, Boolean> {
 
+        private String groupName;
+
         @Override
         protected void onPreExecute() {
             mPDSaveData.show();
+            groupName = mETGroupName.getText().toString().trim();
         }
 
         @Override
@@ -837,15 +844,18 @@ public class ActivityAddOrEditGroup extends AppCompatActivity implements RemoveM
                 memberIds.add(mDBHelper.registerUserFromContact(member.phone, member.name) + "");
             }
 
-            //save group expense (update existing or insert new)
+            //save group details (update existing or insert new)
             HashMap<String, String> data = new HashMap<>();
-            data.put("name", mETGroupName.getText().toString());
+            data.put("name", groupName);
             data.put("description", "");
-            data.put("members_count", count + "");
+            data.put("members_count", (count + 1) + "");
             data.put("ismonthlytask", monthlyTask + "");
 
-            //if updating previous group info
-            if (group != null) {
+            //if group == null that means create new other wise update existing
+            if (group == null) {
+                long groupId = mDBHelper.insertJointGroup(data);
+                return groupId > 0 && mDBHelper.insertUserGroupRelation(groupId + "", memberIds) > 0;
+            } else {
                 data.put("_id", group.id + "");
                 if (mDBHelper.updateJointGroup(data) > 0) {
                     //update user group relation
@@ -858,9 +868,6 @@ public class ActivityAddOrEditGroup extends AppCompatActivity implements RemoveM
                 } else {
                     return false;
                 }
-            } else {
-                long groupId = mDBHelper.insertJointGroup(data);
-                return groupId > 0 && mDBHelper.insertUserGroupRelation(groupId + "", memberIds) > 0;
             }
         }
 
@@ -888,7 +895,7 @@ public class ActivityAddOrEditGroup extends AppCompatActivity implements RemoveM
             //if editing existing group then fetch existing members and remove them from allContacts
             //add the existing members in members adapter data set (in onPostExecute)
             if (group != null) {
-                existingMembers = mDBHelper.getGroupMembers(group.id + "");
+                existingMembers = mDBHelper.getGroupMembers(group.id + "", false);
                 allContacts.removeAll(existingMembers);
             }
             return allContacts;

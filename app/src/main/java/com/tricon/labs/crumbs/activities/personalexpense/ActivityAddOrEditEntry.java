@@ -33,7 +33,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeSet;
 
-public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
+public class ActivityAddOrEditEntry extends AppCompatActivity {
 
     private Button mBtnDate;
     private TextInputLayout mTILCategory;
@@ -317,7 +317,7 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            mACTVCategory.setAdapter(new AdapterCategoryList(ActivityPersonalExpenseAddEntry.this, mCategories));
+            mACTVCategory.setAdapter(new AdapterCategoryList(ActivityAddOrEditEntry.this, mCategories));
         }
     }
 
@@ -360,7 +360,7 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
                 //start save entry task
                 saveEntry(mCategory);
             } else {
-                Toast.makeText(ActivityPersonalExpenseAddEntry.this,
+                Toast.makeText(ActivityAddOrEditEntry.this,
                         "Something went wrong while saving category.",
                         Toast.LENGTH_SHORT).show();
             }
@@ -424,12 +424,12 @@ public class ActivityPersonalExpenseAddEntry extends AppCompatActivity {
         protected void onPostExecute(Boolean success) {
             mPDSaveData.dismiss();
             if (success) {
-                Toast.makeText(ActivityPersonalExpenseAddEntry.this,
+                Toast.makeText(ActivityAddOrEditEntry.this,
                         "Data saved successfully",
                         Toast.LENGTH_SHORT).show();
                 finish();
             } else {
-                Toast.makeText(ActivityPersonalExpenseAddEntry.this,
+                Toast.makeText(ActivityAddOrEditEntry.this,
                         "Something went wrong while saving entry.",
                         Toast.LENGTH_SHORT).show();
             }

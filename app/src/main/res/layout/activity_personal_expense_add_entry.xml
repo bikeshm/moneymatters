@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.tricon.labs.crumbs.activities.personalexpense.ActivityPersonalExpenseAddEntry">
+    tools:context="com.tricon.labs.crumbs.activities.personalexpense.ActivityAddOrEditEntry">
 
     <include layout="@layout/toolbar" />
 

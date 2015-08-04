@@ -11,7 +11,6 @@ import com.tricon.labs.crumbs.R;
 import com.tricon.labs.crumbs.models.Contact;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class AdapterMembersSpinner extends BaseAdapter {
@@ -19,7 +18,7 @@ public class AdapterMembersSpinner extends BaseAdapter {
     private List<Contact> mMembers;
     private LayoutInflater mInflater;
 
-    public AdapterMembersSpinner(Context context, HashSet<Contact> members) {
+    public AdapterMembersSpinner(Context context, ArrayList<Contact> members) {
         mMembers = new ArrayList<>(members);
         this.mInflater = LayoutInflater.from(context);
     }
@@ -44,7 +43,7 @@ public class AdapterMembersSpinner extends BaseAdapter {
         ViewHolder holder;
         Contact contact = getItem(position);
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.adapter_contact_list_item, parent, false);
+            convertView = mInflater.inflate(R.layout.adapter_members_spinner, parent, false);
             holder = new ViewHolder();
             holder.tvName = (TextView) convertView.findViewById(R.id.tv_name);
             holder.tvPhone = (TextView) convertView.findViewById(R.id.tv_phone);

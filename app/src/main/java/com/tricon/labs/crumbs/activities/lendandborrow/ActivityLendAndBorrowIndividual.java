@@ -92,7 +92,7 @@ public class ActivityLendAndBorrowIndividual extends AppCompatActivity implement
                 LendAndBorrowEntry entry = new LendAndBorrowEntry();
 
 
-                Intent intent = new Intent(ActivityLendAndBorrowIndividual.this, ActivityLendAndBorrowAddEntry.class);
+                Intent intent = new Intent(ActivityLendAndBorrowIndividual.this, ActivityAddOrEditEntry.class);
                 intent.putExtra("ENTRY", entry);
                 intent.putExtra("EDITENTRY", false);
 
@@ -120,7 +120,7 @@ public class ActivityLendAndBorrowIndividual extends AppCompatActivity implement
 
     @Override
     public void onEntryClicked(int position) {
-        Intent intent = new Intent(ActivityLendAndBorrowIndividual.this, ActivityLendAndBorrowAddEntry.class);
+        Intent intent = new Intent(ActivityLendAndBorrowIndividual.this, ActivityAddOrEditEntry.class);
         intent.putExtra("ENTRY", mEntries.get(position));
         intent.putExtra("EDITENTRY", true);
         intent.putExtra("SELECTEDUSERID", mUserId);

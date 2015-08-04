@@ -97,7 +97,7 @@ public class ActivityPersonalExpenseIndividual extends AppCompatActivity impleme
             public void onClick(View v) {
                 PersonalExpenseEntry entry = new PersonalExpenseEntry();
                 entry.category = mCategoryName;
-                Intent intent = new Intent(ActivityPersonalExpenseIndividual.this, ActivityPersonalExpenseAddEntry.class);
+                Intent intent = new Intent(ActivityPersonalExpenseIndividual.this, ActivityAddOrEditEntry.class);
                 intent.putExtra("ENTRY", entry);
                 intent.putExtra("SPECIFICENTRY", true);
                 startActivity(intent);
@@ -135,7 +135,7 @@ public class ActivityPersonalExpenseIndividual extends AppCompatActivity impleme
 
     @Override
     public void onEntryClicked(int position) {
-        Intent intent = new Intent(ActivityPersonalExpenseIndividual.this, ActivityPersonalExpenseAddEntry.class);
+        Intent intent = new Intent(ActivityPersonalExpenseIndividual.this, ActivityAddOrEditEntry.class);
         intent.putExtra("ENTRY", mEntries.get(position));
         startActivity(intent);
     }

@@ -40,7 +40,7 @@ import java.util.Map;
 
 import static com.tricon.labs.crumbs.libraries.Utils.getContactList;
 
-public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
+public class ActivityAddOrEditEntry extends AppCompatActivity {
 
     private DBHelper mDBHelper;
 
@@ -386,12 +386,12 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
         protected void onPostExecute(Boolean success) {
             mPDSaveData.dismiss();
             if (success) {
-                Toast.makeText(ActivityLendAndBorrowAddEntry.this,
+                Toast.makeText(ActivityAddOrEditEntry.this,
                         "Data saved successfully",
                         Toast.LENGTH_SHORT).show();
                 finish();
             } else {
-                Toast.makeText(ActivityLendAndBorrowAddEntry.this,
+                Toast.makeText(ActivityAddOrEditEntry.this,
                         "Something went wrong while saving entry.",
                         Toast.LENGTH_SHORT).show();
             }
@@ -409,7 +409,7 @@ public class ActivityLendAndBorrowAddEntry extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(HashSet<Contact> members) {
-            mACTVUserName.setAdapter(new AdapterContactList(ActivityLendAndBorrowAddEntry.this, new ArrayList<>(members)));
+            mACTVUserName.setAdapter(new AdapterContactList(ActivityAddOrEditEntry.this, new ArrayList<>(members)));
         }
     }
 

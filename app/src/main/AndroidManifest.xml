@@ -33,18 +33,17 @@
             android:label="@string/title_activity_lend_and_borrow_personal"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tricon.labs.crumbs.activities.lendandborrow.ActivityLendAndBorrowAddEntry"
+            android:name=".activities.lendandborrow.ActivityAddOrEditEntry"
             android:label="@string/title_activity_lend_and_borrow_add_entry"
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tricon.labs.crumbs.activities.personalexpense.ActivityPersonalExpenseAddEntry"
+            android:name=".activities.personalexpense.ActivityAddOrEditEntry"
             android:label="@string/title_activity_add_entry"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name="com.tricon.labs.crumbs.activities.groupexpense.ActivityAddOrEditGroup"
-            android:label="@string/title_activity_add_user"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tricon.labs.crumbs.activities.personalexpense.ActivityPersonalExpenseIndividual"
@@ -54,7 +53,7 @@
             android:label="@string/title_activity_joint_expense_individual"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tricon.labs.crumbs.activities.groupexpense.ActivityGroupExpenseAddEntry"
+            android:name=".activities.groupexpense.ActivityAddOrEditEntry"
             android:label="@string/title_activity_add_group_entry" />
         <activity
             android:name="com.tricon.labs.crumbs.activities.personalexpense.ActivityEditCategory"

@@ -84,7 +84,7 @@ public class ActivityEditCategory extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_activity_add_category, menu);
+        getMenuInflater().inflate(R.menu.menu_activity_edit_category, menu);
         return true;
     }
 

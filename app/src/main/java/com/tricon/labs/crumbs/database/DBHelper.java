@@ -1177,12 +1177,18 @@ public class DBHelper extends SQLiteOpenHelper {
         return userIds;
     }
 
-    public HashSet<Contact> getGroupMembers(String groupId) {
+    public HashSet<Contact> getGroupMembers(String groupId, boolean includeOwner) {
 
         HashSet<Contact> members = new HashSet<>();
+        String query;
+        if (includeOwner) {
+            query = "select _id, name, phone from usertable where _id in ( select user_id from " + JOINT_USER_GROUP_RELATION_TABLE_NAME + " where joint_group_id = " + groupId + ")";
+        } else {
+            query = "select _id, name, phone from usertable where _id != 1 and _id in ( select user_id from " + JOINT_USER_GROUP_RELATION_TABLE_NAME + " where joint_group_id = " + groupId + ")";
+        }
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select _id, name, phone from usertable where _id != 1 and _id in ( select user_id from " + JOINT_USER_GROUP_RELATION_TABLE_NAME + " where joint_group_id = " + groupId + ")", null);
+        Cursor res = db.rawQuery(query, null);
         int idColumnIndex = res.getColumnIndex("_id");
         int nameColumnIndex = res.getColumnIndex("name");
         int phoneColumnIndex = res.getColumnIndex("phone");

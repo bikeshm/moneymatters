@@ -8,4 +8,8 @@
         <item name="colorControlNormal">@android:color/darker_gray</item>
     </style>
 
+    <style name="spinnerStyle">
+        <item name="colorControlNormal">@android:color/black</item>
+    </style>
+
 </resources>

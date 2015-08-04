@@ -24,9 +24,11 @@ import com.tricon.labs.crumbs.R;
 import com.tricon.labs.crumbs.adapters.AdapterMembersSpinner;
 import com.tricon.labs.crumbs.database.DBHelper;
 import com.tricon.labs.crumbs.models.Contact;
+import com.tricon.labs.crumbs.models.GroupExpensesEntry;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,7 +36,7 @@ import java.util.HashSet;
 import java.util.Locale;
 
 
-public class ActivityGroupExpenseAddEntry extends AppCompatActivity {
+public class ActivityAddOrEditEntry extends AppCompatActivity {
 
     private Button mBtnDate;
     private Spinner mSpinnerMembers;
@@ -46,9 +48,11 @@ public class ActivityGroupExpenseAddEntry extends AppCompatActivity {
     private ProgressDialog mPDSaveData;
     private DBHelper mDBHelper;
 
+    private GroupExpensesEntry groupExpensesEntry;
     private String mGroupId;
 
     public static final String INTENT_GROUP_ID = "com.tricon.labs.pepper.activities.groupexpense.GROUP_ID";
+    public static final String INTENT_GROUP_EXPENSE_ENTRY = "com.tricon.labs.pepper.activities.groupexpense.GROUP_EXPENSE_ENTRY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,10 +97,17 @@ public class ActivityGroupExpenseAddEntry extends AppCompatActivity {
         //get extras
         Intent intent = getIntent();
         mGroupId = intent.getStringExtra(INTENT_GROUP_ID);
+        groupExpensesEntry = intent.getParcelableExtra(INTENT_GROUP_EXPENSE_ENTRY);
 
         //set data in views
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-        mBtnDate.setText(simpleDateFormat.format(new Date()));
+        if (groupExpensesEntry != null) {
+            mBtnDate.setText(groupExpensesEntry.expenseDate);
+            mETAmount.setText(groupExpensesEntry.amount + "");
+            mETDescription.setText(groupExpensesEntry.description);
+        } else {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+            mBtnDate.setText(simpleDateFormat.format(new Date()));
+        }
 
         //set listeners
         mBtnDate.setOnClickListener(new View.OnClickListener() {
@@ -132,7 +143,7 @@ public class ActivityGroupExpenseAddEntry extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_activity_lend_and_borrow_add_entry, menu);
+        getMenuInflater().inflate(R.menu.menu_activity_group_expense_add_entry, menu);
         return true;
     }
 
@@ -189,42 +200,57 @@ public class ActivityGroupExpenseAddEntry extends AppCompatActivity {
 
     private class SaveDataTask extends AsyncTask<Void, Void, Boolean> {
 
+        String date;
+        String amount;
+        String description;
+        String userId;
+
         @Override
         protected void onPreExecute() {
             mPDSaveData.show();
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            HashMap<String, String> data = new HashMap<>();
 
             //convert date into "yyyy MM dd" format
             SimpleDateFormat localDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
             SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-            String date = mBtnDate.getText().toString();
+            date = mBtnDate.getText().toString();
             try {
                 date = dbDateFormat.format(localDateFormat.parse(date));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
 
-            data.put("created_date", date);
-            data.put("amt", mETAmount.getText().toString().trim());
-            data.put("description", mETDescription.getText().toString());
-            data.put("joint_group_id", mGroupId);
-            data.put("user_id", ((Contact) mSpinnerMembers.getSelectedItem()).id + "");
+            amount = mETAmount.getText().toString().trim();
+            description = mETDescription.getText().toString();
+            userId = ((Contact) mSpinnerMembers.getSelectedItem()).id + "";
+        }
 
-            return mDBHelper.insertGroupEntry(data) > 0;
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            HashMap<String, String> data = new HashMap<>();
+
+
+            data.put("created_date", date);
+            data.put("amt", amount);
+            data.put("description", description);
+            data.put("joint_group_id", mGroupId);
+            data.put("user_id", userId);
+
+            if (groupExpensesEntry == null) {
+                return mDBHelper.insertGroupEntry(data) > 0;
+            } else {
+                data.put("_id", groupExpensesEntry.expenseId + "");
+                return mDBHelper.updateGroupEntry(data) > 0;
+            }
         }
 
         @Override
         protected void onPostExecute(Boolean success) {
             mPDSaveData.dismiss();
             if (success) {
-                Toast.makeText(ActivityGroupExpenseAddEntry.this, "Data saved successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityAddOrEditEntry.this, "Data saved successfully", Toast.LENGTH_SHORT).show();
                 finish();
             } else {
-                Toast.makeText(ActivityGroupExpenseAddEntry.this, "Data saved failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityAddOrEditEntry.this, "Data saved failed", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -233,12 +259,26 @@ public class ActivityGroupExpenseAddEntry extends AppCompatActivity {
 
         @Override
         protected HashSet<Contact> doInBackground(Void... params) {
-            return mDBHelper.getGroupMembers(mGroupId);
+            return mDBHelper.getGroupMembers(mGroupId, true);
         }
 
         @Override
         protected void onPostExecute(HashSet<Contact> members) {
-            mSpinnerMembers.setAdapter(new AdapterMembersSpinner(ActivityGroupExpenseAddEntry.this, members));
+
+            ArrayList<Contact> groupMembers = new ArrayList<>();
+
+            //if editing the expense then remove the member who spent from the members hash set
+            //put that member on first position in adapter data set and make it selected by default
+            if (groupExpensesEntry != null) {
+                members.remove(groupExpensesEntry.spentBy);
+                groupMembers.addAll(members);
+                groupMembers.add(0, groupExpensesEntry.spentBy);
+            } else {
+                groupMembers.addAll(members);
+            }
+            AdapterMembersSpinner adapter = new AdapterMembersSpinner(ActivityAddOrEditEntry.this, groupMembers);
+            mSpinnerMembers.setAdapter(adapter);
+            mSpinnerMembers.setSelection(0);
         }
     }
 }
