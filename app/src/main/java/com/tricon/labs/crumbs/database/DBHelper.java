@@ -1435,11 +1435,11 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public Map<String, String> getGroupEntryTotalPerHead(String groupId) {
+    public Map<String, String> getGroupEntryTotalPerHead(int groupId) {
         return getGroupEntryTotalPerHead(groupId, null);
     }
 
-    public Map<String, String> getGroupEntryTotalPerHead(String groupId, String month) {
+    public Map<String, String> getGroupEntryTotalPerHead(int groupId, String month) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res;
         Map<String, String> data = new HashMap<>();
