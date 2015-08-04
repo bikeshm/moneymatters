@@ -104,6 +104,11 @@ public class ActivityAddOrEditEntry extends AppCompatActivity {
             mBtnDate.setText(groupExpensesEntry.expenseDate);
             mETAmount.setText(groupExpensesEntry.amount + "");
             mETDescription.setText(groupExpensesEntry.description);
+
+            if (actionBar != null) {
+                actionBar.setTitle("Edit Group Entry");
+            }
+
         } else {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
             mBtnDate.setText(simpleDateFormat.format(new Date()));

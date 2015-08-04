@@ -1,6 +1,5 @@
 package com.tricon.labs.crumbs.Fragments;
 
-import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -12,10 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.TextView;
 
 import com.tricon.labs.crumbs.R;
+import com.tricon.labs.crumbs.activities.groupexpense.ActivityGroupExpenseIndividual;
 import com.tricon.labs.crumbs.adapters.AdapterGroupExpenseIndividualSummaryMember;
 import com.tricon.labs.crumbs.database.DBHelper;
 import com.tricon.labs.crumbs.interfaces.EntryClickedListener;
@@ -46,6 +45,8 @@ public class FragmentGroupExpenseIndividualSummary extends Fragment implements E
 
     Group mGroup;
 
+    ActivityGroupExpenseIndividual mActivityInstance;
+
     private List<Member> mMembers = new ArrayList<>();
     private AdapterGroupExpenseIndividualSummaryMember mAdapter;
 
@@ -68,6 +69,9 @@ public class FragmentGroupExpenseIndividualSummary extends Fragment implements E
         //get db instance
         mDBHelper = DBHelper.getInstance(getActivity());
 
+        //Activity instance
+        mActivityInstance = ((ActivityGroupExpenseIndividual) getActivity());
+
 
         //setup views
         mBtnDate = (Button) rootView.findViewById(R.id.btn_date);
@@ -86,7 +90,7 @@ public class FragmentGroupExpenseIndividualSummary extends Fragment implements E
 
         //If the task is monthly renewing then only the date button visible.
         if (mGroup.ismonthlytask == 1) {
-           mBtnDate.setVisibility(View.VISIBLE);
+            mBtnDate.setVisibility(View.VISIBLE);
         }
 
         //get current date
@@ -94,6 +98,9 @@ public class FragmentGroupExpenseIndividualSummary extends Fragment implements E
         String dayString = ((calenderInstance.get(Calendar.MONTH) + 1) < 10 ? "0" : "") + (calenderInstance.get(Calendar.MONTH) + 1);
         mSelectedDate = dayString + "-" + calenderInstance.get(Calendar.YEAR);
         mBtnDate.setText(calenderInstance.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US) + " - " + calenderInstance.get(Calendar.YEAR));
+
+
+
 
         //bind listeners
         mBtnDate.setOnClickListener(new View.OnClickListener() {
@@ -103,6 +110,13 @@ public class FragmentGroupExpenseIndividualSummary extends Fragment implements E
                 openDatePicker(Integer.parseInt(monthAndYear[0].trim()) - 1, Integer.parseInt(monthAndYear[1].trim()));
             }
         });
+
+        //set progress dialog
+        mPDSaveData = new ProgressDialog(getActivity());
+        mPDSaveData.setCancelable(false);
+        mPDSaveData.setIndeterminate(true);
+        mPDSaveData.setMessage("Saving Data...");
+
 
         return rootView;
 
@@ -118,6 +132,11 @@ public class FragmentGroupExpenseIndividualSummary extends Fragment implements E
     private class FetchMembersDataTask extends AsyncTask<Void, Void, Void> {
 
         @Override
+        protected void onPreExecute() {
+            mPDSaveData.show();
+        }
+
+        @Override
         protected Void doInBackground(Void... params) {
             mMembers.clear();
 
@@ -125,7 +144,7 @@ public class FragmentGroupExpenseIndividualSummary extends Fragment implements E
             if (mGroup.ismonthlytask == 0) {
                 mMembers.addAll(mDBHelper.getGroupMemberDetailsList(mGroup.id));
             } else {
-                mMembers.addAll(mDBHelper.getGroupMemberDetailsList(mGroup.id , mSelectedDate ));
+                mMembers.addAll(mDBHelper.getGroupMemberDetailsList(mGroup.id, mSelectedDate));
             }
 
             return null;
@@ -133,13 +152,19 @@ public class FragmentGroupExpenseIndividualSummary extends Fragment implements E
 
         @Override
         protected void onPostExecute(Void result) {
+            mPDSaveData.dismiss();
             super.onPostExecute(result);
             mAdapter.notifyDataSetChanged();
-            new FetchBalancelAmount().execute();
+            new FetchBalanceAmount().execute();
         }
     }
 
-    private class FetchBalancelAmount extends AsyncTask<Void, Void, Map<String, String>> {
+    private class FetchBalanceAmount extends AsyncTask<Void, Void, Map<String, String>> {
+
+        @Override
+        protected void onPreExecute() {
+            mPDSaveData.show();
+        }
 
         @Override
         protected Map<String, String> doInBackground(Void... params) {
@@ -147,15 +172,16 @@ public class FragmentGroupExpenseIndividualSummary extends Fragment implements E
             Map<String, String> data = new HashMap<String, String>();
 
             if (mGroup.ismonthlytask == 0) {
-                data = mDBHelper.getGroupEntryTotalPerHead(mGroup.id );
+                data = mDBHelper.getGroupEntryTotalPerHead(mGroup.id);
             } else {
-                data = mDBHelper.getGroupEntryTotalPerHead(mGroup.id , mSelectedDate );
+                data = mDBHelper.getGroupEntryTotalPerHead(mGroup.id, mSelectedDate);
             }
             return data;
         }
 
         @Override
         protected void onPostExecute(Map<String, String> result) {
+            mPDSaveData.dismiss();
             super.onPostExecute(result);
 
             if (result.size() > 0) {
@@ -179,12 +205,14 @@ public class FragmentGroupExpenseIndividualSummary extends Fragment implements E
                 String dayString = ((monthPicker.getSelectedMonth() + 1) < 10 ? "0" : "") + (monthPicker.getSelectedMonth() + 1);
                 mSelectedDate = dayString + "-" + monthPicker.getSelectedYear();
 
+
+                mActivityInstance.updateDateChange(mSelectedDate);
+
                 new FetchMembersDataTask().execute();
             }
         }, null);
         monthPicker.show();
     }
-
 
 
     @Override

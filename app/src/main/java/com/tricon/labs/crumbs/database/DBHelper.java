@@ -18,6 +18,7 @@ import com.tricon.labs.crumbs.common.Constants;
 import com.tricon.labs.crumbs.models.Category;
 import com.tricon.labs.crumbs.models.Contact;
 import com.tricon.labs.crumbs.models.Group;
+import com.tricon.labs.crumbs.models.GroupExpensesEntry;
 import com.tricon.labs.crumbs.models.LendAndBorrowEntry;
 import com.tricon.labs.crumbs.models.Member;
 import com.tricon.labs.crumbs.models.Person;
@@ -1418,11 +1419,12 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public Cursor getGroupEntrys(String groupId) {
-        return getGroupEntrys(groupId, null);
+    public Cursor getGroupEntries(String groupId) {
+        return getGroupEntries(groupId, null);
     }
 
-    public Cursor getGroupEntrys(String groupId, String month) {
+
+    public Cursor getGroupEntries(String groupId, String month) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res;
 
@@ -1438,6 +1440,62 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToFirst();
         }
         return res;
+    }
+
+    public ArrayList<GroupExpensesEntry> getGroupEntriesList(int groupId) {
+        return getGroupEntriesList(groupId, null);
+    }
+
+    public ArrayList<GroupExpensesEntry> getGroupEntriesList(int groupId, String month) {
+
+        ArrayList<GroupExpensesEntry> list = new ArrayList<>();
+        GroupExpensesEntry groupExpensesEntry;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res;
+
+        if (month != null) {
+            month = "  and STRFTIME('%m-%Y', created_date) = '" + month + "'";
+        } else {
+            month = "";
+        }
+
+        res = db.rawQuery("select  E._id, E.user_id, U.name, U.phone,  E.created_date,E.description,E.amt, E.onlineid,E.is_split from " + JOINTENTRY_TABLE_NAME + " E, usertable U where E.user_id = U._id and  joint_group_id = " + groupId + month, null);
+
+        while (res.moveToNext()) {
+
+            groupExpensesEntry = new GroupExpensesEntry();
+
+            groupExpensesEntry.expenseId = res.getInt(0);
+            groupExpensesEntry.spentBy = new Contact(res.getInt(1), res.getString(2), res.getString(3));
+            groupExpensesEntry.groupId = groupId;
+
+            //convert date into "dd MM yyyy" format
+            SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            SimpleDateFormat localDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+            try {
+                groupExpensesEntry.expenseDate = localDateFormat.format(dbDateFormat.parse(res.getString(4)));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            groupExpensesEntry.description = res.getString(5);
+            groupExpensesEntry.amount = Float.parseFloat(String.format("%.2f", res.getFloat(6)));
+
+
+            if (groupExpensesEntry.amount < 0) {
+                groupExpensesEntry.amount = groupExpensesEntry.amount * -1;
+                groupExpensesEntry.status = Person.STATUS_GET;
+            } else {
+                groupExpensesEntry.status = Person.STATUS_GIVE;
+            }
+
+            list.add(groupExpensesEntry);
+        }
+
+        res.close();
+
+        return list;
     }
 
 

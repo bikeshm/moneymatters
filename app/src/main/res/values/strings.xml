@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Pepper</string>
+    <string name="app_name">Crumbs</string>
 
     <string-array name="countryCode">
         <item>+91</item>

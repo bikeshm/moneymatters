@@ -16,6 +16,8 @@ public class GroupExpensesEntry implements Parcelable {
     public static final int STATUS_GIVE = 0;
     public static final int STATUS_GET = 1;
 
+    public  GroupExpensesEntry(){}
+
     protected GroupExpensesEntry(Parcel in) {
         expenseId = in.readInt();
         groupId = in.readInt();

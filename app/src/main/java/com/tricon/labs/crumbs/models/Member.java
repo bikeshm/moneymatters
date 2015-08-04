@@ -1,5 +1,6 @@
 package com.tricon.labs.crumbs.models;
 
+//for group exp summery
 public class Member {
     public int id;
     public String name;

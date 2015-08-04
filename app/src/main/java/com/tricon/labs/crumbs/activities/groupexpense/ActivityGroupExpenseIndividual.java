@@ -13,21 +13,22 @@ import com.tricon.labs.crumbs.Fragments.FragmentGroupExpenseIndividualExpenses;
 import com.tricon.labs.crumbs.Fragments.FragmentGroupExpenseIndividualSummary;
 import com.tricon.labs.crumbs.R;
 import com.tricon.labs.crumbs.adapters.AdapterViewPager;
+import com.tricon.labs.crumbs.interfaces.EntryClickedListener;
+import com.tricon.labs.crumbs.interfaces.EntryLongClickedListener;
 import com.tricon.labs.crumbs.models.Group;
 
 
-public class ActivityGroupExpenseIndividual extends AppCompatActivity {
+public class ActivityGroupExpenseIndividual extends AppCompatActivity implements EntryClickedListener, EntryLongClickedListener {
 
     Group mGroup;
+    //public static String mSelectedDate;
+
+    FragmentGroupExpenseIndividualExpenses mFragmentExpenses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_expense_individual);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
-        setSupportActionBar(toolbar);
-
 
         //get extras
         Bundle extras = getIntent().getExtras();
@@ -36,13 +37,22 @@ public class ActivityGroupExpenseIndividual extends AppCompatActivity {
 
         }
 
-        //set actionbar title
+        //setup toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(android.support.v7.appcompat.R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setTitle(mGroup.name);
         }
-
 
         ViewPager vpExpenseModule = (ViewPager) findViewById(R.id.vp_group_module);
         setupViewPager(vpExpenseModule);
@@ -67,12 +77,36 @@ public class ActivityGroupExpenseIndividual extends AppCompatActivity {
         AdapterViewPager adapter = new AdapterViewPager(getSupportFragmentManager());
 
         adapter.addFrag(FragmentGroupExpenseIndividualSummary.getInstance(mGroup), "Summary");
-        adapter.addFrag(FragmentGroupExpenseIndividualExpenses.getInstance(mGroup), "Expenses");
+
+        mFragmentExpenses = FragmentGroupExpenseIndividualExpenses.getInstance(mGroup);
+        adapter.addFrag(mFragmentExpenses, "Expenses");
 
         viewPager.setAdapter(adapter);
     }
 
+    public void updateDateChange(String selectedDate) {
+        mFragmentExpenses.updateDateChange(selectedDate);
+    }
 
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_from_top, R.anim.slide_out_to_bottom);
+    }
+
+
+    @Override
+    public void onEntryClicked(int position) {
+
+        mFragmentExpenses.onEntryClicked(position);
+
+    }
+
+    @Override
+    public void onEntryLongClicked(int position) {
+
+    }
 }
 
 
