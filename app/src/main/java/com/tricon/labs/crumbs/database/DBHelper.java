@@ -960,7 +960,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 " (G.totalamt / G.members_count  ) as perhead," +
                 " (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  G._id  ) as i_spend, " +
                 " (select Total(amt) from joint_entrytable where user_id = 1 and joint_group_id =  G._id and STRFTIME('%m-%Y', created_date) = '" + dmy.format(new Date()) + "'  ) as i_spendinmonth, " +
-                "G.ismonthlytask"+
+                "G.ismonthlytask" +
                 " from joint_grouptable G";
 
         res = db.rawQuery(sql, null);
@@ -981,7 +981,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 group.amountPerHead = res.getFloat(5);
                 group.amountSpentByMe = res.getFloat(6);
                 group.amountSpentByMeCurrentMonth = res.getFloat(7);
-                group.ismonthlytask=res.getInt(8);
+                group.ismonthlytask = res.getInt(8);
 
 
                 if (group.balanceAmount < 0) {
@@ -1231,7 +1231,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public ArrayList<Member> getGroupMemberDetailsList(int groupId){
+    public ArrayList<Member> getGroupMemberDetailsList(int groupId) {
         return getGroupMemberDetailsList(groupId, null);
     }
 
@@ -1263,11 +1263,15 @@ public class DBHelper extends SQLiteOpenHelper {
                 member.id = res.getInt(0);
                 member.name = res.getString(1);
 
-                member.amountSpent = res.getFloat(2);
-                member.amountBalance = res.getFloat(3);
+
+                //String.format("%.2f",
+
+
+                member.amountSpent = Float.parseFloat(String.format("%.2f", res.getFloat(2)));
+                member.amountBalance = Float.parseFloat(String.format("%.2f", res.getFloat(3)));
 
                 if (res.getFloat(3) < 0) {
-                    member.amountBalance = res.getFloat(3) * -1;
+                    member.amountBalance = member.amountBalance * -1;
                     member.status = Person.STATUS_GET;
                 } else {
                     member.status = Person.STATUS_GIVE;
