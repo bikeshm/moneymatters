@@ -105,7 +105,7 @@ public class ActivityGroupExpenseIndividual extends AppCompatActivity implements
 
     @Override
     public void onEntryLongClicked(int position) {
-
+        mFragmentExpenses.generatePopupMenu(position);
     }
 }
 

@@ -1,23 +1,22 @@
 package com.tricon.labs.crumbs.Fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.tricon.labs.crumbs.R;
 import com.tricon.labs.crumbs.activities.groupexpense.ActivityAddOrEditEntry;
 import com.tricon.labs.crumbs.activities.groupexpense.ActivityGroupExpenseIndividual;
 import com.tricon.labs.crumbs.adapters.AdapterGroupExpenseIndividualExpenses;
 import com.tricon.labs.crumbs.database.DBHelper;
-import com.tricon.labs.crumbs.interfaces.EntryClickedListener;
-import com.tricon.labs.crumbs.interfaces.EntryLongClickedListener;
 import com.tricon.labs.crumbs.models.Group;
 import com.tricon.labs.crumbs.models.GroupExpensesEntry;
 
@@ -85,7 +84,6 @@ public class FragmentGroupExpenseIndividualExpenses extends Fragment {
     }
 
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -106,9 +104,9 @@ public class FragmentGroupExpenseIndividualExpenses extends Fragment {
             mGroupExpensesEntries.clear();
 
             if (mGroup.ismonthlytask == 0) {
-                mGroupExpensesEntries.addAll( mDBHelper.getGroupEntriesList(mGroup.id) );
+                mGroupExpensesEntries.addAll(mDBHelper.getGroupEntriesList(mGroup.id));
             } else {
-                mGroupExpensesEntries.addAll( mDBHelper.getGroupEntriesList(mGroup.id, mSelectedDate));
+                mGroupExpensesEntries.addAll(mDBHelper.getGroupEntriesList(mGroup.id, mSelectedDate));
             }
 
             return null;
@@ -123,13 +121,38 @@ public class FragmentGroupExpenseIndividualExpenses extends Fragment {
     }
 
 
+    //this function will call from activity
     public void onEntryClicked(int position) {
 
         Intent intent = new Intent(getActivity(), ActivityAddOrEditEntry.class);
         intent.putExtra(ActivityAddOrEditEntry.INTENT_GROUP_EXPENSE_ENTRY, mGroupExpensesEntries.get(position));
-        intent.putExtra(ActivityAddOrEditEntry.INTENT_GROUP_ID, mGroupExpensesEntries.get(position).groupId+"");
+        intent.putExtra(ActivityAddOrEditEntry.INTENT_GROUP_ID, mGroupExpensesEntries.get(position).groupId + "");
         startActivity(intent);
 
+    }
+
+
+    //this function will call from activity
+    public void generatePopupMenu(final int position) {
+        final CharSequence[] options = {"Edit", "Delete"};
+
+        new AlertDialog.Builder(getActivity())
+                .setItems(options, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (options[item].equals("Delete")) {
+
+
+                        } else if (options[item].equals("Edit")) {
+                            Intent intent = new Intent(getActivity(), ActivityAddOrEditEntry.class);
+                            intent.putExtra(ActivityAddOrEditEntry.INTENT_GROUP_EXPENSE_ENTRY, mGroupExpensesEntries.get(position));
+                            intent.putExtra(ActivityAddOrEditEntry.INTENT_GROUP_ID, mGroupExpensesEntries.get(position).groupId + "");
+                            startActivity(intent);
+                        }
+                    }
+                })
+                .show();
     }
 
 

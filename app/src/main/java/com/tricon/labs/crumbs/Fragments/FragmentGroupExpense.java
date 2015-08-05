@@ -1,5 +1,6 @@
 package com.tricon.labs.crumbs.Fragments;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -37,6 +38,8 @@ public class FragmentGroupExpense extends Fragment {
 
     private AdapterGroupExpense mAdapter;
 
+    private ProgressDialog mPDSaveData;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //return super.onCreateView(inflater, container, savedInstanceState);
@@ -70,6 +73,13 @@ public class FragmentGroupExpense extends Fragment {
         });
 
 
+        //set progress dialog
+        mPDSaveData = new ProgressDialog(getActivity());
+        mPDSaveData.setCancelable(false);
+        mPDSaveData.setIndeterminate(true);
+        mPDSaveData.setMessage("Saving Data..."); //retrieving
+
+
         return rootView;
 
     }
@@ -83,6 +93,8 @@ public class FragmentGroupExpense extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
                         if (options[item].equals("Delete")) {
+
+                            new DeleteGroupTask(position).execute();
 
                         } else if (options[item].equals("Edit")) {
                             Intent intent = new Intent(getActivity(), ActivityAddOrEditGroup.class);
@@ -112,29 +124,14 @@ public class FragmentGroupExpense extends Fragment {
         new FetchGroupExpenseDataTask().execute();
     }
 
-
-    /*
-
-    private void populateListViewFromDB() {
-        //Todo :- need to implement pagination
-        mGroupList.clear();
-
-
-        mGroupList.addAll(mDBHelper.getJointGroupsList());
-        mAdapter.notifyDataSetChanged();
-
-        Map<String, String> finalResult = mDBHelper.getAllGroupTotalSpendGiveGet();
-
-        mTVSpent.setText(finalResult.get("amt_spent"));
-        mTVGive.setText(finalResult.get("amt_toGive"));
-        mTVGet.setText(finalResult.get("amt_toGet"));
-    }
-    */
-
-
-
-
     private class FetchGroupExpenseDataTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+
+            mPDSaveData.setMessage("Fetching Data...");
+            mPDSaveData.show();
+        }
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -149,11 +146,19 @@ public class FragmentGroupExpense extends Fragment {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             mAdapter.notifyDataSetChanged();
-            new FetchBalancelAmount().execute();
+            mPDSaveData.dismiss();
+            new FetchBalanceAmountTask().execute();
         }
     }
 
-    private class FetchBalancelAmount extends AsyncTask<Void, Void, Map<String, String>> {
+    private class FetchBalanceAmountTask  extends AsyncTask<Void, Void, Map<String, String>> {
+
+        @Override
+        protected void onPreExecute() {
+
+            mPDSaveData.setMessage("Fetching Data...");
+            mPDSaveData.show();
+        }
 
         @Override
         protected Map<String, String> doInBackground(Void... params) {
@@ -171,11 +176,51 @@ public class FragmentGroupExpense extends Fragment {
                 mTVGive.setText(result.get("amt_toGive"));
                 mTVGet.setText(result.get("amt_toGet"));
             }
+            mPDSaveData.dismiss();
 
         }
     }
 
 
+
+
+    private class DeleteGroupTask extends AsyncTask<Void, Void, Map<String, String>> {
+
+
+        int position;
+
+        public DeleteGroupTask(int position) {
+            this.position= position;
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+
+            mPDSaveData.setMessage("Deleting Data...");
+            mPDSaveData.show();
+        }
+
+        @Override
+        protected Map<String, String> doInBackground(Void... params) {
+
+            mDBHelper.deleteGroup( mGroupList.get(position).id +"" );
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Map<String, String> result) {
+
+            super.onPostExecute(result);
+            mGroupList.remove(position);
+            //mAdapter.notifyItemRemoved(position);
+            mAdapter.notifyDataSetChanged();
+            mPDSaveData.dismiss();
+
+            new FetchBalanceAmountTask().execute();
+        }
+    }
 
 }
 
