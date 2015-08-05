@@ -773,7 +773,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         //Log.i("bm info", "select * from personaltable where collection_id = " + collectionId + "  and STRFTIME('%m-%Y', created_date) = '" + month + "'");
-        Cursor personalExpenseCursor = db.rawQuery("select * from personaltable where collection_id = " + collectionId + "  and STRFTIME('%m-%Y', created_date) = '" + month + "'", null);
+        Cursor personalExpenseCursor = db.rawQuery("select * from personaltable where collection_id = " + collectionId + "  and STRFTIME('%m-%Y', created_date) = '" + month + "'  order by created_date", null);
         while (personalExpenseCursor.moveToNext()) {
             int entryId = personalExpenseCursor.getInt(personalExpenseCursor.getColumnIndex("_id"));
 

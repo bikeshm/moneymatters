@@ -80,6 +80,7 @@ public class ActivityHome extends AppCompatActivity {
     }
 
     private void setupViewPager(ViewPager viewPager) {
+        viewPager.setOffscreenPageLimit(3);
         AdapterViewPager adapter = new AdapterViewPager(getSupportFragmentManager());
 
         adapter.addFrag(new FragmentPersonalExpense(), "Personal exp");
