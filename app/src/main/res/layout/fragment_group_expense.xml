@@ -110,7 +110,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="No entries.\nClick below icon to create new"
+        android:text="No Group.\nClick below icon to create new Group"
         android:textColor="@android:color/darker_gray"
         android:textSize="20sp" />
 </LinearLayout>
