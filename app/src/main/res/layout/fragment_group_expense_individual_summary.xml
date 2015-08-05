@@ -78,7 +78,6 @@
         android:id="@+id/rv_members"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tv_balance"
         android:background="@android:color/transparent"
         android:clipToPadding="false"
         android:listSelector="@android:color/transparent"

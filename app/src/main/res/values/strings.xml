@@ -50,4 +50,5 @@
     <string name="balance">Balance</string>
     <string name="spent_by">Spent By:</string>
     <string name="group_empty_message">No Group.\nClick below icon to create new Group</string>
+    <string name="empty_entry">No entries.\nClick below icon to create new</string>
 </resources>

@@ -19,6 +19,17 @@
         android:scrollbars="none" />
 
 
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/empty_entry"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+
 </LinearLayout>
 
 <!--

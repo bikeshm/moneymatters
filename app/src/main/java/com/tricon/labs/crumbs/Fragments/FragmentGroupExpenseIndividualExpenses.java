@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.tricon.labs.crumbs.R;
 import com.tricon.labs.crumbs.activities.groupexpense.ActivityAddOrEditEntry;
@@ -43,6 +44,9 @@ public class FragmentGroupExpenseIndividualExpenses extends Fragment {
 
     private ProgressDialog mProgressDialog;
 
+    TextView mTVEmpty;
+    RecyclerView mRVExpenses;
+
     public static FragmentGroupExpenseIndividualExpenses getInstance(Group group) {
         Bundle args = new Bundle();
         args.putParcelable("GROUP", group);
@@ -66,15 +70,16 @@ public class FragmentGroupExpenseIndividualExpenses extends Fragment {
         mDBHelper = DBHelper.getInstance(getActivity());
 
         //setup views
-        RecyclerView rvExpenses = (RecyclerView) rootView.findViewById(R.id.rv_expenses);
+        mTVEmpty = (TextView) rootView.findViewById(R.id.tv_empty);
+        mRVExpenses = (RecyclerView) rootView.findViewById(R.id.rv_expenses);
 
         //set recycler view layout manager
-        rvExpenses.setHasFixedSize(true);
-        rvExpenses.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRVExpenses.setHasFixedSize(true);
+        mRVExpenses.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         //set adapter
         mAdapter = new AdapterGroupExpenseIndividualExpenses(mGroupExpensesEntriesList);
-        rvExpenses.setAdapter(mAdapter);
+        mRVExpenses.setAdapter(mAdapter);
 
         //get current date
         Calendar calenderInstance = Calendar.getInstance();
@@ -106,10 +111,10 @@ public class FragmentGroupExpenseIndividualExpenses extends Fragment {
     }
 
 
-    private class FetchEntryListTask extends AsyncTask<Void, Void, Void> {
+    private class FetchEntryListTask extends AsyncTask<Void, Void, Integer> {
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Integer doInBackground(Void... params) {
             mGroupExpensesEntriesList.clear();
 
             if (mGroup.ismonthlytask == 0) {
@@ -118,14 +123,21 @@ public class FragmentGroupExpenseIndividualExpenses extends Fragment {
                 mGroupExpensesEntriesList.addAll(mDBHelper.getGroupEntriesList(mGroup.id, mSelectedDate));
             }
 
-            return null;
+            return mGroupExpensesEntriesList.size();
         }
 
         @Override
-        protected void onPostExecute(Void result) {
+        protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
             mAdapter.notifyDataSetChanged();
 
+            if (result == 0) {
+                mTVEmpty.setVisibility(View.VISIBLE);
+                mRVExpenses.setVisibility(View.GONE);
+            } else {
+                mTVEmpty.setVisibility(View.GONE);
+                mRVExpenses.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -172,7 +184,7 @@ public class FragmentGroupExpenseIndividualExpenses extends Fragment {
         int position;
 
         public DeleteEntryTask(int position) {
-            this.position= position;
+            this.position = position;
         }
 
 
