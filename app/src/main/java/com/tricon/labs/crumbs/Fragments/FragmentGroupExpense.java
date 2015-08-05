@@ -129,8 +129,8 @@ public class FragmentGroupExpense extends Fragment {
         @Override
         protected void onPreExecute() {
 
-            mPDSaveData.setMessage("Fetching Data...");
-            mPDSaveData.show();
+            //mPDSaveData.setMessage("Fetching Data...");
+            //mPDSaveData.show();
         }
 
         @Override
@@ -146,7 +146,7 @@ public class FragmentGroupExpense extends Fragment {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             mAdapter.notifyDataSetChanged();
-            mPDSaveData.dismiss();
+            //mPDSaveData.dismiss();
             new FetchBalanceAmountTask().execute();
         }
     }
@@ -156,8 +156,8 @@ public class FragmentGroupExpense extends Fragment {
         @Override
         protected void onPreExecute() {
 
-            mPDSaveData.setMessage("Fetching Data...");
-            mPDSaveData.show();
+            //mPDSaveData.setMessage("Fetching Data...");
+            //mPDSaveData.show();
         }
 
         @Override
@@ -176,7 +176,7 @@ public class FragmentGroupExpense extends Fragment {
                 mTVGive.setText(result.get("amt_toGive"));
                 mTVGet.setText(result.get("amt_toGet"));
             }
-            mPDSaveData.dismiss();
+            //mPDSaveData.dismiss();
 
         }
     }
