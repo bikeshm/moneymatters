@@ -24,7 +24,7 @@ public class ActivityGroupExpenseIndividual extends AppCompatActivity implements
     //public static String mSelectedDate;
 
     FragmentGroupExpenseIndividualExpenses mFragmentExpenses;
-
+    FragmentGroupExpenseIndividualSummary mFragmentSummary;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +76,8 @@ public class ActivityGroupExpenseIndividual extends AppCompatActivity implements
     private void setupViewPager(ViewPager viewPager) {
         AdapterViewPager adapter = new AdapterViewPager(getSupportFragmentManager());
 
-        adapter.addFrag(FragmentGroupExpenseIndividualSummary.getInstance(mGroup), "Summary");
+        mFragmentSummary = FragmentGroupExpenseIndividualSummary.getInstance(mGroup);
+        adapter.addFrag(mFragmentSummary, "Summary");
 
         mFragmentExpenses = FragmentGroupExpenseIndividualExpenses.getInstance(mGroup);
         adapter.addFrag(mFragmentExpenses, "Expenses");
@@ -106,6 +107,13 @@ public class ActivityGroupExpenseIndividual extends AppCompatActivity implements
     @Override
     public void onEntryLongClicked(int position) {
         mFragmentExpenses.generatePopupMenu(position);
+    }
+
+    //calling from expense fragment
+    public void entryDeleted() {
+
+        mFragmentSummary.populateSummaryData();
+
     }
 }
 

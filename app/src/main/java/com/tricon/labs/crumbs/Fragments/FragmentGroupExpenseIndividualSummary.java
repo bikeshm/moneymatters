@@ -35,7 +35,7 @@ public class FragmentGroupExpenseIndividualSummary extends Fragment implements E
 
     private DBHelper mDBHelper;
 
-    private ProgressDialog mPDSaveData;
+    private ProgressDialog mProgressDialog;
 
     private String mSelectedDate;
 
@@ -112,10 +112,10 @@ public class FragmentGroupExpenseIndividualSummary extends Fragment implements E
         });
 
         //set progress dialog
-        mPDSaveData = new ProgressDialog(getActivity());
-        mPDSaveData.setCancelable(false);
-        mPDSaveData.setIndeterminate(true);
-        mPDSaveData.setMessage("Saving Data...");
+        mProgressDialog = new ProgressDialog(getActivity());
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setMessage("Saving Data...");
 
 
         return rootView;
@@ -125,15 +125,19 @@ public class FragmentGroupExpenseIndividualSummary extends Fragment implements E
     @Override
     public void onResume() {
         super.onResume();
-        new FetchMembersDataTask().execute();
+        populateSummaryData();
     }
 
+    //this function calling from activity also
+    public void populateSummaryData(){
+        new FetchMembersDataTask().execute();
+    }
 
     private class FetchMembersDataTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
-            mPDSaveData.show();
+            mProgressDialog.show();
         }
 
         @Override
@@ -152,7 +156,7 @@ public class FragmentGroupExpenseIndividualSummary extends Fragment implements E
 
         @Override
         protected void onPostExecute(Void result) {
-            mPDSaveData.dismiss();
+            mProgressDialog.dismiss();
             super.onPostExecute(result);
             mAdapter.notifyDataSetChanged();
             new FetchBalanceAmount().execute();
@@ -163,7 +167,7 @@ public class FragmentGroupExpenseIndividualSummary extends Fragment implements E
 
         @Override
         protected void onPreExecute() {
-            mPDSaveData.show();
+            mProgressDialog.show();
         }
 
         @Override
@@ -181,7 +185,7 @@ public class FragmentGroupExpenseIndividualSummary extends Fragment implements E
 
         @Override
         protected void onPostExecute(Map<String, String> result) {
-            mPDSaveData.dismiss();
+            mProgressDialog.dismiss();
             super.onPostExecute(result);
 
             if (result.size() > 0) {

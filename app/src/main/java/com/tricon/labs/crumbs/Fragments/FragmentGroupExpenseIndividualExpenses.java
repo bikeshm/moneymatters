@@ -1,5 +1,6 @@
 package com.tricon.labs.crumbs.Fragments;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -23,6 +24,7 @@ import com.tricon.labs.crumbs.models.GroupExpensesEntry;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 
 public class FragmentGroupExpenseIndividualExpenses extends Fragment {
@@ -36,9 +38,10 @@ public class FragmentGroupExpenseIndividualExpenses extends Fragment {
 
     ActivityGroupExpenseIndividual mActivityInstance;
 
-    private List<GroupExpensesEntry> mGroupExpensesEntries = new ArrayList<>();
+    private List<GroupExpensesEntry> mGroupExpensesEntriesList = new ArrayList<>();
     private AdapterGroupExpenseIndividualExpenses mAdapter;
 
+    private ProgressDialog mProgressDialog;
 
     public static FragmentGroupExpenseIndividualExpenses getInstance(Group group) {
         Bundle args = new Bundle();
@@ -70,7 +73,7 @@ public class FragmentGroupExpenseIndividualExpenses extends Fragment {
         rvExpenses.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         //set adapter
-        mAdapter = new AdapterGroupExpenseIndividualExpenses(mGroupExpensesEntries);
+        mAdapter = new AdapterGroupExpenseIndividualExpenses(mGroupExpensesEntriesList);
         rvExpenses.setAdapter(mAdapter);
 
         //get current date
@@ -78,6 +81,12 @@ public class FragmentGroupExpenseIndividualExpenses extends Fragment {
         String dayString = ((calenderInstance.get(Calendar.MONTH) + 1) < 10 ? "0" : "") + (calenderInstance.get(Calendar.MONTH) + 1);
         mSelectedDate = dayString + "-" + calenderInstance.get(Calendar.YEAR);
 
+
+        //set progress dialog
+        mProgressDialog = new ProgressDialog(getActivity());
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setMessage("Saving Data...");
 
         return rootView;
 
@@ -101,12 +110,12 @@ public class FragmentGroupExpenseIndividualExpenses extends Fragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-            mGroupExpensesEntries.clear();
+            mGroupExpensesEntriesList.clear();
 
             if (mGroup.ismonthlytask == 0) {
-                mGroupExpensesEntries.addAll(mDBHelper.getGroupEntriesList(mGroup.id));
+                mGroupExpensesEntriesList.addAll(mDBHelper.getGroupEntriesList(mGroup.id));
             } else {
-                mGroupExpensesEntries.addAll(mDBHelper.getGroupEntriesList(mGroup.id, mSelectedDate));
+                mGroupExpensesEntriesList.addAll(mDBHelper.getGroupEntriesList(mGroup.id, mSelectedDate));
             }
 
             return null;
@@ -125,8 +134,8 @@ public class FragmentGroupExpenseIndividualExpenses extends Fragment {
     public void onEntryClicked(int position) {
 
         Intent intent = new Intent(getActivity(), ActivityAddOrEditEntry.class);
-        intent.putExtra(ActivityAddOrEditEntry.INTENT_GROUP_EXPENSE_ENTRY, mGroupExpensesEntries.get(position));
-        intent.putExtra(ActivityAddOrEditEntry.INTENT_GROUP_ID, mGroupExpensesEntries.get(position).groupId + "");
+        intent.putExtra(ActivityAddOrEditEntry.INTENT_GROUP_EXPENSE_ENTRY, mGroupExpensesEntriesList.get(position));
+        intent.putExtra(ActivityAddOrEditEntry.INTENT_GROUP_ID, mGroupExpensesEntriesList.get(position).groupId + "");
         startActivity(intent);
 
     }
@@ -143,11 +152,12 @@ public class FragmentGroupExpenseIndividualExpenses extends Fragment {
                     public void onClick(DialogInterface dialog, int item) {
                         if (options[item].equals("Delete")) {
 
+                            new DeleteEntryTask(position).execute();
 
                         } else if (options[item].equals("Edit")) {
                             Intent intent = new Intent(getActivity(), ActivityAddOrEditEntry.class);
-                            intent.putExtra(ActivityAddOrEditEntry.INTENT_GROUP_EXPENSE_ENTRY, mGroupExpensesEntries.get(position));
-                            intent.putExtra(ActivityAddOrEditEntry.INTENT_GROUP_ID, mGroupExpensesEntries.get(position).groupId + "");
+                            intent.putExtra(ActivityAddOrEditEntry.INTENT_GROUP_EXPENSE_ENTRY, mGroupExpensesEntriesList.get(position));
+                            intent.putExtra(ActivityAddOrEditEntry.INTENT_GROUP_ID, mGroupExpensesEntriesList.get(position).groupId + "");
                             startActivity(intent);
                         }
                     }
@@ -155,6 +165,42 @@ public class FragmentGroupExpenseIndividualExpenses extends Fragment {
                 .show();
     }
 
+
+    private class DeleteEntryTask extends AsyncTask<Void, Void, Map<String, String>> {
+
+
+        int position;
+
+        public DeleteEntryTask(int position) {
+            this.position= position;
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+
+            mProgressDialog.setMessage("Deleting Data...");
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected Map<String, String> doInBackground(Void... params) {
+            mDBHelper.deleteGroupEntry(mGroupExpensesEntriesList.get(position).expenseId + "");
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Map<String, String> result) {
+
+            super.onPostExecute(result);
+            mGroupExpensesEntriesList.remove(position);
+            mAdapter.notifyItemRemoved(position);
+
+            mProgressDialog.dismiss();
+
+            mActivityInstance.entryDeleted();
+        }
+    }
 
 
             /*
