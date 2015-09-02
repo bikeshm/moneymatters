@@ -36,7 +36,7 @@ public class AdapterLendAndBorrowEntryList extends RecyclerView.Adapter<AdapterL
 
         holder.tvDate.setText(entry.date);
         holder.tvDescription.setText(entry.description);
-        holder.tvAmount.setText(entry.amount + "");
+        holder.tvAmount.setText(String.format("%.2f", entry.amount ));
 
         if (entry.status == Person.STATUS_GIVE) {
             holder.tvAmount.setTextColor(holder.tvAmount.getContext().getResources().getColor(android.R.color.holo_red_dark));

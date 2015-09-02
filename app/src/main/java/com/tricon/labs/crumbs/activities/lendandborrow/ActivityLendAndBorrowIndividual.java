@@ -146,7 +146,7 @@ public class ActivityLendAndBorrowIndividual extends AppCompatActivity implement
                         } else {
                             newBalance = Double.parseDouble(mTVTotalBalance.getText().toString()) - entry.amount;
                         }
-                        mTVTotalBalance.setText(Math.abs(newBalance) + "");
+                        mTVTotalBalance.setText(String.format("%.2f", Math.abs(newBalance))  );
 
                     }
                 })
@@ -183,11 +183,13 @@ public class ActivityLendAndBorrowIndividual extends AppCompatActivity implement
         @Override
         protected void onPostExecute(Double result) {
             super.onPostExecute(result);
-            mTVTotalBalance.setText(result + "");
+
+
+            mTVTotalBalance.setText(String.format("%.2f", result));
             mTVTotalBalance.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
 
             if (result < 0) {
-                mTVTotalBalance.setText((result * -1) + "");
+                mTVTotalBalance.setText(String.format("%.2f", (result * -1) ) );
 
                 mTVTotalBalance.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
             }
